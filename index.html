@@ -79,12 +79,15 @@
   .rarity-RARE{ background:rgba(77,159,255,0.12); color:var(--rare); border:1px solid var(--rare); }
   .rarity-EPIC{ background:rgba(180,100,255,0.12); color:var(--epic); border:1px solid var(--epic); }
   .rarity-LEGENDARY{ background:rgba(255,159,64,0.12); color:var(--legendary); border:1px solid var(--legendary); }
-  .rarity-EXOTIC{ background:rgba(255,95,192,0.13); color:var(--exotic); border:1px solid var(--exotic); animation:glow 2s infinite alternate; }
+  .rarity-EXOTIC{ background:linear-gradient(90deg, rgba(255,95,192,0.18), rgba(0,224,255,0.18)); color:var(--exotic); border:1px dashed var(--exotic); animation:glowExotic 1.8s infinite alternate; }
   .rarity-MYTHIC{ background:rgba(255,77,109,0.14); color:var(--mythic); border:1px solid var(--mythic); animation:glow 1.6s infinite alternate; }
-  .rarity-UNREAL{ background:rgba(245,245,255,0.14); color:var(--unreal); border:1px solid var(--unreal); animation:glow 1.3s infinite alternate; }
+  .rarity-UNREAL{ background:rgba(245,245,255,0.14); color:var(--unreal); border:1px solid var(--unreal); animation:glowWhite 1.3s infinite alternate; }
   .rarity-MYSTERY{ background:linear-gradient(90deg,#ff4d6d,#ff9f40,#ffd166,#57c785,#4d9fff,#b464ff); background-size:300% 100%; color:#0b0e17; border:1px solid var(--mystery); animation:mysteryShift 2.4s linear infinite; font-weight:800; }
   @keyframes mysteryShift{ 0%{ background-position:0% 50%; } 100%{ background-position:300% 50%; } }
   @keyframes glow{ from{ box-shadow:0 0 4px rgba(255,77,109,0.3); } to{ box-shadow:0 0 18px rgba(255,77,109,0.7); } }
+  @keyframes glowExotic{ from{ box-shadow:0 0 4px rgba(255,95,192,0.35); border-color:var(--exotic); } to{ box-shadow:0 0 18px rgba(0,224,255,0.75); border-color:#00e0ff; } }
+  @keyframes glowYellow{ from{ box-shadow:0 0 4px rgba(255,214,0,0.35); } to{ box-shadow:0 0 18px rgba(255,214,0,0.85); } }
+  @keyframes glowWhite{ from{ box-shadow:0 0 4px rgba(245,245,255,0.35); } to{ box-shadow:0 0 20px rgba(245,245,255,0.95); } }
   .percentile{ color:var(--muted); font-size:0.85rem; margin-top:6px;}
   .ep{ margin-top:6px; font-size:0.9rem; color:var(--accent); font-weight:600; }
   .badges{ margin-top:22px; display:flex; flex-direction:column; gap:8px; text-align:left; }
@@ -105,7 +108,7 @@
   .new-tag{
     background:var(--accent); color:#1a1200; font-size:0.62rem; font-weight:800;
     padding:2px 6px; border-radius:5px; margin-left:6px; vertical-align:middle;
-    letter-spacing:0.3px; animation:glow 1.4s infinite alternate;
+    letter-spacing:0.3px; animation:glowYellow 1.4s infinite alternate;
   }
   @keyframes slideIn{ from{ opacity:0; transform:translateX(-8px); } to{ opacity:1; transform:translateX(0); } }
   .footer-row{ margin-top:24px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
@@ -320,14 +323,14 @@
 // bands: number of stripes/bands in the flag design (0 = plain field/no stripe layout, 5 = "5 or more")
 const COUNTRIES = [
   {name:"United States", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/960px-Flag_of_the_United_States.svg.png?_=20250221172329", colors:["red","white","blue"], bands:13, languages:["English"], continent:"North America", landlocked:false, island:false, pop:"huge", area:"huge", founded:1960, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false, wc26:true},
-  {name:"Nepal", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Flag_of_Nepal.svg/500px-Flag_of_Nepal.svg.png", colors:["red","blue","white"], bands:0, continent:"Asia", landlocked:true, island:false, pop:"medium", area:"small", founded:1962, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:false, mapShape:true, uniqueShape:true},
+  {name:"Nepal", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Flag_of_Nepal.svg/500px-Flag_of_Nepal.svg.png", colors:["red","blue","white"], bands:0, continent:"Asia", landlocked:true, island:false, pop:"medium", area:"small", founded:1962, stars:false, crescent:true, sun:true, cross:false, animal:false, crest:false, uniqueShape:true},
   {name:"Japan", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/960px-Flag_of_Japan.svg.png?_=20111003030759", colors:["white","red"], bands:0, continent:"Asia", landlocked:false, island:true, pop:"large", area:"medium", founded:1999, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:false, wc26:true},
   {name:"Bhutan", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Flag_of_Bhutan.svg/960px-Flag_of_Bhutan.svg.png", colors:["yellow","orange","white","black"], bands:2, continent:"Asia", landlocked:true, island:false, pop:"tiny", area:"small", founded:1969, stars:false, crescent:false, sun:false, cross:false, animal:true, crest:false},
-  {name:"Kiribati", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Flag_of_Kiribati.svg/960px-Flag_of_Kiribati.svg.png", colors:["red","blue","yellow","white","black"], bands:7, continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1979, stars:true, crescent:false, sun:true, cross:false, animal:true, crest:false},
+  {name:"Kiribati", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Flag_of_Kiribati.svg/960px-Flag_of_Kiribati.svg.png", colors:["red","blue","yellow","white","black"], bands:7, continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1979, stars:true, crescent:false, sun:true, cross:false, animal:true, crest:false, microstate:true},
   {name:"Sri Lanka", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Sri_Lanka.svg/960px-Flag_of_Sri_Lanka.svg.png", colors:["yellow","maroon","green","orange","black"], bands:0, continent:"Asia", landlocked:false, island:true, pop:"medium", area:"small", founded:1978, stars:false, crescent:false, sun:false, cross:false, animal:true, leaf:true},
   {name:"Mexico", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Mexico.svg/960px-Flag_of_Mexico.svg.png", colors:["green","white","red","black","blue","yellow","brown","pink"], bands:3, languages:["Spanish"], continent:"North America", landlocked:false, island:false, pop:"large", area:"large", founded:1968, stars:false, crescent:false, sun:false, cross:false, animal:true, crest:true, leaf:true, wc26:true},
   {name:"Nicaragua", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Nicaragua.svg/960px-Flag_of_Nicaragua.svg.png", colors:["blue","white","green","red","yellow","purple"], bands:3, languages:["Spanish"], continent:"North America", landlocked:false, island:false, pop:"small", area:"small", founded:1971, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:true, script:true},
-  {name:"Belize", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Flag_of_Belize.svg/960px-Flag_of_Belize.svg.png", colors:["blue","red","white","black","green","yellow","brown"], bands:3, languages:["English","Spanish"], continent:"North America", landlocked:false, island:false, pop:"tiny", area:"small", founded:2019, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, leaf:true, script:true},
+  {name:"Belize", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Flag_of_Belize.svg/960px-Flag_of_Belize.svg.png", colors:["blue","red","white","black","green","yellow","brown"], bands:3, languages:["English"], continent:"North America", landlocked:false, island:false, pop:"tiny", area:"small", founded:2019, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, leaf:true, script:true},
   {name:"Turkey", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/960px-Flag_of_Turkey.svg.png", colors:["red","white"], bands:0, continent:"Asia", landlocked:false, island:false, pop:"large", area:"medium", founded:1936, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false, wc26:true},
   {name:"Pakistan", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Flag_of_Pakistan.svg/960px-Flag_of_Pakistan.svg.png", colors:["green","white"], bands:2, languages:["English"], continent:"Asia", landlocked:false, island:false, pop:"huge", area:"large", founded:1947, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false},
   {name:"Algeria", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Algeria.svg/960px-Flag_of_Algeria.svg.png", colors:["green","white","red"], bands:2, continent:"Africa", landlocked:false, island:false, pop:"large", area:"huge", founded:1962, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false, wc26:true},
@@ -338,17 +341,17 @@ const COUNTRIES = [
   {name:"Greece", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/960px-Flag_of_Greece.svg.png", colors:["blue","white"], bands:9, continent:"Europe", landlocked:false, island:false, pop:"small", area:"small", founded:1978, stars:false, crescent:false, sun:false, cross:true, animal:false, crest:false},
   {name:"Brazil", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/960px-Flag_of_Brazil.svg.png?_=20240910145343", colors:["green","yellow","blue","white"], bands:0, continent:"South America", landlocked:false, island:false, pop:"huge", area:"huge", founded:1992, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false, hasBanner:true, script:true, wc26:true, winnerwc:true},
   {name:"Portugal", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/960px-Flag_of_Portugal.svg.png", colors:["green","red","yellow","white","blue","black"], bands:2, continent:"Europe", landlocked:false, island:false, pop:"small", area:"small", founded:1911, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, buildingIcon:true, wc26:true},
-  {name:"Spain", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Flag_of_Spain.svg/960px-Flag_of_Spain.svg.png?_=20160610210450", colors:["red","yellow","black","blue","green","white","pink"], bands:3, languages:["Spanish"], continent:"Europe", landlocked:false, island:false, pop:"large", area:"medium", founded:1981, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, buildingIcon:true, leaf:true, script:true, wc26:true, winnerwc:true},
+  {name:"Spain", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Flag_of_Spain.svg/960px-Flag_of_Spain.svg.png?_=20160610210450", colors:["red","yellow","black","blue","green","white","pink"], bands:3, languages:["Spanish"], continent:"Europe", landlocked:false, island:false, pop:"large", area:"medium", founded:1981, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, buildingIcon:true, leaf:true, script:true, wc26:true, winnerwc:true, crown:true},
   {name:"South Africa", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Flag_of_South_Africa.svg/960px-Flag_of_South_Africa.svg.png", colors:["red","white","blue","green","yellow","black"], bands:6, languages:["English"], continent:"Africa", landlocked:false, island:false, pop:"large", area:"large", founded:1994, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, triangle:true, wc26:true},
-  {name:"Seychelles", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Seychelles.svg/960px-Flag_of_Seychelles.svg.png", colors:["blue","yellow","red","white","green"], bands:5, continent:"Africa", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1996, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false},
+  {name:"Seychelles", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Seychelles.svg/960px-Flag_of_Seychelles.svg.png", colors:["blue","yellow","red","white","green"], bands:5, continent:"Africa", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1996, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, microstate:true},
   {name:"Kenya", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Kenya.svg/960px-Flag_of_Kenya.svg.png", colors:["black","red","green","white"], bands:5, languages:["English"], continent:"Africa", landlocked:false, island:false, pop:"large", area:"medium", founded:1963, stars:false, crescent:false, sun:false, cross:false, animal:false},
   {name:"Eswatini", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Flag_of_Eswatini.svg/960px-Flag_of_Eswatini.svg.png", colors:["blue","yellow","red","black","white"], bands:5, continent:"Africa", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1968, stars:false, crescent:false, sun:false, cross:false, animal:true},
-  {name:"Mongolia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_Mongolia.svg/960px-Flag_of_Mongolia.svg.png", colors:["red","blue","yellow"], bands:3, continent:"Asia", landlocked:true, island:false, pop:"tiny", area:"large", founded:1992, stars:false, crescent:false, sun:true, cross:false, animal:false, yinyang:true, buildingIcon: true},
+  {name:"Mongolia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_Mongolia.svg/960px-Flag_of_Mongolia.svg.png", colors:["red","blue","yellow"], bands:3, continent:"Asia", landlocked:true, island:false, pop:"tiny", area:"large", founded:1992, stars:false, crescent:true, sun:true, cross:false, animal:false, yinyang:true, buildingIcon: true},
   {name:"Bolivia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Bandera_de_Bolivia_%28Estado%29.svg/960px-Bandera_de_Bolivia_%28Estado%29.svg.png", colors:["red","yellow","green","blue","orange","white","black","brown","gray"], bands:3, languages:["Spanish"], continent:"South America", landlocked:true, island:false, pop:"medium", area:"large", founded:1851, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, leaf:true, script:true},
   {name:"Paraguay", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Flag_of_Paraguay.svg/960px-Flag_of_Paraguay.svg.png", colors:["red","white","blue"], bands:3, languages:["Spanish"], continent:"South America", landlocked:true, island:false, pop:"small", area:"medium", founded:1990, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, twoSided:true, leaf:true, script:true, wc26:true},
-  {name:"Vatican City",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Flag_of_Vatican_City_%282023%E2%80%93present%29.svg/960px-Flag_of_Vatican_City_%282023%E2%80%93present%29.svg.png?_=20241017125257", colors:["yellow","white","black","red","gray"], bands:2, languages:["Italian"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1929, stars:false, crescent:false, sun:false, cross:true, animal:false, crest:true, squareFlag:true, microstate:true},
-  {name:"San Marino",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Flag_of_San_Marino.svg/960px-Flag_of_San_Marino.svg.png", colors:["white","blue","black","green","yellow","gray"], bands:2, languages:["Italian"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:2011, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, microstate:true, leaf:true, script:true},
-  {name:"Liechtenstein",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Flag_of_Liechtenstein.svg/960px-Flag_of_Liechtenstein.svg.png", colors:["blue","red","yellow","black"], bands:2, languages:["German"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1937, stars:false, crescent:false, sun:false, cross:false, animal:false, microstate:true},
+  {name:"Vatican City",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Flag_of_Vatican_City_%282023%E2%80%93present%29.svg/960px-Flag_of_Vatican_City_%282023%E2%80%93present%29.svg.png?_=20241017125257", colors:["yellow","white","black","red","gray"], bands:2, languages:["Italian"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1929, stars:false, crescent:false, sun:false, cross:true, animal:false, crest:true, squareFlag:true, microstate:true, crown:true},
+  {name:"San Marino",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Flag_of_San_Marino.svg/960px-Flag_of_San_Marino.svg.png", colors:["white","blue","black","green","yellow","gray"], bands:2, languages:["Italian"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:2011, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, microstate:true, leaf:true, script:true, crown:true},
+  {name:"Liechtenstein",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Flag_of_Liechtenstein.svg/960px-Flag_of_Liechtenstein.svg.png", colors:["blue","red","yellow","black"], bands:2, languages:["German"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1937, stars:false, crescent:false, sun:false, cross:false, animal:false, microstate:true, crown:true},
   {name:"Tuvalu", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Flag_of_Tuvalu.svg/960px-Flag_of_Tuvalu.svg.png", colors:["blue","yellow","red","white"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1997, stars:true, crescent:false, sun:false, cross:true, animal:false, crest:false, microstate:true},
   {name:"Palau", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Flag_of_Palau.svg/960px-Flag_of_Palau.svg.png", colors:["blue","yellow"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1981, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, moonDisc:true},
   {name:"Bangladesh",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Flag_of_Bangladesh.svg/960px-Flag_of_Bangladesh.svg.png", colors:["green","red"], bands:0, continent:"Asia", landlocked:false, island:false, pop:"huge", area:"medium", founded:1972, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:false},
@@ -363,7 +366,7 @@ const COUNTRIES = [
   {name:"Iceland", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Iceland.svg/960px-Flag_of_Iceland.svg.png", colors:["blue","white","red"], bands:4, continent:"Europe", landlocked:false, island:true, pop:"tiny", area:"medium", founded:1944, stars:false, crescent:false, sun:false, cross:true, nordic:true, animal:false, crest:false},
   {name:"Finland", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Finland.svg/960px-Flag_of_Finland.svg.png", colors:["blue","white"], bands:2, continent:"Europe", landlocked:false, island:false, pop:"small", area:"medium", founded:1918, stars:false, crescent:false, sun:false, cross:true, nordic:true, animal:false, crest:false},
   {name:"Sweden", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Flag_of_Sweden.svg/960px-Flag_of_Sweden.svg.png?_=20240819095330", colors:["blue","yellow"], bands:2, continent:"Europe", landlocked:false, island:false, pop:"small", area:"medium", founded:1906, stars:false, crescent:false, sun:false, cross:true, nordic:true, animal:false, crest:false, wc26:true},
-  {name:"Ireland",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Flag_of_Ireland.svg/960px-Flag_of_Ireland.svg.png", colors:["green","white","orange"], bands:3, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"small", area:"small", founded:1919, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false},
+  {name:"Ireland",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Flag_of_Ireland.svg/960px-Flag_of_Ireland.svg.png", colors:["green","white","orange"], bands:3, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"small", area:"small", founded:1919, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, britIsle:true},
   {name:"Germany", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/960px-Flag_of_Germany.svg.png?_=20111003033442", colors:["black","red","yellow"], bands:3, languages:["German"], continent:"Europe", landlocked:false, island:false, pop:"large", area:"medium", founded:1949, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, wc26:true, winnerwc:true},
   {name:"Italy", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/960px-Flag_of_Italy.svg.png?_=20111003040337", colors:["green","white","red"], bands:3, languages:["Italian"], continent:"Europe", landlocked:false, island:false, pop:"large", area:"medium", founded:1946, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, winnerwc:true},
   {name:"France", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/960px-Flag_of_France.svg.png?_=20220120162234", colors:["blue","white","red"], bands:3, languages:["French"], continent:"Europe", landlocked:false, island:false, pop:"large", area:"medium", founded:1794, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, wc26:true, winnerwc:true},
@@ -374,8 +377,8 @@ const COUNTRIES = [
   {name:"Australia", imageUrl:"https://upload.wikimedia.org/wikipedia/en/b/b9/Flag_of_Australia.svg", colors:["blue","white","red"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"large", area:"huge", founded:1901, stars:true, crescent:false, sun:false, cross:true, animal:false, crest:false, wc26:true},
   {name:"New Zealand",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Flag_of_New_Zealand.svg/960px-Flag_of_New_Zealand.svg.png", colors:["blue","red","white"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"small", area:"medium", founded:1902, stars:true, crescent:false, sun:false, cross:true, animal:false, crest:false, wc26:true},
   {name:"Papua New Guinea",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Flag_of_Papua_New_Guinea.svg/960px-Flag_of_Papua_New_Guinea.svg.png", colors:["red","black","yellow","white"], bands:2, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"medium", area:"medium", founded:1971, stars:true, crescent:false, sun:false, cross:false, animal:true, crest:false},
-  {name:"Fiji",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Fiji.svg/960px-Flag_of_Fiji.svg.png", colors:["blue","red","white","black","green","yellow","brown"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"small", founded:1970, stars:false, crescent:false, sun:false, cross:true, animal:true, crest:true},
-  {name:"Samoa", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Flag_of_Samoa.svg/960px-Flag_of_Samoa.svg.png", colors:["red","blue","white"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1949, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false},
+  {name:"Fiji",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Fiji.svg/960px-Flag_of_Fiji.svg.png", colors:["blue","red","white","black","green","yellow","brown"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"small", founded:1970, stars:false, crescent:false, sun:false, cross:true, animal:true, crest:true, crown:true},
+  {name:"Samoa", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Flag_of_Samoa.svg/960px-Flag_of_Samoa.svg.png", colors:["red","blue","white"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1949, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false, microstate:true},
   {name:"Ethiopia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Flag_of_Ethiopia.svg/960px-Flag_of_Ethiopia.svg.png", colors:["green","yellow","red","blue"], bands:3, continent:"Africa", landlocked:true, island:false, pop:"huge", area:"large", founded:1996, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true},
   {name:"Somalia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Flag_of_Somalia.svg/960px-Flag_of_Somalia.svg.png", colors:["blue","white"], bands:0, continent:"Africa", landlocked:false, island:false, pop:"medium", area:"medium", founded:1954, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false},
   {name:"Nigeria",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Flag_of_Nigeria.svg/960px-Flag_of_Nigeria.svg.png", colors:["green","white"], bands:3, languages:["English"], continent:"Africa", landlocked:false, island:false, pop:"huge", area:"large", founded:1960, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false},
@@ -384,7 +387,7 @@ const COUNTRIES = [
   {name:"Libya", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Libya.svg/960px-Flag_of_Libya.svg.png", colors:["red","black","green","white"], bands:3, continent:"Africa", landlocked:false, island:false, pop:"medium", area:"large", founded:2011, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false},
   {name:"Cyprus",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Flag_of_Cyprus.svg/960px-Flag_of_Cyprus.svg.png", colors:["white","orange","green"], bands:0, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"tiny", area:"small", founded:1960, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, mapShape:true},
   {name:"Antigua and Barbuda", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Flag_of_Antigua_and_Barbuda.svg/960px-Flag_of_Antigua_and_Barbuda.svg.png", colors:["red","black","blue","white","yellow"], bands:3, languages:["English"], continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1967, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:false, microstate:true},
-  {name:"Barbados",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Flag_of_Barbados.svg/960px-Flag_of_Barbados.svg.png", colors:["blue","yellow","black"], bands:3, languages:["English"], continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1966, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, trident:true},
+  {name:"Barbados",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Flag_of_Barbados.svg/960px-Flag_of_Barbados.svg.png", colors:["blue","yellow","black"], bands:3, languages:["English"], continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1966, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, trident:true, microstate:true},
   {name:"Jamaica",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Flag_of_Jamaica.svg/960px-Flag_of_Jamaica.svg.png", colors:["black","yellow","green"], bands:2, languages:["English"], continent:"North America", landlocked:false, island:true, pop:"small", area:"small", founded:1962, stars:false, crescent:false, sun:false, cross:true, animal:false, crest:false, triangle:true},
   {name:"The Bahamas",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Flag_of_the_Bahamas.svg/960px-Flag_of_the_Bahamas.svg.png", colors:["blue","yellow","black"], bands:3, languages:["English"], continent:"North America", landlocked:false, island:true, pop:"tiny", area:"small", founded:1973, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, triangle:true},
   {name:"Argentina",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/960px-Flag_of_Argentina.svg.png", colors:["blue","white","yellow","brown"], bands:3, languages:["Spanish"], continent:"South America", landlocked:false, island:false, pop:"large", area:"huge", founded:1985, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:false, wc26:true, winnerwc:true},
@@ -395,18 +398,23 @@ const COUNTRIES = [
   {name:"South Korea",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/960px-Flag_of_South_Korea.svg.png", colors:["white","red","blue","black"], bands:0, continent:"Asia", landlocked:false, island:false, pop:"large", area:"small", founded:1997, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, yinyang:true, wc26:true},
   {name:"North Korea",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Flag_of_North_Korea.svg/960px-Flag_of_North_Korea.svg.png", colors:["red","white","blue"], bands:5, continent:"Asia", landlocked:false, island:false, pop:"medium", area:"small", founded:1948, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false},
   {name:"Thailand",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/960px-Flag_of_Thailand.svg.png", colors:["red","white","blue"], bands:5, continent:"Asia", landlocked:false, island:false, pop:"large", area:"medium", founded:1917, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false},
-  {name:"Indonesia",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/960px-Flag_of_Indonesia.svg.png", colors:["red","white"], bands:2, continent:"Asia", landlocked:false, island:true, pop:"huge", area:"huge", founded:1945, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false},
+  {name:"Indonesia",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/960px-Flag_of_Indonesia.svg.png", colors:["red","white"], bands:2, continent:"Asia", landlocked:false, island:true, pop:"huge", area:"huge", founded:1945, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, copyCat:true},
   {name:"Philippines", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Flag_of_the_Philippines.svg/960px-Flag_of_the_Philippines.svg.png", colors:["blue","red","white","yellow"], bands:2, languages:["English"], continent:"Asia", landlocked:false, island:true, pop:"huge", area:"medium", founded:1998, stars:true, crescent:false, sun:true, cross:false, animal:false, crest:false},
   {name:"Malaysia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Flag_of_Malaysia.svg/960px-Flag_of_Malaysia.svg.png", colors:["red","white","blue","yellow"], bands:14, continent:"Asia", landlocked:false, island:false, pop:"medium", area:"medium", founded:1963, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false},
   {name:"Israel",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Flag_of_Israel.svg/960px-Flag_of_Israel.svg.png", colors:["blue","white"], bands:5, continent:"Asia", landlocked:false, island:false, pop:"medium", area:"small", founded:1948, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false},
   {name:"Kazakhstan", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Flag_of_Kazakhstan.svg/960px-Flag_of_Kazakhstan.svg.png", colors:["blue","yellow"], bands:0, continent:"Asia", landlocked:true, island:false, pop:"medium", area:"huge", founded:1992, stars:false, crescent:false, sun:true, cross:false, animal:true, crest:false},
-  {name:"Andorra",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Andorra.svg/960px-Flag_of_Andorra.svg.png", colors:["blue","yellow","red","brown","white"], bands:3, continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1866, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, microstate:true},
-  {name:"Monaco",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Flag_of_Monaco.svg/960px-Flag_of_Monaco.svg.png", colors:["red","white"], bands:2, languages:["French"], continent:"Europe", landlocked:false, island:false, pop:"tiny", area:"tiny", founded:1881, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, microstate:true},
-  {name:"Luxembourg",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/d/da/Flag_of_Luxembourg.svg", colors:["red","white","blue"], bands:3, languages:["French","German"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1972, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false},
-  {name:"Malta",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Malta.svg/960px-Flag_of_Malta.svg.png", colors:["white","red","black"], bands:2, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1964, stars:false, crescent:false, sun:false, cross:true, animal:true, crest:true},
+  {name:"Andorra",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Andorra.svg/960px-Flag_of_Andorra.svg.png", colors:["blue","yellow","red","brown","white"], bands:3, continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1866, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:true, microstate:true, crown:true},
+  {name:"Monaco",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Flag_of_Monaco.svg/960px-Flag_of_Monaco.svg.png", colors:["red","white"], bands:2, languages:["French"], continent:"Europe", landlocked:false, island:false, pop:"tiny", area:"tiny", founded:1881, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, microstate:true, copyCat:true},
+  {name:"Luxembourg",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/d/da/Flag_of_Luxembourg.svg", colors:["red","white","blue"], bands:3, languages:["French","German"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1972, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, microstate:true},
+  {name:"Malta",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Malta.svg/960px-Flag_of_Malta.svg.png", colors:["white","red","black"], bands:2, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1964, stars:false, crescent:false, sun:false, cross:true, animal:true, crest:true, microstate:true},
   {name:"Democratic Republic of the Congo",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Flag_of_the_Democratic_Republic_of_the_Congo.svg/1280px-Flag_of_the_Democratic_Republic_of_the_Congo.svg.png", colors:["yellow","red","blue"], bands:5, languages:["French"], continent:"Africa", landlocked:false, island:false, pop:"huge", area:"huge", founded:2006, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false, wc26:true},
-{name:"Saint Kitts and Nevis",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Saint_Kitts_and_Nevis.svg/1280px-Flag_of_Saint_Kitts_and_Nevis.svg.png", colors:["yellow","red","green","black","white"], bands:5, continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:2006, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false},
+{name:"Saint Kitts and Nevis",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Saint_Kitts_and_Nevis.svg/1280px-Flag_of_Saint_Kitts_and_Nevis.svg.png", colors:["yellow","red","green","black","white"], bands:5, continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:2006, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false, microstate:true},
   {name:"Curaçao",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Flag_of_Cura%C3%A7ao.svg/960px-Flag_of_Cura%C3%A7ao.svg.png?_=20240312204007", colors:["yellow","blue","white"], bands:3, continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1984, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:false, terr:true, wc26:true},
+  {name:"England",  imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/960px-Flag_of_England.svg.png?_=20111003040319", colors:["red","white"], bands:2, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"large", area:"medium", founded:1190, stars:false, crescent:false, sun:false, cross:true, animal:false, crest:false, terr:false, wc26:true, winnerwc:true, britIsle:true},
+  {name:"Scotland",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Flag_of_Scotland.svg/960px-Flag_of_Scotland.svg.png", colors:["blue","white"], bands:2, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"small", area:"small", founded:1542, stars:false, crescent:false, sun:false, cross:true, animal:false, crest:false, terr:false, wc26:true, britIsle:true},
+  {name:"Wales",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Flag_of_Scotland.svg/960px-Flag_of_Scotland.svg.png", colors:["red","white","green","black"], bands:2, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"small", area:"small", founded:1959, stars:false, crescent:false, sun:false, cross:false, animal:true, crest:false, terr:false, britIsle:true},
+  {name:"Northern Ireland",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Flag_of_Northern_Ireland_%281953%E2%80%931972%29.svg/960px-Flag_of_Northern_Ireland_%281953%E2%80%931972%29.svg.png?_=20230423125129", colors:["red","white","green","black","gray","blue"], bands:2, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"small", area:"small", founded:1924, stars:true, crescent:false, sun:false, cross:true, animal:false, crest:true, terr:false, britIsle:true, crown:true},
+  {name:"Isle of Man",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Flag_of_Northern_Ireland_%281953%E2%80%931972%29.svg/960px-Flag_of_Northern_Ireland_%281953%E2%80%931972%29.svg.png?_=20230423125129", colors:["red","white","black","yellow"], bands:0, languages:["English"], continent:"Europe", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1932, stars:true, crescent:false, sun:false, cross:false, animal:false, crest:true, terr:true, britIsle:true},
 
   // Unrecognized / de facto territories - no official flag emoji exists, rendered via a real flag image
   {name:"Transnistria", noEmoji:true, imageUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Transnistria_(state).svg", colors:["green","red","yellow"], bands:3, continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:2000, stars:true, crescent:false, sun:false, cross:false, animal:false, breakAway:true},
@@ -415,12 +423,13 @@ const COUNTRIES = [
   {name:"Artsakh", noEmoji:true, imageUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Artsakh.svg", colors:["red","blue","orange","white"], bands:3, continent:"Asia", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1992, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, breakAway:true},
   {name:"South Ossetia", imageUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_South_Ossetia.svg", colors:["white","red","yellow"], bands:3, continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1990, stars:false, crescent:false, sun:false, cross:false, animal:false, crest:false, breakAway:true},
   {name:"Kurdistan", noEmoji:true, imageUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kurdistan.svg", colors:["red","white","green","yellow"], bands:3, continent:"Asia", landlocked:true, island:false, pop:"medium", area:"medium", founded:1992, stars:false, crescent:false, sun:true, cross:false, animal:false, crest:false},
-  {name:"Northern Cyprus", noEmoji:true, imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg/960px-Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg.png", colors:["red","white"], bands:5, continent:"Asia", landlocked:false, island:true, pop:"tiny", area:"small", founded:1984, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false},
+  {name:"Northern Cyprus", noEmoji:true, imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg/960px-Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg.png", colors:["red","white"], bands:5, continent:"Asia", landlocked:false, island:true, pop:"tiny", area:"small", founded:1984, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false, breakAway:true},
+  {name:"Western Sahara", noEmoji:true, imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Flag_of_the_Sahrawi_Arab_Democratic_Republic.svg/1920px-Flag_of_the_Sahrawi_Arab_Democratic_Republic.svg.png", colors:["red","white","green","black"], bands:3, continent:"Africa", landlocked:false, island:false, pop:"tiny", area:"medium", founded:1976, stars:true, crescent:true, sun:false, cross:false, animal:false, crest:false, triangle:true},
 ];
 
 // ---------- Badge engine ----------
 const BADGE_DEFS = [
-  {id:"rainbow", name:"Maximalism", icon:"🌈", rarity:"EPIC", ep:420, how:"Roll a flag with 5 or more distinct colors in its design.", check:c=>c.colors.length>=5},
+  {id:"rainbow", name:"Maximalism", icon:"🌈", rarity:"RARE", ep:250, how:"Roll a flag with 5 or more distinct colors in its design.", check:c=>c.colors.length>=5},
   {id:"fourcolor", name:"Vibrant", icon:"🎨", rarity:"RARE", ep:180, how:"Roll a flag that uses exactly 4 distinct colors.", check:c=>c.colors.length===4},
   {id:"threecolor", name:"Tricolor", icon:"🚥", rarity:"COMMON", ep:70, how:"Roll a flag that uses exactly 3 distinct colors.", check:c=>c.colors.length===3},
   {id:"twocolor", name:"Minimalism", icon:"🎌", rarity:"COMMON", ep:60, how:"Roll a flag that uses only 2 colors total.", check:c=>c.colors.length===2},
@@ -429,39 +438,39 @@ const BADGE_DEFS = [
   {id:"solar", name:"Solar Emblem", icon:"☀️", rarity:"RARE", ep:160, how:"Roll a flag that features a sun or sunburst emblem.", check:c=>!!c.sun},
   {id:"cross", name:"Cross", icon:"➕", rarity:"RARE", ep:140, how:"Roll a flag that has a cross.", check:c=>!!c.cross},
   {id:"nordic", name:"Nordic Cross", icon:"❄️", rarity:"RARE", ep:140, how:"Roll a flag that uses an off-center 'Nordic style' cross.", check:c=>!!c.nordic},
-  {id:"wildlife", name:"Animal on Flag", icon:"🦅", rarity:"EPIC", ep:380, how:"Roll a flag that depicts an animal.", check:c=>!!c.animal},
+  {id:"wildlife", name:"Animal on Flag", icon:"🦅", rarity:"RARE", ep:220, how:"Roll a flag that depicts an animal.", check:c=>!!c.animal},
   {id:"coatofarms", name:"Coat of Arms", icon:"🛡️", rarity:"RARE", ep:200, how:"Roll a flag that carries a national coat of arms or crest.", check:c=>!!c.crest},
   {id:"landlocked", name:"Landlocked", icon:"🏔️", rarity:"RARE", ep:190, how:"Roll a flag from a country with no ocean coastline.", check:c=>!!c.landlocked},
   {id:"island", name:"Island Nation", icon:"🏝️", rarity:"UNCOMMON", ep:110, how:"Roll a flag from an island nation.", check:c=>!!c.island},
-  {id:"micro", name:"Micro Nation", icon:"🔬", rarity:"EPIC", ep:450, how:"Roll a flag from one of the world's smallest sovereign microstates.", check:c=>!!c.microstate},
+  {id:"micro", name:"Microstate", icon:"🔬", rarity:"RARE", ep:300, how:"Roll a flag from one of the world's smallest sovereign microstates.", check:c=>!!c.microstate},
   {id:"popTitan", name:"Population Titan (100M+)", icon:"👥", rarity:"RARE", ep:200, how:"Roll a flag from a country with a population of 100,000,000 or more.", check:c=>c.pop==="huge"},
   {id:"popTiny", name:"Tiny Population (under 1M)", icon:"👤", rarity:"RARE", ep:260, how:"Roll a flag from a country with a population under 1,000,000.", check:c=>c.pop==="tiny"},
   {id:"areaHuge", name:"Massive Territory (2M+ km²)", icon:"🗺️", rarity:"RARE", ep:260, how:"Roll a flag from a country with a land area of 2,000,000 km² or more.", check:c=>c.area==="huge"},
-  {id:"areaTiny", name:"Pocket-Sized Nation (under 1,000 km²)", icon:"📍", rarity:"EPIC", ep:350, how:"Roll a flag from a country with a land area under 1,000 km².", check:c=>c.area==="tiny"},
-  {id:"ancient", name:"Ancient Flag", icon:"📜", rarity:"EPIC", ep:400, how:"Roll a flag whose current design dates from before 1900.", check:c=>c.founded && c.founded<1900},
+  {id:"areaTiny", name:"Pocket-Sized Nation (under 1,000 km²)", icon:"📍", rarity:"RARE", ep:260, how:"Roll a flag from a country with a land area under 1,000 km².", check:c=>c.area==="tiny"},
   {id:"newkid", name:"New Kid on the Block", icon:"🆕", rarity:"RARE", ep:270, how:"Roll a flag whose current design was adopted in 2010 or later.", check:c=>c.founded && c.founded>=2010},
   {id:"square", name:"Square Flag Oddity", icon:"⏹️", rarity:"MYTHIC", ep:900, how:"Roll one of the rare countries whose flag is square instead of rectangular.", check:c=>!!c.squareFlag},
   {id:"mapshape", name:"Shaped Like The Nation", icon:"🧩", rarity:"MYTHIC", ep:850, how:"Roll a flag that visually echoes the shape of its own country's map.", check:c=>!!c.mapShape},
   {id:"nonrect", name:"Non-Rectangular", icon:"🔺", rarity:"MYSTERY", ep:2500, how:"Roll the one flag in the world that isn't rectangular at all.", check:c=>!!c.uniqueShape},
-  {id:"twosided", name:"Two-Sided Design", icon:"🔄", rarity:"EPIC", ep:500, how:"Roll a flag that has a different design on its front and back.", check:c=>!!c.twoSided},
-  {id:"script", name:"Script on Cloth", icon:"✒️", rarity:"EPIC", ep:380, how:"Roll a flag that features written script as part of its design.", check:c=>!!c.script},
+  {id:"twosided", name:"Two-Sided Design", icon:"🔄", rarity:"LEGENDARY", ep:900, how:"Roll a flag that has a different design on its front and back.", check:c=>!!c.twoSided},
+  {id:"script", name:"Script on Cloth", icon:"✒️", rarity:"RARE", ep:200, how:"Roll a flag that features written script as part of its design.", check:c=>!!c.script},
   {id:"halfmast", name:"Never Flown Half-Mast", icon:"🚩", rarity:"MYTHIC", ep:1000, how:"Roll the flag that, by religious custom, is never lowered to half-mast.", check:c=>!!c.neverHalfMast},
-  {id:"yinyang", name:"Yin and Yang", icon:"☯️", rarity:"EPIC", ep:800, how:"Roll the flag that features a yin-yang-style balance symbol.", check:c=>!!c.yinyang},
-  {id:"trident", name:"Trident Bearer", icon:"🔱", rarity:"EPIC", ep:420, how:"Roll a flag that features a trident emblem.", check:c=>!!c.trident},
+  {id:"yinyang", name:"Yin and Yang", icon:"☯️", rarity:"LEGENDARY", ep:900, how:"Roll the flag that features a yin-yang-style balance symbol.", check:c=>!!c.yinyang},
+  {id:"trident", name:"Trident Bearer", icon:"🔱", rarity:"LEGENDARY", ep:800, how:"Roll a flag that features a trident emblem.", check:c=>!!c.trident},
   {id:"leaf", name:"Plant Life", icon:"🍁", rarity:"RARE", ep:180, how:"Roll a flag that contains a plant or leaf emblem.", check:c=>!!c.leaf},
-  {id:"wheel", name:"Spinning Wheel", icon:"☸️", rarity:"EPIC", ep:400, how:"Roll a flag that features a wheel emblem at its center.", check:c=>!!c.wheel},
+  {id:"wheel", name:"Spinning Wheel", icon:"☸️", rarity:"LEGENDARY", ep:800, how:"Roll a flag that features a wheel emblem.", check:c=>!!c.wheel},
   {id:"biggest", name:"Largest Country on Earth", icon:"🌍", rarity:"UNREAL", ep:1500, how:"Roll the flag of the single largest country in the world by area.", check:c=>!!c.biggestCountry},
   {id:"oldestflag", name:"Oldest Continuously Used Flag", icon:"👑", rarity:"UNREAL", ep:1550, how:"Roll the flag design that has been in continuous use the longest of any nation.", check:c=>!!c.oldest},
-  {id:"moondisc", name:"Full Moon Disc", icon:"🌕", rarity:"EPIC", ep:390, how:"Roll a flag that features a full circular moon disc.", check:c=>!!c.moonDisc},
-  {id:"motto", name:"Motto on the Flag", icon:"📝", rarity:"EPIC", ep:360, how:"Roll a flag that has a written national motto woven into it.", check:c=>!!c.hasBanner},
+  {id:"moondisc", name:"Full Moon Disc", icon:"🌕", rarity:"LEGENDARY", ep:750, how:"Roll a flag that features a full circular moon disc.", check:c=>!!c.moonDisc},
   {id:"architecture", name:"Build Up", icon:"🏛️", rarity:"EPIC", ep:410, how:"Roll a flag that depicts a building or monument.", check:c=>!!c.buildingIcon},
   {id:"breakaway", name:"Breakaway", icon:"💔", rarity:"EPIC", ep:450, how:"Roll a flag of a breakaway state.", check:c=>!!c.breakAway},
   {id:"territory", name:"Territory", icon:"🗺️", rarity:"RARE", ep:300, how:"Roll a flag of a territory.", check:c=>!!c.terr},
-  {id:"wc26", name:"World Cup 2026", icon:"⚽", rarity:"EPIC", ep:350, how:"Roll a flag of a country that qualified for the 2026 World Cup.", check:c=>!!c.wc26},
+  {id:"wc26", name:"World Cup 2026", icon:"⚽", rarity:"RARE", ep:200, how:"Roll a flag of a country that qualified for the 2026 World Cup.", check:c=>!!c.wc26},
     {id:"wcwin", name:"World Cup Winner", icon:"⚽🏆", rarity:"EPIC", ep:350, how:"Roll a flag of a country that placed 1st in a World Cup.", check:c=>!!c.winnerwc},
-  {id:"sword", name:"Swords 'n' Guns", icon:"⚔️", rarity:"EPIC", ep:430, how:"Roll a flag that depicts a weapon.", check:c=>!!c.swordFlag},
+    {id:"crown", name:"Royalty", icon:"👑", rarity:"EPIC", ep:320, how:"Roll a flag that has a crown.", check:c=>!!c.crown},
+  {id:"sword", name:"Swords 'n' Guns", icon:"⚔️", rarity:"LEGENDARY", ep:850, how:"Roll a flag that depicts a weapon.", check:c=>!!c.swordFlag},
+  {id:"brit", name:"British Isles", icon:"🇬🇧", rarity:"EPIC", ep:420, how:"Roll a flag that belongs to a region in the British Isles.", check:c=>!!c.britIsle},
   {id:"panafrican", name:"Pan-African Palette", icon:"✊", rarity:"RARE", ep:190, how:"Roll a flag combining red, black, and green — the Pan-African colors.", check:c=>c.colors.includes("red")&&c.colors.includes("black")&&c.colors.includes("green")},
-  {id:"panarab", name:"Pan-Arab Palette", icon:"🕌", rarity:"RARE", ep:190, how:"Roll an Asian-region flag combining red, white, and black — the Pan-Arab colors.", check:c=>(c.colors.includes("red")&&c.colors.includes("white")&&c.colors.includes("black"))&&c.continent==="Asia"},
+  {id:"panarab", name:"Pan-Arab Palette", icon:"🕌", rarity:"RARE", ep:190, how:"Roll an Asian-region flag combining red, white, green, and black — the Pan-Arab colors.", check:c=>(c.colors.includes("red")&&c.colors.includes("white")&&c.colors.includes("green")&&c.colors.includes("black"))&&c.continent==="Asia"},
   {id:"pacific", name:"Pacific Roll", icon:"🌊", rarity:"UNCOMMON", ep:100, how:"Roll a flag from any Oceania nation.", check:c=>c.continent==="Oceania"},
   {id:"triangleFlag", name:"Triangle on the Side", icon:"🔻", rarity:"RARE", ep:170, how:"Roll a flag with a triangle wedge design, like The Bahamas, South Africa, or Jamaica.", check:c=>!!c.triangle},
   {id:"band0", name:"0 Bands", icon:"🛑", rarity:"COMMON", ep:70, how:"Roll a flag with no stripes or bands — just a plain field with a central emblem.", check:c=>c.bands===0},
@@ -478,13 +487,17 @@ const BADGE_DEFS = [
   {id:"twoword", name:"Two-Word Name", icon:"2️⃣", rarity:"UNCOMMON", ep:110, how:"Roll a country whose name is exactly two words long.", check:c=>c.name.trim().split(/\s+/).length===2},
   {id:"threeword", name:"Three-Word Name", icon:"3️⃣", rarity:"RARE", ep:420, how:"Roll a country whose name is exactly three words long.", check:c=>c.name.trim().split(/\s+/).length===3},
   {id:"fourplusword", name:"Four+-Word Name", icon:"4️⃣", rarity:"EPIC", ep:500, how:"Roll a country whose name is four words or longer.", check:c=>c.name.trim().split(/\s+/).length>=4},
+  {id:"copycat", name:"Copycat", icon:"🪞", rarity:"EXOTIC", ep:700, how:"Roll a flag that looks similar to another.", check:c=>!!c.copyCat},
+  {id:"lateindependence", name:"Back in My Day", icon:"🕰️", rarity:"LEGENDARY", ep:700, how:"Roll a flag whose current design was adopted in the 19th century.", check:c=>c.founded && c.founded>=1801 && c.founded<1900},
+  {id:"bannerflag", name:"Banner Flag", icon:"🎗️", rarity:"EXOTIC", ep:750, how:"Roll the flag that carries its own motto banner woven into the design.", check:c=>!!c.hasBanner},
+  {id:"centuriesold", name:"Great Great Grandflag", icon:"⏳", rarity:"EXOTIC", ep:1000, how:"Roll a flag whose current design dates from before 1800.", check:c=>c.founded && c.founded<1800},
 ];
 
 const RARITY_WEIGHT = {COMMON:1, UNCOMMON:1.5, RARE:2, EPIC:4, LEGENDARY:7, EXOTIC:9, MYTHIC:12, UNREAL:16, MYSTERY:22};
 const RARITY_ORDER = ["COMMON","UNCOMMON","RARE","EPIC","LEGENDARY","EXOTIC","MYTHIC","UNREAL","MYSTERY"];
 const RARITY_LABELS = {
   COMMON:"Common", UNCOMMON:"Uncommon", RARE:"Rare", EPIC:"Epic",
-  LEGENDARY:"Legendary", EXOTIC:"Exotic", MYTHIC:"Mythic", UNREAL:"Unreal", MYSTERY:"???"
+  LEGENDARY:"Legendary", EXOTIC:"Exotic", MYTHIC:"Mythic", UNREAL:"Unreal", MYSTERY:"?!?!"
 };
 function rarityLabel(key){ return RARITY_LABELS[key] || key; }
 
@@ -497,9 +510,8 @@ let extraRollTokens = 0;
 let luckyCharms = 0;
 let mythicCharms = 0;
 let fpDoublers = 0;
-let ownedAuroraSkin = false;
-let ownedCrimsonSkin = false;
-let equippedSkin = null;
+let flagGuarantees = 0;
+let fpBoostOwned = false;
 let itemPrices = {};
 let lastRollCountryName = null;
 let lastRollEP = 0;
@@ -515,17 +527,17 @@ function getTodayStr(){
 
 const SHOP_ITEMS = [
   {id:"extraRoll", name:"Extra Roll Token", icon:"🎟️", baseCost:200, costScale:1.95, stackable:true, category:"Consumables",
-   desc:"Grants one additional real roll for right now, on top of your daily roll. Price climbs the more you buy."},
+   desc:"Grants one additional real roll for right now, on top of your daily roll. Price climbs the more you own."},
   {id:"luckyCharm", name:"Lucky Charm", icon:"🍀", baseCost:380, costScale:1.85, stackable:true, category:"Consumables",
-   desc:"Your next roll re-rolls automatically until it lands Epic or better. Price climbs the more you buy."},
+   desc:"Your next roll re-rolls automatically until it lands Epic or better. Price climbs the more you own."},
   {id:"mythicCharm", name:"Mythic Charm", icon:"🔮", baseCost:1500, costScale:1.75, stackable:true, category:"Consumables",
-   desc:"Your next roll re-rolls automatically until it lands Legendary or better. Takes priority over a Lucky Charm. Price climbs the more you buy."},
+   desc:"Your next roll re-rolls automatically until it lands Legendary or better. Takes priority over a Lucky Charm. Price climbs the more you own."},
   {id:"fpDoubler", name:"FP Doubler", icon:"💰", baseCost:160, costScale:1.55, stackable:true, category:"Consumables",
    desc:"Doubles the FP you earn from your very next real roll. Stacks up for later use."},
-  {id:"auroraSkin", name:"Aurora Reel Skin", icon:"🌌", baseCost:4000, costScale:1, stackable:false, category:"Cosmetics",
-   desc:"A cool cyan-and-green glow around your roll reel. Cosmetic only, one-time purchase."},
-  {id:"crimsonSkin", name:"Crimson Reel Skin", icon:"🔥", baseCost:6500, costScale:1, stackable:false, category:"Cosmetics",
-   desc:"A fierce red-and-black glow around your roll reel. Cosmetic only, one-time purchase."},
+  {id:"flagGuarantee", name:"New Flag Guarantee", icon:"🧭", baseCost:500, costScale:1.45, stackable:true, category:"Boosts",
+   desc:"Guarantees your very next real roll lands on a flag you haven't collected yet (if any remain). Stacks up for later use."},
+  {id:"fpBoost", name:"Permanent FP Boost", icon:"📈", baseCost:8000, costScale:1, stackable:false, category:"Boosts",
+   desc:"Permanently increases all FP you earn from real rolls by 15%, forever. One-time purchase."},
 ];
 
 function getOwnedCount(itemId){
@@ -534,6 +546,7 @@ function getOwnedCount(itemId){
     case 'luckyCharm': return luckyCharms;
     case 'mythicCharm': return mythicCharms;
     case 'fpDoubler': return fpDoublers;
+    case 'flagGuarantee': return flagGuarantees;
     default: return 0;
   }
 }
@@ -557,9 +570,8 @@ async function loadProgress(){
       luckyCharms = data.luckyCharms || 0;
       mythicCharms = data.mythicCharms || 0;
       fpDoublers = data.fpDoublers || 0;
-      ownedAuroraSkin = !!data.ownedAuroraSkin;
-      ownedCrimsonSkin = !!data.ownedCrimsonSkin;
-      equippedSkin = data.equippedSkin || null;
+      flagGuarantees = data.flagGuarantees || 0;
+      fpBoostOwned = !!data.fpBoostOwned;
       itemPrices = data.itemPrices || {};
       lastRollCountryName = data.lastRollCountryName || null;
       lastRollEP = data.lastRollEP || 0;
@@ -582,9 +594,8 @@ async function loadProgress(){
     luckyCharms = 0;
     mythicCharms = 0;
     fpDoublers = 0;
-    ownedAuroraSkin = false;
-    ownedCrimsonSkin = false;
-    equippedSkin = null;
+    flagGuarantees = 0;
+    fpBoostOwned = false;
     itemPrices = {};
     lastRollCountryName = null;
     lastRollEP = 0;
@@ -596,7 +607,6 @@ async function loadProgress(){
   renderStats();
   renderBadgeCollection();
   renderFlagCollection();
-  applySkin();
 
   if(lastRollCountryName){
     const country = COUNTRIES.find(c => c.name === lastRollCountryName);
@@ -625,7 +635,7 @@ function saveProgress(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       collectedBadgeIds, collectedFlagNames, totalRollCount, totalFP,
       extraRollTokens, luckyCharms, mythicCharms, fpDoublers,
-      ownedAuroraSkin, ownedCrimsonSkin, equippedSkin, itemPrices,
+      flagGuarantees, fpBoostOwned, itemPrices,
       lastRollCountryName, lastRollEP, lastRollDate, lastRollNewBadgeIds, lastRollWasNewFlag, hasRolledToday: hasRolled
     }));
   }catch(e){
@@ -648,9 +658,8 @@ function resetProgress(){
   luckyCharms = 0;
   mythicCharms = 0;
   fpDoublers = 0;
-  ownedAuroraSkin = false;
-  ownedCrimsonSkin = false;
-  equippedSkin = null;
+  flagGuarantees = 0;
+  fpBoostOwned = false;
   itemPrices = {};
   lastRollCountryName = null;
   lastRollEP = 0;
@@ -659,7 +668,6 @@ function resetProgress(){
   lastRollWasNewFlag = false;
   hasRolled = false;
 
-  applySkin();
   renderStats();
   renderBadgeCollection();
   renderFlagCollection();
@@ -676,10 +684,6 @@ function resetProgress(){
   btn.textContent = 'ROLL A FLAG';
 }
 
-function applySkin(){
-  document.body.classList.toggle('skin-aurora', equippedSkin === 'aurora');
-  document.body.classList.toggle('skin-crimson', equippedSkin === 'crimson');
-}
 
 function showExtraRollOption(){
   document.getElementById('lockedMsg').innerHTML = `You've used today's roll. <button class="extra-roll-btn" onclick="useExtraRollToken()">🎟️ Use Extra Roll Token (${extraRollTokens} left)</button>`;
@@ -889,8 +893,7 @@ function renderShop(){
   const sectionsHTML = categories.map(cat => {
     const items = SHOP_ITEMS.filter(i => i.category === cat);
     const cardsHTML = items.map(item => {
-      const skinKey = item.id === 'auroraSkin' ? 'aurora' : (item.id === 'crimsonSkin' ? 'crimson' : null);
-      const owned = skinKey === 'aurora' ? ownedAuroraSkin : (skinKey === 'crimson' ? ownedCrimsonSkin : null);
+      const owned = !item.stackable ? (item.id === 'fpBoost' ? fpBoostOwned : false) : false;
       const countOwned = item.stackable ? getOwnedCount(item.id) : null;
       const cost = getItemCost(item);
       const canAfford = totalFP >= cost;
@@ -898,17 +901,14 @@ function renderShop(){
       let footerHTML;
       if(item.stackable){
         footerHTML = `<button class="shop-buy-btn" ${canAfford ? '' : 'disabled'} onclick="buyItem('${item.id}')">Buy · ${cost.toLocaleString()} FP</button>`;
-      } else if(skinKey && owned){
-        const equipped = equippedSkin === skinKey;
-        footerHTML = equipped
-          ? `<span class="shop-owned-tag">✓ Equipped</span>`
-          : `<button class="shop-buy-btn" onclick="equipSkin('${skinKey}')">Equip</button>`;
+      } else if(owned){
+        footerHTML = `<span class="shop-owned-tag">✓ Owned</span>`;
       } else {
         footerHTML = `<button class="shop-buy-btn" ${canAfford ? '' : 'disabled'} onclick="buyItem('${item.id}')">Buy · ${cost.toLocaleString()} FP</button>`;
       }
 
       return `
-        <div class="shop-card ${skinKey && owned ? 'owned' : ''}">
+        <div class="shop-card ${owned ? 'owned' : ''}">
           ${countOwned ? `<span class="shop-count-tag">x${countOwned}</span>` : ''}
           <div class="shop-card-icon">${item.icon}</div>
           <div class="shop-card-name">${item.name}</div>
@@ -937,16 +937,15 @@ async function buyItem(itemId){
   if(!item) return;
   const cost = getItemCost(item);
   if(totalFP < cost) return;
-  if(itemId === 'auroraSkin' && ownedAuroraSkin) return;
-  if(itemId === 'crimsonSkin' && ownedCrimsonSkin) return;
+  if(itemId === 'fpBoost' && fpBoostOwned) return;
 
   totalFP -= cost;
   if(itemId === 'extraRoll') extraRollTokens += 1;
   if(itemId === 'luckyCharm') luckyCharms += 1;
   if(itemId === 'mythicCharm') mythicCharms += 1;
   if(itemId === 'fpDoubler') fpDoublers += 1;
-  if(itemId === 'auroraSkin'){ ownedAuroraSkin = true; equippedSkin = 'aurora'; applySkin(); }
-  if(itemId === 'crimsonSkin'){ ownedCrimsonSkin = true; equippedSkin = 'crimson'; applySkin(); }
+  if(itemId === 'flagGuarantee') flagGuarantees += 1;
+  if(itemId === 'fpBoost') fpBoostOwned = true;
 
   if(item.stackable){
     itemPrices[item.id] = Math.round(cost * item.costScale);
@@ -956,15 +955,6 @@ async function buyItem(itemId){
   renderStats();
   renderShop();
   if(hasRolled && extraRollTokens > 0) showExtraRollOption();
-}
-
-function equipSkin(skinKey){
-  if(skinKey === 'aurora' && !ownedAuroraSkin) return;
-  if(skinKey === 'crimson' && !ownedCrimsonSkin) return;
-  equippedSkin = equippedSkin === skinKey ? null : skinKey;
-  applySkin();
-  saveProgress();
-  renderShop();
 }
 
 function toggleCollection(which){
@@ -1075,15 +1065,15 @@ function totalEP(badges){
 }
 function percentileFor(rarity){
   switch(rarity){
-    case "MYSTERY": return "Top 0.1% — this shouldn't even be possible";
-    case "UNREAL": return "Top 0.5% — barely feels real";
-    case "MYTHIC": return "Top 1% — probability lightning";
-    case "EXOTIC": return "Top 3% — wildly uncommon pull";
-    case "LEGENDARY": return "Top 5% — extremely rare pull";
-    case "EPIC": return "Top 15% — genuinely impressive";
-    case "RARE": return "Top 40% — solidly above average";
-    case "UNCOMMON": return "Top 55% — a little more than ordinary";
-    default: return "Bottom 60% — an everyday flag";
+    case "MYSTERY": return "Top 0.1% — No words";
+    case "UNREAL": return "Top 0.5% — Wowza";
+    case "MYTHIC": return "Top 1% — Hey thats pretty cool";
+    case "EXOTIC": return "Top 3% — You're good at this";
+    case "LEGENDARY": return "Top 5% — Roll more!!! AGAIN AGAIN AGAIN!!!!";
+    case "EPIC": return "Top 15% — Not too bad";
+    case "RARE": return "Top 40% — At least it's better than a common, right?";
+    case "UNCOMMON": return "Top 55% — I guess it's something";
+    default: return "Bottom 60% — Don't go to a casino EVER";
   }
 }
 
@@ -1122,7 +1112,7 @@ function spinReel(finalCountry, onDone){
   }, TOTAL_DURATION + 150);
 }
 
-function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFlag){
+function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFlag, isPractice){
   animate = animate !== false;
   const reelWindow = document.getElementById('reelWindow');
   reelWindow.innerHTML = `<div id="flagArea" class="flag-display">${flagVisualHTML(country)}</div>`;
@@ -1160,7 +1150,7 @@ function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFl
   const revealFinalResult = () => {
     pill.innerHTML = `<span class="rarity-pill rarity-${rarity}">${rarityLabel(rarity)}</span>`;
     percentileEl.textContent = percentileFor(rarity);
-    epEl.textContent = `${ep.toLocaleString()} FP earned${doublerNote ? ' (2× Doubler applied!)' : ''}`;
+    epEl.textContent = isPractice ? 'Nothing earned (practice)' : `${ep.toLocaleString()} FP earned${doublerNote ? ' (2× Doubler applied!)' : ''}`;
   };
 
   if(animate && ascending.length > 0){
@@ -1219,6 +1209,16 @@ async function doRoll(practice){
     }
   }
 
+  let usingGuarantee = false;
+  if(!practice && flagGuarantees > 0 && collectedFlagNames.length < COUNTRIES.length){
+    usingGuarantee = true;
+    let attempts = 0;
+    while(collectedFlagNames.includes(country.name) && attempts < 200){
+      country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+      attempts++;
+    }
+  }
+
   spinReel(country, async () => {
     const badges = computeBadges(country);
     const rarity = overallRarity(badges);
@@ -1228,11 +1228,14 @@ async function doRoll(practice){
       ep *= 2;
       usedDoubler = true;
     }
+    if(!practice && fpBoostOwned){
+      ep = Math.round(ep * 1.15);
+    }
 
     const isNewFlag = !practice && !collectedFlagNames.includes(country.name);
     const badgesForDisplay = badges.map(b => ({...b, isNew: !practice && !collectedBadgeIds.includes(b.id)}));
 
-    renderResult(country, badgesForDisplay, rarity, ep, usedDoubler, true, isNewFlag);
+    renderResult(country, badgesForDisplay, rarity, ep, usedDoubler, true, isNewFlag, practice);
 
     if(!practice){
       hasRolled = true;
@@ -1241,6 +1244,7 @@ async function doRoll(practice){
       if(usingCharm === 'mythic') mythicCharms -= 1;
       else if(usingCharm === 'lucky') luckyCharms -= 1;
       if(usedDoubler) fpDoublers -= 1;
+      if(usingGuarantee) flagGuarantees -= 1;
       lastRollNewBadgeIds = badges.filter(b => !collectedBadgeIds.includes(b.id)).map(b => b.id);
       lastRollWasNewFlag = isNewFlag;
       badges.forEach(b => { if(!collectedBadgeIds.includes(b.id)) collectedBadgeIds.push(b.id); });
@@ -1252,6 +1256,7 @@ async function doRoll(practice){
       renderStats();
       renderBadgeCollection();
       renderFlagCollection();
+      renderShop();
 
       if(extraRollTokens > 0){
         showExtraRollOption();
