@@ -41,19 +41,63 @@
   .stats-row{ display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap; justify-content:center; }
   .stat-chip{ background:var(--panel2); border:1px solid var(--border); border-radius:999px; padding:6px 14px; font-size:0.78rem; color:var(--muted); }
   .stat-chip b{ color:var(--text); }
-  .app-layout{ display:flex; gap:22px; justify-content:center; align-items:flex-start; flex-wrap:wrap; max-width:760px; margin:0 auto; }
+  .app-layout{ display:flex; gap:22px; justify-content:center; align-items:flex-start; flex-wrap:wrap; max-width:1060px; margin:0 auto; }
   .card{
     background:var(--panel); border:1px solid var(--border); border-radius:18px;
     padding:28px; width:100%; max-width:460px; text-align:center;
     box-shadow:0 20px 60px rgba(0,0,0,0.45);
   }
-  .packs-sidebar{
+  .packs-sidebar, .changelog-sidebar{
     width:100%; max-width:260px; display:flex; flex-direction:column; gap:12px;
     text-align:left; max-height:82vh; overflow-y:auto; position:sticky; top:16px; padding-right:6px;
     scrollbar-width:thin; scrollbar-color:var(--border) transparent;
   }
-  .packs-sidebar::-webkit-scrollbar{ width:6px; }
-  .packs-sidebar::-webkit-scrollbar-thumb{ background:var(--border); border-radius:999px; }
+  .packs-sidebar::-webkit-scrollbar, .changelog-sidebar::-webkit-scrollbar{ width:6px; }
+  .packs-sidebar::-webkit-scrollbar-thumb, .changelog-sidebar::-webkit-scrollbar-thumb{ background:var(--border); border-radius:999px; }
+  .changelog-entry{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    padding:12px 14px; box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  }
+  .changelog-version{ font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:2px; }
+  .changelog-date{ font-size:0.68rem; color:var(--muted); margin-bottom:8px; }
+  .changelog-list{ margin:0; padding-left:18px; display:flex; flex-direction:column; gap:4px; }
+  .changelog-list li{ font-size:0.78rem; line-height:1.4; color:var(--text); }
+  .daily-flag-card{
+    background:var(--panel); border:1px solid var(--accent); border-radius:14px;
+    padding:14px; box-shadow:0 10px 30px rgba(0,0,0,0.35); margin-bottom:12px;
+  }
+  .daily-flag-title{ font-size:1rem; font-weight:800; color:var(--accent); margin-bottom:2px; }
+  .daily-flag-subtitle{ color:var(--muted); font-size:0.72rem; line-height:1.4; margin-bottom:10px; }
+  .daily-flag-streak-row{ display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+  .daily-flag-streak-chip{ background:var(--panel2); border:1px solid var(--border); border-radius:999px; padding:4px 10px; font-size:0.72rem; color:var(--muted); }
+  .daily-flag-streak-chip b{ color:var(--text); }
+  .daily-flag-visual{ display:flex; align-items:center; justify-content:center; font-size:3.4rem; margin:6px 0 10px; }
+  .daily-flag-visual .custom-flag{ width:90px; }
+  .daily-flag-diff-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+  .daily-flag-diff-btn{
+    background:var(--panel2); border:1px solid var(--border); color:var(--text);
+    border-radius:10px; padding:8px 10px; font-size:0.76rem; text-align:left; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .daily-flag-diff-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .daily-flag-diff-btn b{ color:inherit; }
+  .daily-flag-diff-reward{ color:var(--accent); font-weight:700; font-size:0.72rem; white-space:nowrap; }
+  .daily-flag-guesses-left{ font-size:0.72rem; color:var(--muted); margin-bottom:6px; }
+  .daily-flag-input-row{ display:flex; gap:6px; margin-bottom:6px; }
+  .daily-flag-input-row input{
+    flex:1; min-width:0; background:var(--panel2); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 10px; font-size:0.8rem;
+  }
+  .daily-flag-input-row button{
+    background:linear-gradient(135deg,#ff9f40,#ff4d6d); border:none; color:white;
+    font-weight:700; font-size:0.76rem; padding:0 14px; border-radius:8px; cursor:pointer;
+  }
+  .daily-flag-history{ display:flex; flex-direction:column; gap:3px; margin-bottom:6px; }
+  .daily-flag-history-item{ font-size:0.72rem; color:var(--muted); }
+  .daily-flag-message{ font-size:0.78rem; margin-top:4px; line-height:1.4; }
+  .daily-flag-message.good{ color:var(--uncommon); }
+  .daily-flag-message.bad{ color:var(--mythic); }
   .packs-title{ font-size:1rem; font-weight:800; color:var(--accent); }
   .packs-subtitle{ color:var(--muted); font-size:0.74rem; line-height:1.4; margin-bottom:2px; }
   .pack-card{
@@ -553,6 +597,11 @@
 </div>
 
 <div class="app-layout">
+<div class="changelog-sidebar" id="changelogSidebar">
+  <div id="dailyFlagPanel"></div>
+  <div id="changelogEntries"></div>
+</div>
+
 <div class="card">
   <div class="roll-zone">
     <div class="reel-window" id="reelWindow">
@@ -1460,6 +1509,27 @@ const SETS = [
       {name:"Seattle", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/6/6d/Flag_of_Seattle.svg/1920px-Flag_of_Seattle.svg.png", noEmoji:true, colors:["blue","white"], bands:0, country:"United States", continent:"North America", landlocked:false, coastal:true, founded:1990, crest:true, human:true, leaf:true, script:true},
       {name:"Phoenix", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Flag_of_Phoenix%2C_Arizona.svg/1920px-Flag_of_Phoenix%2C_Arizona.svg.png", noEmoji:true, colors:["purple","white"], bands:0, country:"United States", continent:"North America", landlocked:true, coastal:false, founded:1990, crest:true, animal:true},
       {name:"San Francisco", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Flag_of_San_Francisco%2C_California.svg/1920px-Flag_of_San_Francisco%2C_California.svg.png", noEmoji:true, colors:["yellow","white","brown","blue","red","black"], bands:0, country:"United States", continent:"North America", landlocked:false, coastal:true, founded:1940, crown:true, animal:true, script:true},
+      {name:"Paris", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Flag_of_Paris_with_coat_of_arms.svg/1920px-Flag_of_Paris_with_coat_of_arms.svg.png", noEmoji:true, colors:["blue","red","white","black","yellow","green"], bands:2, capital:true, country:"France", continent:"Europe", landlocked:true, coastal:false, founded:null, crest:true, ship:true, crown:true, buildingIcon:true, script:true, leaf:true, cross:true},
+      {name:"Rome", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Flag_of_Rome.svg/1920px-Flag_of_Rome.svg.png", noEmoji:true, colors:["red","yellow"], bands:2, capital:true, country:"Italy", continent:"Europe", landlocked:true, coastal:false, founded:1870},
+      {name:"Dubai", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Flag_of_Dubai.svg/1920px-Flag_of_Dubai.svg.png", noEmoji:true, colors:["red","white"], bands:2, country:"United Arab Emirates", continent:"Asia", landlocked:false, coastal:true, founded:null},
+      {name:"Istanbul", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/%C4%B0stanbul_B%C3%BCy%C3%BCk%C5%9Fehir_Belediyesi.svg/1920px-%C4%B0stanbul_B%C3%BCy%C3%BCk%C5%9Fehir_Belediyesi.svg.png", noEmoji:true, colors:["white","blue"], bands:0, country:"Türkiye", continent:"Asia", landlocked:false, coastal:true, founded:null, crest:true, script:true, buildingIcon:true},
+      {name:"Seoul", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Seoul.svg/1920px-Flag_of_Seoul.svg.png", noEmoji:true, colors:["light blue","white","red","green"], bands:0, country:"South Korea", continent:"Asia", landlocked:false, coastal:false, founded:null, crest:true},
+      {name:"Buenos Aires", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Bandera_de_la_Ciudad_de_Buenos_Aires.svg/1920px-Bandera_de_la_Ciudad_de_Buenos_Aires.svg.png", noEmoji:true, colors:["white","black","red","yellow"], bands:0, country:"Argentina", continent:"South America", landlocked:false, coastal:true, founded:1995, animal:true, cross:true, crown:true},
+      {name:"Gunpo", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Flag_of_Gunpo.svg/1920px-Flag_of_Gunpo.svg.png", noEmoji:true, colors:["light blue","white"], bands:0, country:"South Korea", continent:"Asia", landlocked:true, coastal:false, founded:null, script:true},
+      {name:"Busan", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Flag_of_Busan_%282023%29.svg/1920px-Flag_of_Busan_%282023%29.svg.png", noEmoji:true, colors:["light blue","white","purple","pink","gray"], bands:0, country:"South Korea", continent:"Asia", landlocked:false, coastal:true, founded:null, script:true, crest:true},
+      {name:"Incheon", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Flag_of_Incheon.svg/1920px-Flag_of_Incheon.svg.png", noEmoji:true, colors:["light blue","white","blue","gray"], bands:0, country:"South Korea", continent:"Asia", landlocked:false, coastal:true, founded:null, script:true, crest:true},
+      {name:"Daegu", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Flag_of_Daegu.svg/1920px-Flag_of_Daegu.svg.png", noEmoji:true, colors:["green","white"], bands:0, country:"South Korea", continent:"Asia", landlocked:true, coastal:false, founded:null, script:true, crest:true},
+      {name:"Abu Dhabi", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Flag_of_Abu_Dhabi.svg/1920px-Flag_of_Abu_Dhabi.svg.png", noEmoji:true, colors:["red","white"], bands:0, country:"United Arab Emirates", continent:"Asia", landlocked:false, coastal:true, founded:null, capital:true},
+      {name:"Sharjah", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Flag_of_Sharjah_and_Ras_Al_Khaimah.svg/1920px-Flag_of_Sharjah_and_Ras_Al_Khaimah.svg.png", noEmoji:true, colors:["red","white"], bands:0, country:"United Arab Emirates", continent:"Asia", landlocked:false, coastal:true, founded:null},
+      {name:"Umm Al Quwain", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Flag_of_Umm_al-Qaiwain.svg/1920px-Flag_of_Umm_al-Qaiwain.svg.png", noEmoji:true, colors:["red","white"], bands:2, country:"United Arab Emirates", continent:"Asia", landlocked:false, coastal:true, founded:null, crescent:true, stars:true},
+      {name:"Córdoba", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Bandera_de_la_Ciudad_de_C%C3%B3rdoba.svg/1920px-Bandera_de_la_Ciudad_de_C%C3%B3rdoba.svg.png", noEmoji:true, colors:["white","brown","red","yellow"], bands:3, country:"Argentina", continent:"South America", landlocked:true, coastal:false, founded:2023, sun:true},
+      {name:"Rosario", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Bandera_de_la_Ciudad_de_Rosario.svg/1920px-Bandera_de_la_Ciudad_de_Rosario.svg.png", noEmoji:true, colors:["white","green","red","black","light blue","yellow","orange","brown","gray"], bands:0, country:"Argentina", continent:"South America", landlocked:true, coastal:false, founded:2023, sun:true, crest:true, ship:true, leaf:true, swordFlag:true, human:true},
+      {name:"Naples", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Naples.svg/1920px-Flag_of_Naples.svg.png", noEmoji:true, colors:["red","yellow"], bands:2, country:"Italy", continent:"Europe", landlocked:false, coastal:true, founded:null},
+      {name:"Turin", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Flag_of_Turin.svg/1920px-Flag_of_Turin.svg.png", noEmoji:true, colors:["blue","yellow","white","black"], bands:2, country:"Italy", continent:"Europe", landlocked:true, coastal:false, founded:null, animal:true, cross:true, script:true},
+      {name:"Palermo", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Flag_of_Palermo.svg/1920px-Flag_of_Palermo.svg.png", noEmoji:true, colors:["red","yellow"], bands:2, country:"Italy", continent:"Europe", landlocked:false, coastal:true, founded:null},
+      {name:"Florence", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_Florence.svg/1920px-Flag_of_Florence.svg.png", noEmoji:true, colors:["red","white"], bands:0, country:"Italy", continent:"Europe", landlocked:true, coastal:false, founded:1250, crest:true},
+      {name:"Bari", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Flag_of_Bari.svg/1920px-Flag_of_Bari.svg.png", noEmoji:true, colors:["red","white"], bands:2, country:"Italy", continent:"Europe", landlocked:false, coastal:true, founded:null},
+      {name:"Catania", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Catania-Bandiera_%28senza_stemma%29.svg/1920px-Catania-Bandiera_%28senza_stemma%29.svg.png", noEmoji:true, colors:["red","blue"], bands:2, country:"Italy", continent:"Europe", landlocked:false, coastal:true, founded:null},
       
     ],
     packBadges:[
@@ -1483,6 +1553,12 @@ const SETS = [
       {id:"cityAbkhazia", name:"Sukhumi", icon:"🏴", how:"Roll a city flag from Abkhazia.", check:c=>c.country==="Abkhazia"},
       {id:"cityIsrael", name:"Hanukkah", icon:"🇮🇱", how:"Roll a city flag from Israel.", check:c=>c.country==="Israel"},
       {id:"cityEgypt", name:"Pyramid", icon:"🇪🇬", how:"Roll a city flag from Egypt.", check:c=>c.country==="Egypt"},
+      {id:"cityFrance", name:"Baguette", icon:"🇫🇷", how:"Roll a city flag from France.", check:c=>c.country==="France"},
+      {id:"cityItaly", name:"Colosseum", icon:"🇮🇹", how:"Roll a city flag from Italy.", check:c=>c.country==="Italy"},
+      {id:"cityUAE", name:"Desert Skyline", icon:"🇦🇪", how:"Roll a city flag from the United Arab Emirates.", check:c=>c.country==="United Arab Emirates"},
+      {id:"cityTurkiye", name:"Bosphorus", icon:"🇹🇷", how:"Roll a city flag from Türkiye.", check:c=>c.country==="Türkiye"},
+      {id:"citySouthKorea", name:"K-Pop", icon:"🇰🇷", how:"Roll a city flag from South Korea.", check:c=>c.country==="South Korea"},
+      {id:"cityArgentina", name:"Tango", icon:"🇦🇷", how:"Roll a city flag from Argentina.", check:c=>c.country==="Argentina"},
     ]
   },
   {
@@ -1673,12 +1749,22 @@ let lastRollNewBadgeIds = [];
 let lastRollWasNewFlag = false;
 let hlHighScores = {}; // { population: 7, foundedYear: 3, area: 5 } - best streak per stat
 let catSprintBestStreak = 0; // best "flags named before a bust or bank" streak, across all categories
+let dailyFlagState = { date: null, difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
+let dailyFlagStreak = 0; // consecutive days the daily flag has been played (attempted), not consecutive correct answers
+let dailyFlagBestStreak = 0;
+let dailyFlagLastPlayedDate = null; // last date the streak was credited, drives streak increment/reset
 const STORAGE_KEY = "flagdle-progress-v3";
 
 function getPackCollectedIds(packId){ return collectedPackFlagIds[packId] || []; }
 
 function getTodayStr(){
   const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getDateStrOffset(offsetDays){
+  const d = new Date();
+  d.setDate(d.getDate()+offsetDays);
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
@@ -1755,6 +1841,18 @@ async function loadProgress(){
       hasRolled = !!data.hasRolledToday;
       hlHighScores = data.hlHighScores || {};
       catSprintBestStreak = data.catSprintBestStreak || 0;
+      dailyFlagState = data.dailyFlagState || { date: null, difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
+      dailyFlagStreak = data.dailyFlagStreak || 0;
+      dailyFlagBestStreak = data.dailyFlagBestStreak || 0;
+      dailyFlagLastPlayedDate = data.dailyFlagLastPlayedDate || null;
+      if(dailyFlagState.date !== getTodayStr()){
+        // new day - fresh attempt at today's flag, streak itself is tracked separately
+        dailyFlagState = { date: getTodayStr(), difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
+      }
+      // if a day was skipped entirely (no attempt yesterday or today yet), the streak is broken
+      if(dailyFlagLastPlayedDate && dailyFlagLastPlayedDate !== getTodayStr() && dailyFlagLastPlayedDate !== getDateStrOffset(-1)){
+        dailyFlagStreak = 0;
+      }
       if(lastStandardRollDate !== getTodayStr()){
         // it's a new day - the free daily roll is available again, regardless of yesterday's state
         hasRolled = false;
@@ -1785,11 +1883,20 @@ async function loadProgress(){
     lastRollNewBadgeIds = [];
     lastRollWasNewFlag = false;
     hasRolled = false;
+    dailyFlagState = { date: getTodayStr(), difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
+    dailyFlagStreak = 0;
+    dailyFlagBestStreak = 0;
+    dailyFlagLastPlayedDate = null;
   }
   renderStats();
   renderBadgeCollection();
   renderFlagCollection();
   renderPacksSidebar();
+  if(!dailyFlagState || dailyFlagState.date !== getTodayStr()){
+    dailyFlagState = { date: getTodayStr(), difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
+  }
+  renderDailyFlag();
+  renderChangelogSidebar();
 
   if(lastRollCountryName){
     const isStandardRoll = lastRollSetId === 'standard';
@@ -1814,7 +1921,8 @@ function saveProgress(){
       extraRollTokens, luckyCharms, mythicCharms, fpDoublers,
       flagGuarantees, fpBoostOwned, itemPrices,
       lastRollCountryName, lastRollSetId, lastRollEP, lastRollDate, lastStandardRollDate, lastRollNewBadgeIds, lastRollWasNewFlag, hasRolledToday: hasRolled,
-      hlHighScores, catSprintBestStreak
+      hlHighScores, catSprintBestStreak,
+      dailyFlagState, dailyFlagStreak, dailyFlagBestStreak, dailyFlagLastPlayedDate
     }));
   }catch(e){
     console.error('Could not save progress', e);
@@ -2157,6 +2265,176 @@ function setFlagFilter(mode){
 // every other set spins from its own themed flag pool right here in the sidebar.
 function hasSpunSetToday(setId){
   return lastSetSpinDates[setId] === getTodayStr();
+}
+
+// ---------- Changelog ----------
+// Newest entry first. Add a new object to the top whenever you ship something.
+const CHANGELOG = [
+  { version: "v1.01", date: "Jul 25 2026", notes: [
+    "Added more city flags, like Buenos Aires and Rome",
+    "Added Daily Flag, same flag for everyone",
+    "Added a daily streak counter that credits participation (not just correct answers) and resets if a day is missed",
+    "Added changelog"
+  ]},
+  { version: "v1.0", date: "Jul 24 2026", notes: [
+    "New Category Sprint gamemode for FP!!!",
+    "Added a few more cities like Sao Paulo",
+    "Gave some organizations and countries abbriviations (like Democratic Republic of the Congo -> DRC)"
+  ]}
+];
+
+// ---------- Daily Flag ----------
+// Same flag for every player on a given calendar day (deterministic from the date string), drawn from
+// the Standard pack of real countries so everyone recognizes what they're looking at.
+const DAILY_FLAG_GUESSES = 3;
+const DAILY_FLAG_REWARD_FP = 300;
+
+// Common abbreviations/short forms accepted alongside the full country name.
+const COUNTRY_ABBREVIATIONS = {
+  "United States": ["USA","US","United States of America"],
+  "United Kingdom": ["UK","Great Britain","Britain"],
+  "United Arab Emirates": ["UAE"],
+  "Democratic Republic of the Congo": ["DRC","DR Congo","Congo-Kinshasa"],
+  "Republic of the Congo": ["Congo-Brazzaville","Congo"],
+  "Central African Republic": ["CAR"],
+  "Papua New Guinea": ["PNG"],
+  "Bosnia and Herzegovina": ["Bosnia"],
+  "Dominican Republic": ["DR"],
+  "Czech Republic": ["Czechia"],
+  "North Korea": ["DPRK"],
+  "South Korea": ["ROK","Korea"],
+  "Trinidad and Tobago": ["Trinidad"],
+  "Antigua and Barbuda": ["Antigua"],
+  "Saint Kitts and Nevis": ["St Kitts and Nevis","St Kitts"],
+  "Saint Vincent and the Grenadines": ["St Vincent and the Grenadines","St Vincent"],
+  "Saint Lucia": ["St Lucia"],
+  "Saint Helena": ["St Helena"],
+  "Timor-Leste": ["East Timor"],
+  "Federated States of Micronesia": ["Micronesia"],
+};
+
+function isDailyFlagGuessCorrect(typed, target){
+  const t = normalizeFlagName(typed);
+  if(t === normalizeFlagName(target.name)) return true;
+  const abbrs = COUNTRY_ABBREVIATIONS[target.name];
+  return !!(abbrs && abbrs.some(a => normalizeFlagName(a) === t));
+}
+
+function getDailyFlagCountry(){
+  const dateStr = getTodayStr();
+  let hash = 0;
+  for(let i=0;i<dateStr.length;i++){ hash = (hash*31 + dateStr.charCodeAt(i)) >>> 0; }
+  return COUNTRIES[hash % COUNTRIES.length];
+}
+
+// Credits the streak the first time the daily roll is actually used (first guess of the day),
+// win or lose - the streak tracks participation, not correctness.
+function creditDailyFlagStreak(){
+  const today = getTodayStr();
+  if(dailyFlagLastPlayedDate === today) return;
+  dailyFlagStreak = (dailyFlagLastPlayedDate === getDateStrOffset(-1)) ? dailyFlagStreak + 1 : 1;
+  dailyFlagLastPlayedDate = today;
+  if(dailyFlagStreak > dailyFlagBestStreak) dailyFlagBestStreak = dailyFlagStreak;
+}
+
+async function submitDailyFlagGuess(){
+  if(dailyFlagState.done) return;
+  const input = document.getElementById("dailyFlagInput");
+  const typed = input ? input.value.trim() : "";
+  if(!typed) return;
+
+  const wasFirstGuessToday = dailyFlagState.guessesUsed === 0;
+  const target = getDailyFlagCountry();
+  const correct = isDailyFlagGuessCorrect(typed, target);
+
+  dailyFlagState.guessesUsed++;
+  if(wasFirstGuessToday) creditDailyFlagStreak();
+
+  if(correct){
+    dailyFlagState.done = true;
+    dailyFlagState.solved = true;
+    dailyFlagState.reward = DAILY_FLAG_REWARD_FP;
+    totalFP += DAILY_FLAG_REWARD_FP;
+  } else {
+    dailyFlagState.history.push(typed);
+    if(dailyFlagState.guessesUsed >= DAILY_FLAG_GUESSES){
+      dailyFlagState.done = true;
+      dailyFlagState.solved = false;
+      dailyFlagState.reward = 0;
+    }
+  }
+  if(input) input.value = "";
+  await saveProgress();
+  renderStats();
+  renderDailyFlag();
+}
+
+function renderDailyFlag(){
+  const panel = document.getElementById('dailyFlagPanel');
+  if(!panel) return;
+
+  const streakRow = `
+    <div class="daily-flag-streak-row">
+      <span class="daily-flag-streak-chip">🔥 Streak: <b>${dailyFlagStreak}</b></span>
+      <span class="daily-flag-streak-chip">🏆 Best: <b>${dailyFlagBestStreak}</b></span>
+    </div>
+  `;
+
+  const target = getDailyFlagCountry();
+  const visualHTML = flagVisualHTML(target, "custom-flag");
+  const historyHTML = dailyFlagState.history.length
+    ? `<div class="daily-flag-history">${dailyFlagState.history.map(h => `<div class="daily-flag-history-item">✗ ${h}</div>`).join('')}</div>`
+    : '';
+
+  let bodyHTML = "";
+  if(dailyFlagState.done){
+    const msg = dailyFlagState.solved
+      ? `<div class="daily-flag-message good">✅ Solved! +${dailyFlagState.reward.toLocaleString()} FP banked. Come back tomorrow for a new flag.</div>`
+      : `<div class="daily-flag-message bad">❌ Out of guesses - it was <b>${target.name}</b>. Come back tomorrow.</div>`;
+    bodyHTML = `${historyHTML}${msg}`;
+  } else {
+    const remaining = DAILY_FLAG_GUESSES - dailyFlagState.guessesUsed;
+    bodyHTML = `
+      <div class="daily-flag-guesses-left">${remaining} guess${remaining!==1?'es':''} left · +${DAILY_FLAG_REWARD_FP.toLocaleString()} FP if solved · abbreviations OK (e.g. USA, UK)</div>
+      <div class="daily-flag-input-row">
+        <input type="text" id="dailyFlagInput" placeholder="Type the country name..." autocomplete="off"
+               onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitDailyFlagGuess(); }">
+        <button onclick="submitDailyFlagGuess()">Guess</button>
+      </div>
+      ${historyHTML}
+    `;
+  }
+
+  panel.innerHTML = `
+    <div class="daily-flag-card">
+      <div class="daily-flag-title">🗓️ Daily Flag</div>
+      <div class="daily-flag-subtitle">One flag a day, the same for every player. Common abbreviations are accepted.</div>
+      ${streakRow}
+      <div class="daily-flag-visual">${visualHTML}</div>
+      ${bodyHTML}
+    </div>
+  `;
+}
+
+function renderChangelogSidebar(){
+  const panel = document.getElementById('changelogEntries');
+  if(!panel) return;
+
+  const entriesHTML = CHANGELOG.map(c => `
+    <div class="changelog-entry">
+      <div class="changelog-version">${c.version}</div>
+      <div class="changelog-date">${c.date}</div>
+      <ul class="changelog-list">
+        ${c.notes.map(n => `<li>${n}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+
+  panel.innerHTML = `
+    <div class="packs-title">📝 Changelog</div>
+    <div class="packs-subtitle">What's new in FlagRNG.</div>
+    ${entriesHTML}
+  `;
 }
 
 function renderPacksSidebar(){
@@ -4830,4 +5108,4 @@ loadProgress();
 </script>
 
 </body>
-</html> 
+</html>
