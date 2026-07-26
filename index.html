@@ -576,6 +576,27 @@
   .cs-bank-btn:hover{ transform:translateY(-2px); }
   .cs-bank-btn:disabled{ opacity:0.45; cursor:default; transform:none; }
   .cs-timer-low{ color:#e05555; }
+
+  @media (max-width: 640px){
+    body{ padding:64px 12px 60px; }
+    .fp-counter{
+      position:static; top:auto; right:auto;
+      display:inline-block; margin:0 auto 14px;
+    }
+    h1{ font-size:1.6rem; }
+    .card{ padding:20px 16px; }
+    .quiz-diff-grid{ grid-template-columns:1fr; }
+    .quiz-option-grid{ grid-template-columns:1fr; }
+    .quiz-flagimg-grid{ grid-template-columns:repeat(2,1fr); }
+    .conn-grid{ grid-template-columns:repeat(2,1fr); }
+    .cs-guessed-grid{ grid-template-columns:repeat(2,1fr); }
+    .flag-grid{ grid-template-columns:repeat(auto-fill, minmax(64px,1fr)); }
+    .badge-grid{ grid-template-columns:repeat(auto-fill, minmax(72px,1fr)); }
+    .shop-grid{ grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); }
+    .packs-sidebar, .changelog-sidebar{
+      position:static; top:auto; max-height:none; overflow-y:visible; max-width:100%;
+    }
+  }
 </style>
 </head>
 <body>
@@ -732,7 +753,7 @@ const COUNTRIES = [
   {name:"Australia", imageUrl:"https://upload.wikimedia.org/wikipedia/en/b/b9/Flag_of_Australia.svg", colors:["blue","white","red"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"large", area:"huge", founded:1901, stars:true, cross:true, wc26:true, unionJack:true},
   {name:"New Zealand",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Flag_of_New_Zealand.svg/960px-Flag_of_New_Zealand.svg.png", colors:["blue","red","white"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"small", area:"medium", founded:1902, stars:true, cross:true, wc26:true, unionJack:true},
   {name:"Papua New Guinea",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Flag_of_Papua_New_Guinea.svg/960px-Flag_of_Papua_New_Guinea.svg.png", colors:["red","black","yellow","white"], bands:2, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"medium", area:"medium", founded:1975, stars:true, animal:true},
-  {name:"Fiji",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Fiji.svg/960px-Flag_of_Fiji.svg.png", colors:["blue","red","white","black","green","yellow","brown","light blue"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"small", founded:1970, cross:true, animal:true, crest:true, crown:true},
+  {name:"Fiji",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Fiji.svg/960px-Flag_of_Fiji.svg.png", colors:["blue","red","white","black","green","yellow","brown","light blue"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"small", founded:1970, cross:true, animal:true, crest:true, crown:true, unionJack:true},
   {name:"Samoa", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Flag_of_Samoa.svg/960px-Flag_of_Samoa.svg.png", colors:["red","blue","white"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1949, stars:true, microstate:true},
   {name:"Ethiopia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Flag_of_Ethiopia.svg/960px-Flag_of_Ethiopia.svg.png", colors:["green","yellow","red","blue"], bands:3, continent:"Africa", landlocked:true, island:false, pop:"huge", area:"large", founded:1996, stars:true, crest:true},
   {name:"Somalia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Flag_of_Somalia.svg/960px-Flag_of_Somalia.svg.png", colors:["light blue","white"], languages:["Arabic"], bands:0, continent:"Africa", landlocked:false, island:false, pop:"medium", area:"medium", founded:1960, stars:true},
@@ -1383,6 +1404,32 @@ const SETS = [
        colors:["brown","green","blue","white","black","yellow","light blue","brown"], bands:3, continent:"North America", founded:null, crest:true, script:true, ship:true, human:true, buildingIcon:true, sun:true, stars:true, swordFlag:true, mapShape:true, leaf:true},
       {name:"South Caribbean Coast Autonomous Region", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Flag_of_Region_Autonoma_Atlantico_Sur.svg/1920px-Flag_of_Region_Autonoma_Atlantico_Sur.svg.png", noEmoji:true, country:"Nicaragua",
        colors:["red","white","green","yellow","blue"], bands:3, continent:"North America", founded:null, stars:true, triangle:true},
+      {name:"Atlántida", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Flag_Of_Atlantida_Department.png/1920px-Flag_Of_Atlantida_Department.png", noEmoji:true, country:"Honduras",
+       colors:["white","blue","yellow","red","green","gray","brown","black"], bands:2, continent:"North America", founded:null, stars:true, human:true, animal:true, script:true},
+      {name:"Comayagua", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Bandera_del_departamento_de_Comayagua.png/1920px-Bandera_del_departamento_de_Comayagua.png", noEmoji:true, country:"Honduras",
+       colors:["white","green"], bands:3, continent:"North America", founded:null, copyCat:true},
+      {name:"Copán", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Bandera_de_Cop%C3%A1n.svg/1920px-Bandera_de_Cop%C3%A1n.svg.png", noEmoji:true, country:"Honduras",
+       colors:["light blue","black","white","red","yellow"], bands:0, continent:"North America", founded:null, crest:true, triangle:true},
+      {name:"Cortés", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/8/8d/Bandera_Cort%C3%A9s.png", noEmoji:true, country:"Honduras",
+       colors:["yellow","white","red","black"], bands:5, continent:"North America", founded:null, sun:true},
+      {name:"Gracias a Dios", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/5/51/Bandera_de_Gracias_a_Dios.png", noEmoji:true, country:"Honduras",
+       colors:["light blue","green","red"], bands:2, continent:"North America", founded:null, stars:true},
+      {name:"Intibucá", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Bandera_de_Intibuc%C3%A1.svg/1920px-Bandera_de_Intibuc%C3%A1.svg.png", noEmoji:true, country:"Honduras",
+       colors:["black","white","light blue","yellow","orange","brown","red","pink","blue"], bands:0, continent:"North America", founded:null, human:true, leaf:true, uniqueShape:true, script:true, crest:true},
+      {name:"La Paz", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/8/84/La_Paz_bandera.png", noEmoji:true, country:"Honduras",
+       colors:["yellow","white"], bands:3, continent:"North America", founded:null, leaf:true},
+      {name:"Lempira", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/b/bf/Lempira_Bandera.png", noEmoji:true, country:"Honduras",
+       colors:["yellow","white","light blue","red"], bands:4, continent:"North America", founded:null, sun:true},
+      {name:"Ocotepeque", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Bandera_de_Ocotepeque.svg/1920px-Bandera_de_Ocotepeque.svg.png", noEmoji:true, country:"Honduras",
+       colors:["red","white","green"], bands:3, continent:"North America", founded:null, copyCat:true},
+      {name:"Olancho", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Flag_of_Olancho_Department%2C_Honduras.svg/1920px-Flag_of_Olancho_Department%2C_Honduras.svg.png", noEmoji:true, country:"Honduras",
+       colors:["light blue","white","green"], bands:3, continent:"North America", founded:null, stars:true},
+      {name:"Santa Bárbara", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Bandera_de_Santa_Barbara_Honduras.svg/1920px-Bandera_de_Santa_Barbara_Honduras.svg.png", noEmoji:true, country:"Honduras",
+       colors:["white","green"], bands:2, continent:"North America", founded:null},
+      {name:"Valle", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Valle_de_angeles_Flag.jpg/1920px-Valle_de_angeles_Flag.jpg", noEmoji:true, country:"Honduras",
+       colors:["white","green","yellow","light blue","blue","brown","black","orange"], bands:2, continent:"North America", founded:null, crest:true, stars:true, script:true, sun:true, leaf:true},
+      {name:"Barbuda", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_Barbuda.svg/1920px-Flag_of_Barbuda.svg.png", noEmoji:true, country:"Antigua and Barbuda",
+       colors:["red","light blue","green","black","yellow","white"], bands:3, continent:"North America", founded:2018, animal:true, sun:true},
     ],
     packBadges:[
       {id:"usState", name:"Fifty Stars", icon:"🇺🇸", how:"Roll a US state.", check:c=>c.country==="United States"},
@@ -1390,6 +1437,8 @@ const SETS = [
       {id:"mxState", name:"Cacti", icon:"🇲🇽", how:"Roll a Mexican state.", check:c=>c.country==="Mexico"},
       {id:"pmCommune", name:"France (Maple)", icon:"🇵🇲", how:"Roll a Saint Pierre and Miquelon commune.", check:c=>c.country==="Saint Pierre and Miquelon"},
       {id:"niDistrict", name:"Lake Nicaragua", icon:"🇳🇮", how:"Roll a Nicaraguan district.", check:c=>c.country==="Nicaragua"},
+      {id:"hnDistrict", name:"Five Stars", icon:"🇭🇳", how:"Roll a Honduran department.", check:c=>c.country==="Honduras"},
+      {id:"Barb", name:"Barbuda no Antigua", icon:"🇦🇬", how:"Roll an Antiguan and Barbudan dependency.", check:c=>c.country==="Antigua and Barbuda"},
     ]
   },
   {
@@ -1456,7 +1505,7 @@ const SETS = [
       {name:"Tel Aviv", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Flag_of_Tel_Aviv.svg/1280px-Flag_of_Tel_Aviv.svg.png", noEmoji:true, colors:["white","yellow","blue","red","green"], bands:5, country:"Israel", continent:"Asia", landlocked:false, coastal:true, founded:null, buildingIcon:true, stars:true, script:true, crest:true},
       {name:"Utrecht", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Flag_of_Utrecht_city.svg/330px-Flag_of_Utrecht_city.svg.png", noEmoji:true, colors:["red","white"], bands:2, country:"Netherlands", continent:"Europe", landlocked:true, coastal:false, founded:1990},
       {name:"The Hague", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Flag_of_The_Hague.svg/1280px-Flag_of_The_Hague.svg.png", noEmoji:true, colors:["green","yellow"], bands:2, country:"Netherlands", continent:"Europe", landlocked:false, coastal:true, founded:1920},
-      {name:"Rotterdam", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Flag_of_Rotterdam.svg/330px-Flag_of_Rotterdam.svg.png", noEmoji:true, colors:["green","white"], bands:3, country:"Netherlands", continent:"Europe", landlocked:false, coastal:false, founded:1949},
+      {name:"Rotterdam", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Flag_of_Rotterdam.svg/330px-Flag_of_Rotterdam.svg.png", noEmoji:true, colors:["green","white"], bands:3, country:"Netherlands", continent:"Europe", landlocked:false, coastal:false, founded:1949, copyCat:true},
       {name:"Eindhoven", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Eindhoven.svg/330px-Flag_of_Eindhoven.svg.png", noEmoji:true, colors:["red","white"], bands:7, country:"Netherlands", continent:"Europe", landlocked:true, coastal:false, founded:1927},
       {name:"Guadalajara", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Flag_of_Guadalajara%2C_MX.svg/330px-Flag_of_Guadalajara%2C_MX.svg.png", noEmoji:true, colors:["blue","yellow","gray","red","green"], bands:3, country:"Mexico", continent:"North America", landlocked:true, coastal:false, founded:2021, crest:true, leaf:true, animal:true, cross:true},
       {name:"Chihuahua City", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Chihuahua%2C_Chihuahua.svg/1920px-Flag_of_Chihuahua%2C_Chihuahua.svg.png", noEmoji:true, colors:["white","brown","red","gray","black","green","light blue"], bands:0, country:"Mexico", continent:"North America", landlocked:true, coastal:false, founded:2021, crest:true, leaf:true, human:true, script:true, buildingIcon:true, animal:true},
@@ -2303,6 +2352,12 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something.
 const CHANGELOG = [
+  { version: "v1.03", date: "Jul 26 2026", notes: [
+    "Added Honduras departments",
+    "Added Barbuda",
+    "Gave Fiji the Love the Brits badge",
+    "Gave Rotterdam the Copycat badge (because of a Honduran department)",
+  ]},
   { version: "v1.02", date: "Jul 25 2026 (5:28 PM EST)", notes: [
     "Added Nicaraguan districts to the North American Subdivisions pack",
     "Gave more flags the Copycat badge",
@@ -2509,8 +2564,8 @@ function renderPacksSidebar(){
   }).join('');
 
   panel.innerHTML = `
-    <div class="packs-title">🎴 Flag Sets</div>
-    <div class="packs-subtitle">Each set has its own free daily spin, pulling only from that set's flags.</div>
+    <div class="packs-title">🎴 Flag Packs</div>
+    <div class="packs-subtitle">Each pack has its own free daily spin, pulling only from that pack's flags.</div>
     ${cardsHTML}
   `;
 }
@@ -2761,7 +2816,7 @@ async function buyItem(itemId){
   await saveProgress();
   renderStats();
   renderShop();
-  if(hasRolled && extraRollTokens > 0) showExtraRollOption();
+  updateRollButtonState();
 }
 
 function toggleCollection(which){
@@ -4501,6 +4556,7 @@ const ORG_ACRONYMS = {
   "Bosnia and Herzegovia": "Bosnia",
   "British Indian Ocean Territory": "BIOT",
   "United States Virgin Islands": "USVI",
+  "British Virgin Islands": "BVI",
   "United States": "USA",
   "United Kingdom": "UK",
   "United Arab Emirates": "UAE",
