@@ -62,6 +62,12 @@
   .changelog-date{ font-size:0.68rem; color:var(--muted); margin-bottom:8px; }
   .changelog-list{ margin:0; padding-left:18px; display:flex; flex-direction:column; gap:4px; }
   .changelog-list li{ font-size:0.78rem; line-height:1.4; color:var(--text); }
+  .flag-fact-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    padding:14px; box-shadow:0 10px 30px rgba(0,0,0,0.35); margin-bottom:12px;
+  }
+  .flag-fact-title{ font-size:0.9rem; font-weight:800; color:var(--accent); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+  .flag-fact-text{ font-size:0.8rem; line-height:1.5; color:var(--text); }
   .daily-flag-card{
     background:var(--panel); border:1px solid var(--accent); border-radius:14px;
     padding:14px; box-shadow:0 10px 30px rgba(0,0,0,0.35); margin-bottom:12px;
@@ -315,6 +321,73 @@
   .quiz-reveal-flag{ width:56px; height:36px; }
   .quiz-reveal-flag img{ width:100%; height:100%; object-fit:cover; border-radius:4px; }
   .quiz-reveal-name{ font-size:0.65rem; color:var(--muted); text-align:center; line-height:1.2; }
+  /* ---------- Gamemode Hub ---------- */
+  .gm-hub-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0; }
+  .gm-hub-card{
+    background:var(--panel2); border:1px solid var(--border); border-radius:12px;
+    padding:14px 12px; text-align:center; cursor:pointer; transition:border-color 0.15s, transform 0.1s;
+  }
+  .gm-hub-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .gm-hub-icon{ font-size:1.6rem; margin-bottom:6px; }
+  .gm-hub-title{ font-weight:700; font-size:0.9rem; margin-bottom:4px; }
+  .gm-hub-desc{ font-size:0.72rem; color:var(--muted); line-height:1.3; }
+  .gm-hub-card{ position:relative; overflow:hidden; }
+  .gm-hub-card-disabled{ cursor:not-allowed; }
+  .gm-hub-card-disabled:hover{ border-color:var(--border); transform:none; }
+  .gm-hub-card-disabled::before{
+    content:""; position:absolute; inset:0; background:rgba(8,8,8,0.5); z-index:1; pointer-events:none;
+  }
+  .gm-tape{
+    position:absolute; height:32px; z-index:2;
+    background:#f7d000;
+    box-shadow:0 3px 10px rgba(0,0,0,0.55);
+    overflow:hidden;
+  }
+  .gm-tape::before, .gm-tape::after{
+    content:""; position:absolute; left:0; right:0; height:7px;
+    background:repeating-linear-gradient(45deg,#161616 0 7px,#f7d000 7px 14px);
+    background-size:14px 14px;
+    animation:gmTapeStripes 0.2333s linear infinite;
+  }
+  .gm-tape::before{ top:0; }
+  .gm-tape::after{ bottom:0; }
+  .gm-tape-1{ left:-15%; width:130%; top:26%; transform:rotate(-4deg); }
+  .gm-tape-2{ left:-25%; width:155%; top:64%; transform:rotate(31deg); }
+  .gm-tape-track{
+    position:absolute; top:0; left:0; height:100%; display:flex; align-items:center;
+    white-space:nowrap; will-change:transform;
+  }
+  .gm-tape .gm-tape-track span{
+    font-family:Impact, 'Arial Narrow', Arial, sans-serif;
+    font-size:1.05rem; font-weight:900; letter-spacing:0.5px; color:#000 !important; padding:0 14px;
+  }
+  @keyframes gmTapeStripes{ from{ background-position:0 0; } to{ background-position:14px 0; } }
+  @keyframes gmTapeText{ from{ transform:translateX(-50%); } to{ transform:translateX(0); } }
+  @media (max-width:480px){ .gm-hub-grid{ grid-template-columns:1fr; } }
+  /* ---------- Flag Zoom ---------- */
+  .fz-frame{
+    width:100%; max-width:340px; aspect-ratio:3/2; margin:14px auto; border-radius:10px;
+    border:1px solid var(--border); background-color:var(--panel2); background-repeat:no-repeat;
+    box-shadow:0 4px 20px rgba(0,0,0,0.35);
+  }
+  .fz-history{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
+  .fz-history-row{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--panel2); border:1px solid var(--border); border-radius:8px; padding:6px 12px;
+    font-size:0.85rem;
+  }
+  .fz-history-row.fz-wrong{ border-color:#e05555; color:#e05555; }
+  .fz-history-row.fz-correct{ border-color:#3ecf6a; color:#3ecf6a; }
+  .fz-guess-count{ text-align:center; color:var(--muted); font-size:0.8rem; margin-bottom:6px; }
+  .fz-input-row{ display:flex; gap:8px; margin:14px 0; }
+  .fz-input-row input{ flex:1; }
+  /* ---------- Land Shape ---------- */
+  .ls-shape-frame{
+    width:220px; height:220px; margin:14px auto; display:flex; align-items:center; justify-content:center;
+    background:var(--panel2); border:1px solid var(--border); border-radius:10px;
+  }
+  .ls-shape-frame img{ max-width:85%; max-height:85%; object-fit:contain; filter:brightness(0) invert(1); opacity:0.92; }
+  .oo-grid{ grid-template-columns:repeat(2,1fr) !important; max-width:340px; margin-left:auto; margin-right:auto; }
   .collection-toggle{ margin-top:16px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
   .collection-panel{
     margin-top:16px; display:none; text-align:left; max-height:260px; overflow-y:auto;
@@ -544,6 +617,10 @@
   .hl-gameover-title{ font-size:1.1rem; font-weight:800; margin-bottom:6px; }
   .hl-gameover-score{ color:var(--muted); font-size:0.85rem; margin-bottom:16px; }
 
+  /* ---------- Silhouette Guess ---------- */
+  .silhouette-flag img{ filter:grayscale(1) brightness(0.6) contrast(1.15); transition:filter 0.5s ease; pointer-events:none; -webkit-user-drag:none; user-select:none; }
+  .silhouette-flag.revealed img{ filter:none; }
+
   /* ---------- Category Sprint ---------- */
   .cs-intro-line{ color:var(--muted); font-size:0.82rem; line-height:1.5; text-align:center; margin-bottom:14px; }
   .cs-category-banner{
@@ -619,6 +696,7 @@
 
 <div class="app-layout">
 <div class="changelog-sidebar" id="changelogSidebar">
+  <div id="flagFactPanel"></div>
   <div id="dailyFlagPanel"></div>
   <div id="changelogEntries"></div>
 </div>
@@ -641,7 +719,6 @@
     <div class="badges" id="badgeList"></div>
     <div class="footer-row">
       <button class="ghost-btn" onclick="toggleShare()">📋 Share result</button>
-      <button class="ghost-btn" onclick="rollEquipped(true)">🔁 Reroll (practice)</button>
     </div>
     <div class="share-box" id="shareBox"></div>
   </div>
@@ -652,10 +729,7 @@
     <button class="ghost-btn" onclick="toggleCollection('badge')">🏆 Badges (<span id="collectionCount">0</span>/<span id="collectionTotal">0</span>)</button>
     <button class="ghost-btn" onclick="toggleCollection('flag')">🌍 Flags Seen (<span id="flagCollectionCount">0</span>/<span id="flagCollectionTotal">0</span>)</button>
     <button class="ghost-btn" onclick="toggleCollection('shop')">🛒 Shop</button>
-    <button class="ghost-btn" onclick="openQuizSetup()">🎯 Flag Quiz</button>
-    <button class="ghost-btn" onclick="openConnections()">🔗 Flag Connections</button>
-    <button class="ghost-btn" onclick="openHigherLower()">📊 Higher or Lower</button>
-    <button class="ghost-btn" onclick="openCategorySprint()">⏱️ Category Sprint</button>
+    <button class="ghost-btn" onclick="openGamemodeHub()">🎮 Game Modes</button>
   </div>
   <div class="collection-panel" id="badgeCollectionPanel"></div>
   <div class="collection-panel" id="flagCollectionPanel"></div>
@@ -692,6 +766,26 @@
 
 <div class="modal-overlay" id="categorySprintOverlay" onclick="if(event.target===this) closeCategorySprint()">
   <div class="modal-box quiz-box" id="categorySprintBox"></div>
+</div>
+
+<div class="modal-overlay" id="silhouetteGuessOverlay" onclick="if(event.target===this) closeSilhouetteGuess()">
+  <div class="modal-box quiz-box" id="silhouetteGuessBox"></div>
+</div>
+
+<div class="modal-overlay" id="gamemodeHubOverlay" onclick="if(event.target===this) closeGamemodeHub()">
+  <div class="modal-box quiz-box" id="gamemodeHubBox"></div>
+</div>
+
+<div class="modal-overlay" id="flagZoomOverlay" onclick="if(event.target===this) closeFlagZoom()">
+  <div class="modal-box quiz-box" id="flagZoomBox"></div>
+</div>
+
+<div class="modal-overlay" id="landShapeOverlay" onclick="if(event.target===this) closeLandShape()">
+  <div class="modal-box quiz-box" id="landShapeBox"></div>
+</div>
+
+<div class="modal-overlay" id="oddOneOutOverlay" onclick="if(event.target===this) closeOddOneOut()">
+  <div class="modal-box quiz-box" id="oddOneOutBox"></div>
 </div>
 
 <script>
@@ -1806,6 +1900,28 @@ SETS.filter(s => !s.isStandard).forEach(s => {
 // to pull ANY flag in the game into the same round, not just standard countries.
 const ALL_FLAGS = COUNTRIES.concat(...SETS.filter(s => !s.isStandard).map(s => s.flags));
 
+// ---------- Land Shape image lookup ----------
+// Fill this in with your traced country outlines. Key = country name EXACTLY as
+// it appears in COUNTRIES above (e.g. "United States", "Türkiye"), value = a
+// direct image URL (transparent-background PNG or SVG works best - the game
+// recolors it to solid white automatically, so any fill color you trace with is
+// fine). Only countries listed here (and unlocked by the player) show up in
+// Land Shape - everything else is simply skipped, so you can add a handful at a
+// time and the mode grows as you go.
+//
+// How to host your traced images, same setup you already use for the site icon:
+//   1. Create (or reuse) a public GitHub repo, e.g. github.com/WormDude/flagrng-shapes
+//   2. Upload each traced image, named after the country (e.g. nepal.png)
+//   3. Use the "raw" URL: https://raw.githubusercontent.com/WormDude/flagrng-shapes/main/nepal.png
+//      (or the ?raw=true blob-URL style your rnglogo.png icon above uses)
+//   4. Paste that URL in as a value below
+const COUNTRY_SHAPE_URLS = {
+   "Egypt": "https://github.com/WormDude/tstflgrng/blob/main/egypt.png?raw=true",
+   "Liechtenstein": "https://github.com/WormDude/tstflgrng/blob/main/LIECH.png?raw=true",
+   "United States": "https://github.com/WormDude/tstflgrng/blob/main/USA.png?raw=true",
+   "Saint Kitts and Nevis": "https://github.com/WormDude/tstflgrng/blob/main/stkitts.png?raw=true",
+};
+
 let hasRolled = false;
 let collectedBadgeIds = [];
 let collectedSetBadgeIds = {}; // { historical: ["defunct", ...], nasub: [...], ... } - kept separate from Standard's collectedBadgeIds
@@ -1831,6 +1947,7 @@ let lastRollNewBadgeIds = [];
 let lastRollWasNewFlag = false;
 let hlHighScores = {}; // { population: 7, foundedYear: 3, area: 5 } - best streak per stat
 let catSprintBestStreak = 0; // best "flags named before a bust or bank" streak, across all categories
+let sgBestStreaks = { standard: 0, packs: 0 }; // best Silhouette Guess streak, per pool mode
 let dailyFlagState = { date: null, difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
 let dailyFlagStreak = 0; // consecutive days the daily flag has been played (attempted), not consecutive correct answers
 let dailyFlagBestStreak = 0;
@@ -1848,6 +1965,42 @@ function getDateStrOffset(offsetDays){
   const d = new Date();
   d.setDate(d.getDate()+offsetDays);
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+const FLAG_FACTS = [
+  "Nepal's flag is the only national flag that isn't a rectangle or square.",
+  "Jamaica is the only country whose flag does not contain red, white, or blue.",
+  "Mauritania was one of two nations without red, white, or blue in their flag until 2017.",
+  "Between 1977 and 2011, Libya's flag was entirely green.",
+  "Brazil's flag contains 27 stars, one for each state.",
+  "The United State's flag contains 50 stars, the most out of every nation, and one star is one state.",
+  "The star on Nauru's flag symbolizes the nation's location below the equator.",
+  "The stars on Bosnia and Herzegovina's flag go on forever.",
+  "The flags of Liechtenstein and Haiti were the exact same until they saw each other in the 1936 Summer Olympics.",
+  "Each ring on the Olympic flag symbolizes a continent; Americas, Asia, Europe, Africa, and Oceania/Australia.",
+  "The flag of Hawaii contains the Union Jack, despite never being colonized by the British.",
+  "The flag of Mozambique has an AK-47.",
+  "The Dominican Republic is the only nation with a Bible on their flag."
+];
+
+function getFlagFactOfTheDay(){
+  const today = getTodayStr();
+  let hash = 0;
+  for(let i=0;i<today.length;i++){
+    hash = (hash*31 + today.charCodeAt(i)) >>> 0;
+  }
+  return FLAG_FACTS[hash % FLAG_FACTS.length];
+}
+
+function renderFlagFact(){
+  const panel = document.getElementById('flagFactPanel');
+  if(!panel) return;
+  panel.innerHTML = `
+    <div class="flag-fact-card">
+      <div class="flag-fact-title">🚩 Flag Fact of the Day</div>
+      <div class="flag-fact-text">${getFlagFactOfTheDay()}</div>
+    </div>
+  `;
 }
 
 const SHOP_ITEMS = [
@@ -1923,6 +2076,7 @@ async function loadProgress(){
       hasRolled = !!data.hasRolledToday;
       hlHighScores = data.hlHighScores || {};
       catSprintBestStreak = data.catSprintBestStreak || 0;
+      sgBestStreaks = data.sgBestStreaks || { standard: 0, packs: 0 };
       dailyFlagState = data.dailyFlagState || { date: null, difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
       dailyFlagStreak = data.dailyFlagStreak || 0;
       dailyFlagBestStreak = data.dailyFlagBestStreak || 0;
@@ -1977,6 +2131,7 @@ async function loadProgress(){
   if(!dailyFlagState || dailyFlagState.date !== getTodayStr()){
     dailyFlagState = { date: getTodayStr(), difficulty: null, guessesUsed: 0, done: false, solved: false, reward: 0, history: [] };
   }
+  renderFlagFact();
   renderDailyFlag();
   renderChangelogSidebar();
 
@@ -2003,7 +2158,7 @@ function saveProgress(){
       extraRollTokens, luckyCharms, mythicCharms, fpDoublers,
       flagGuarantees, fpBoostOwned, itemPrices,
       lastRollCountryName, lastRollSetId, lastRollEP, lastRollDate, lastStandardRollDate, lastRollNewBadgeIds, lastRollWasNewFlag, hasRolledToday: hasRolled,
-      hlHighScores, catSprintBestStreak,
+      hlHighScores, catSprintBestStreak, sgBestStreaks,
       dailyFlagState, dailyFlagStreak, dailyFlagBestStreak, dailyFlagLastPlayedDate
     }));
   }catch(e){
@@ -2043,6 +2198,7 @@ function resetProgress(){
   hasRolled = false;
   hlHighScores = {};
   catSprintBestStreak = 0;
+  sgBestStreaks = { standard: 0, packs: 0 };
 
   renderStats();
   renderBadgeCollection();
@@ -2346,26 +2502,32 @@ function setFlagFilter(mode){
 // is the big roll button/reel at the top (tracked via hasRolled/lastRollDate);
 // every other set spins from its own themed flag pool right here in the sidebar.
 function hasSpunSetToday(setId){
-  return lastSetSpinDates[setId] === getTodayStr();
+  return lastSetSpinDates[setId] === getTodayStr(); 
 }
 
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something.
 const CHANGELOG = [
+  { version: "v1.04", date: "Jul 27 2026", notes: [
+    "Added a Flag Fact of the Day",
+    "Compressed all gamemodes into one button",
+    "Added 3 new gamemodes; Map Shapes (in progress, unplayable), Odd One Out, and Silhouette Guess",
+    "Gave more flags the Copycat badge, including Mali, Austria, and Ireland",
+  ]},
   { version: "v1.03", date: "Jul 26 2026", notes: [
     "Added Honduras departments",
     "Added Barbuda",
     "Gave Fiji the Love the Brits badge",
     "Gave Rotterdam the Copycat badge (because of a Honduran department)",
   ]},
-  { version: "v1.02", date: "Jul 25 2026 (5:28 PM EST)", notes: [
+  { version: "v1.02", date: "Jul 25 2026", notes: [
     "Added Nicaraguan districts to the North American Subdivisions pack",
     "Gave more flags the Copycat badge",
     "Gave Nova Scotia the Triangle on the Side badge",
     "Added South Yemen to the Historical pack",
     "Added a few more cities I think"
   ]},
-  { version: "v1.01", date: "Jul 25 2026 (9:05 AM EST)", notes: [
+  { version: "v1.01", date: "Jul 25 2026", notes: [
     "Added more city flags, like Buenos Aires and Rome",
     "Added Daily Flag, same flag for everyone",
     "Added a daily streak counter that credits participation (not just correct answers) and resets if a day is missed",
@@ -3300,6 +3462,18 @@ function flattenPool(byPack){
   return Object.values(byPack).flat();
 }
 
+// Flash Quiz only: flags with the Copycat badge look near-identical to another
+// flag, which makes "pick the badge it actually has" unfair when the flash is
+// gone in a blink. Strip them out of the pool before sampling for that mode
+// specifically - other quiz modes are unaffected.
+function excludeCopyCatFromPool(byPack){
+  const filtered = {};
+  Object.keys(byPack).forEach(packId => {
+    filtered[packId] = byPack[packId].filter(entry => !entry.flag.copyCat);
+  });
+  return filtered;
+}
+
 // Pick `count` flags completely at random across every pack combined - no
 // per-pack weighting, no restriction to a single pack. Standard's larger flag
 // count just means it naturally shows up more often, same as any other pack.
@@ -4199,7 +4373,7 @@ function startQuiz(difficultyKey){
   clearOptionRearrangeTimer();
   const config = QUIZ_DIFFICULTIES[difficultyKey];
   const lockMode = window._quizLockMode || "unlocked";
-  const byPack = buildQuizPool(lockMode);
+  const byPack = excludeCopyCatFromPool(buildQuizPool(lockMode));
   const totalEligible = Object.values(byPack).reduce((sum, arr) => sum + arr.length, 0);
   if(totalEligible === 0){
     document.getElementById("quizBox").innerHTML = `
@@ -5256,6 +5430,696 @@ function renderCategorySprint(){
   `;
   const inputEl = document.getElementById("csGuessInput");
   if(inputEl) inputEl.focus();
+}
+
+// ---------- Silhouette Guess ----------
+// A flag is shown with every trace of color stripped away (pure grayscale,
+// darkened) - only its shape, stripes, and any emblem survive. Same push-your-
+// luck streak shape as Higher or Lower: one wrong guess ends the run, correct
+// guesses grow both the streak and the FP payout. Two independent choices set
+// up each run: which pool to draw from (Standard vs +Pack Flags), and how you
+// answer (Type from memory vs Select from 8 options) - typing pays more since
+// there's nothing to lean on.
+let sgCurrent = null;         // the flag being shown this round
+let sgOptions = null;         // 8 option names, only set in 'select' mode
+let sgCorrectIndex = -1;      // index into sgOptions that's correct, only in 'select' mode
+let sgPickedIndex = -1;       // index the player actually clicked, only in 'select' mode
+let sgRoundLocked = false;
+let sgScore = 0;
+let sgLastFpEarned = 0;
+let sgLastTyped = "";         // what they actually typed, for the "you typed ___" reveal on a miss
+let sgIncludePacks = false;   // this run's pool choice, locked in once Start is pressed
+let sgAnswerMode = "type";    // "type" | "select" - this run's answer style, locked in once Start is pressed
+const SG_FP_PER_STREAK = 25;         // Type mode, Standard pool
+const SG_FP_PER_STREAK_PACKS = 45;   // Type mode, +Pack Flags pool
+const SG_FP_PER_STREAK_SELECT = 12;        // Select mode, Standard pool - 8 options to lean on, so it pays less
+const SG_FP_PER_STREAK_SELECT_PACKS = 22;  // Select mode, +Pack Flags pool
+
+function currentSgFpRate(){
+  if(sgAnswerMode === "select") return sgIncludePacks ? SG_FP_PER_STREAK_SELECT_PACKS : SG_FP_PER_STREAK_SELECT;
+  return sgIncludePacks ? SG_FP_PER_STREAK_PACKS : SG_FP_PER_STREAK;
+}
+
+function openSilhouetteGuess(){
+  document.getElementById("silhouetteGuessOverlay").classList.add("open");
+  sgCurrent = null;
+  renderSilhouetteIntro();
+}
+function closeSilhouetteGuess(){
+  document.getElementById("silhouetteGuessOverlay").classList.remove("open");
+}
+
+function setSgPoolMode(includePacks){
+  sgIncludePacks = includePacks;
+  renderSilhouetteIntro();
+}
+function setSgAnswerMode(mode){
+  sgAnswerMode = mode;
+  renderSilhouetteIntro();
+}
+
+function renderSilhouetteIntro(){
+  const box = document.getElementById("silhouetteGuessBox");
+  const rate = currentSgFpRate();
+  box.innerHTML = `
+    <div class="modal-icon">🌑</div>
+    <div class="modal-title">Silhouette Guess</div>
+    <div class="modal-desc">A flag is shown with every trace of color stripped away - just shape, stripes, and any emblem survive. Identify it before it's revealed in color. One wrong guess ends your streak.</div>
+    <div class="quiz-lock-toggle">
+      <button class="${!sgIncludePacks ? 'active' : ''}" onclick="setSgPoolMode(false)">Standard Only</button>
+      <button class="${sgIncludePacks ? 'active' : ''}" onclick="setSgPoolMode(true)">+ Pack Flags (more FP)</button>
+    </div>
+    <div class="quiz-lock-toggle">
+      <button class="${sgAnswerMode==='type' ? 'active' : ''}" onclick="setSgAnswerMode('type')">Type Answer</button>
+      <button class="${sgAnswerMode==='select' ? 'active' : ''}" onclick="setSgAnswerMode('select')">Select Flag (8 options)</button>
+    </div>
+    <div class="conn-intro-line">${sgAnswerMode === 'select'
+      ? `Pick the right name out of 8 options - having something to lean on means a lower payout: ${rate} FP per streak level${sgIncludePacks ? ' with pack flags mixed in' : ''}.`
+      : `No multiple choice - type it from memory for the full payout: ${rate} FP per streak level${sgIncludePacks ? ' with pack flags mixed in' : ''}.`}</div>
+    <div class="conn-action-row">
+      <button class="quiz-submit-btn" onclick="startSilhouetteGuess()">Start</button>
+      <button class="modal-close" onclick="closeSilhouetteGuess()">Close</button>
+    </div>
+  `;
+}
+
+// Typed answers can't fairly judge a flag that has a visually identical twin
+// (Milan/England) - with the colors stripped too there'd be zero information
+// left to tell them apart, so lookalike-tagged flags are excluded from the
+// draw pool for Type mode, same principle as the other typed-answer modes.
+// Select mode leaves them in - picking the right name off a list of 8 is still
+// a real test even when two of the flags on offer would look identical.
+function silhouettePool(){
+  const basePool = sgIncludePacks ? ALL_FLAGS : COUNTRIES;
+  if(sgAnswerMode !== "type") return basePool;
+  const noLookalikes = basePool.filter(c => !c.lookalikeGroup);
+  return noLookalikes.length >= 10 ? noLookalikes : basePool;
+}
+
+function buildSilhouetteRound(){
+  const pool = silhouettePool();
+  const flag = pool[Math.floor(Math.random() * pool.length)];
+  if(sgAnswerMode !== "select") return {flag, options:null, correctIndex:-1};
+
+  const distractorPool = pool.filter(c => c.name !== flag.name);
+  const distractors = shuffleArr(distractorPool).slice(0, Math.min(7, distractorPool.length));
+  const options = shuffleArr([flag.name, ...distractors.map(c => c.name)]);
+  return {flag, options, correctIndex: options.indexOf(flag.name)};
+}
+
+function startSilhouetteGuess(){
+  sgScore = 0;
+  sgRoundLocked = false;
+  sgLastFpEarned = 0;
+  sgLastTyped = "";
+  const round = buildSilhouetteRound();
+  sgCurrent = round.flag;
+  sgOptions = round.options;
+  sgCorrectIndex = round.correctIndex;
+  renderSilhouetteGuess(null);
+}
+
+function advanceSilhouetteGuess(){
+  const round = buildSilhouetteRound();
+  sgCurrent = round.flag;
+  sgOptions = round.options;
+  sgCorrectIndex = round.correctIndex;
+  sgRoundLocked = false;
+  renderSilhouetteGuess(null);
+}
+
+async function resolveSilhouetteRound(isCorrect){
+  const bestKey = sgIncludePacks ? 'packs' : 'standard';
+  sgLastFpEarned = 0;
+  if(isCorrect){
+    sgScore += 1;
+    if(!sgBestStreaks[bestKey] || sgScore > sgBestStreaks[bestKey]) sgBestStreaks[bestKey] = sgScore;
+    sgLastFpEarned = currentSgFpRate() * sgScore;
+    totalFP += sgLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderSilhouetteGuess({correct:isCorrect});
+}
+
+async function submitSilhouetteGuess(){
+  if(sgRoundLocked || !sgCurrent) return;
+  const input = document.getElementById("sgGuessInput");
+  const typed = input ? input.value.trim() : "";
+  if(!typed) return;
+
+  sgRoundLocked = true;
+  sgLastTyped = typed;
+  await resolveSilhouetteRound(isTypedAnswerCorrect(typed, sgCurrent.name));
+}
+
+async function guessSilhouetteOption(idx){
+  if(sgRoundLocked || !sgCurrent) return;
+  sgRoundLocked = true;
+  sgPickedIndex = idx;
+  await resolveSilhouetteRound(idx === sgCorrectIndex);
+}
+
+function renderSilhouetteGuess(resultState){
+  const box = document.getElementById("silhouetteGuessBox");
+  if(!sgCurrent){ box.innerHTML = ""; return; }
+  const locked = !!resultState;
+  const bestKey = sgIncludePacks ? 'packs' : 'standard';
+  const best = sgBestStreaks[bestKey];
+  const isSelect = sgAnswerMode === "select";
+
+  const answerAreaHTML = isSelect ? `
+    <div class="quiz-option-grid">
+      ${sgOptions.map((name, i) => {
+        let cls = "quiz-option";
+        if(locked){
+          if(i === sgCorrectIndex) cls += " correct";
+          else if(i === sgPickedIndex) cls += " incorrect";
+        }
+        return `<div class="${cls}" ${locked ? '' : `onclick="guessSilhouetteOption(${i})"`}>${name}</div>`;
+      }).join("")}
+    </div>
+  ` : (!locked ? `
+    <div class="cs-input-row">
+      <input type="text" class="flag-search" id="sgGuessInput" placeholder="Type the country's name..." autocomplete="off"
+             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitSilhouetteGuess(); }">
+      <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitSilhouetteGuess()">Guess</button>
+    </div>
+  ` : '');
+
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🌑 Silhouette Guess${sgIncludePacks ? ' · +Packs' : ''}${isSelect ? ' · Select' : ''} · Streak: ${sgScore}${best ? ` · Best: ${best}` : ""}</div>
+    <div class="conn-intro-line">Every trace of color has been stripped away - ${isSelect ? 'pick' : "type"} the flag's name from its shape and pattern alone.</div>
+    <div class="hl-cards" style="justify-content:center;">
+      <div class="hl-card">
+        ${flagVisualHTML(sgCurrent, `custom-flag silhouette-flag${locked ? ' revealed' : ''}`)}
+      </div>
+    </div>
+    ${answerAreaHTML}
+    ${!locked ? `
+      <div class="conn-action-row"><button class="modal-close" onclick="closeSilhouetteGuess()">Give Up</button></div>
+    ` : `
+      <div class="hl-gameover">
+        ${resultState.correct
+          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ Correct! It's ${sgCurrent.name}</div><div class="hl-gameover-score">+${sgLastFpEarned.toLocaleString()} FP</div>`
+          : `<div class="hl-gameover-title" style="color:#e05555;">❌ Streak ended at ${sgScore} - it was ${sgCurrent.name}${!isSelect ? ` (you typed "${sgLastTyped}")` : ''}</div>`}
+        <div class="conn-action-row">
+          ${resultState.correct
+            ? `<button class="quiz-submit-btn" onclick="advanceSilhouetteGuess()">Next Flag →</button>`
+            : `<button class="ghost-btn" onclick="startSilhouetteGuess()">🔁 Play Again</button><button class="modal-close" onclick="closeSilhouetteGuess()">Close</button>`}
+        </div>
+      </div>
+    `}
+  `;
+  const inputEl = document.getElementById("sgGuessInput");
+  if(inputEl) inputEl.focus();
+}
+
+
+
+
+// ---------- Gamemode Hub ----------
+// Single source of truth for every playable mode - the hub renders this list,
+// and the old individual buttons were collapsed into openGamemodeHub() below.
+const GAMEMODES = [
+  {icon:"🎯", title:"Flag Quiz", desc:"Six difficulty tiers, from Easy up to No Hope.", action:"openQuizSetup"},
+  {icon:"🔗", title:"Flag Connections", desc:"Group flags into four hidden badge categories.", action:"openConnections"},
+  {icon:"📊", title:"Higher or Lower", desc:"Guess whether the next flag ranks higher or lower.", action:"openHigherLower"},
+  {icon:"⏱️", title:"Category Sprint", desc:"Race the clock naming flags in a category.", action:"openCategorySprint"},
+  {icon:"🌑", title:"Silhouette Guess", desc:"Name the flag with all its color stripped away.", action:"openSilhouetteGuess"},
+  {icon:"🔎", title:"Flag Zoom", desc:"A flag starts zoomed in tight - guess before it fully unzooms.", action:"openFlagZoom"},
+  {icon:"🗺️", title:"Land Shape", desc:"Name the country from its land border silhouette.", action:"openLandShape", inProgress:true},
+  {icon:"🕵️", title:"Odd One Out", desc:"Three flags share a hidden trait - find the one that doesn't.", action:"openOddOneOut"},
+];
+function openGamemodeHub(){
+  document.getElementById("gamemodeHubOverlay").classList.add("open");
+  renderGamemodeHub();
+}
+function closeGamemodeHub(){
+  document.getElementById("gamemodeHubOverlay").classList.remove("open");
+}
+function launchGamemode(action){
+  closeGamemodeHub();
+  window[action]();
+}
+const GM_TAPE_SPEED_PX_S = 60; // shared px/sec speed for both the diagonal stripes and the scrolling text
+function renderGamemodeHub(){
+  const box = document.getElementById("gamemodeHubBox");
+  box.innerHTML = `
+    <div class="modal-title">🎮 Game Modes</div>
+    <div class="gm-hub-grid">
+      ${GAMEMODES.map(m => `
+        <div class="gm-hub-card${m.inProgress ? ' gm-hub-card-disabled' : ''}" ${m.inProgress ? '' : `onclick="launchGamemode('${m.action}')"`}>
+          <div class="gm-hub-icon">${m.icon}</div>
+          <div class="gm-hub-title">${m.title}</div>
+          <div class="gm-hub-desc">${m.desc}</div>
+          ${m.inProgress ? `
+            <div class="gm-tape gm-tape-1"><div class="gm-tape-track">${'<span>UNPLAYABLE</span><span>IN PROGRESS</span>'.repeat(6)}</div></div>
+            <div class="gm-tape gm-tape-2"><div class="gm-tape-track">${'<span>UNPLAYABLE</span><span>IN PROGRESS</span>'.repeat(6)}</div></div>
+          ` : ''}
+        </div>
+      `).join("")}
+    </div>
+    <button class="modal-close" onclick="closeGamemodeHub()">Close</button>
+  `;
+  // Sync each scrolling text track's speed to the same px/sec the diagonal
+  // stripes move at, so the words and the tape pattern travel together instead
+  // of drifting apart. Stripe speed is fixed in CSS (32px per 0.55s); the text
+  // track's width varies with content, so its duration is derived here from
+  // its actual measured width rather than a guessed CSS value.
+  document.querySelectorAll(".gm-tape-track").forEach(track => {
+    const halfWidth = track.scrollWidth / 2; // content is duplicated for a seamless -50%->0% loop
+    const duration = halfWidth / GM_TAPE_SPEED_PX_S;
+    track.style.animation = `gmTapeText ${duration}s linear infinite`;
+  });
+}
+
+// ---------- Flag Zoom ----------
+// GeoZeete-style progressive reveal: the flag starts zoomed in tight on a random
+// crop, and each wrong guess zooms it out a step until the full flag shows on
+// the final allowed guess. Draws only from unlocked flags for fairness, same
+// rule the other typed-answer modes use.
+const FZ_MAX_GUESSES = 6;
+const FZ_ZOOM_STEPS = [560, 420, 320, 240, 170, 100]; // background-size %, tight -> full
+const FZ_FP_BY_GUESS = [2000, 1500, 1100, 800, 550, 350]; // indexed by guesses used (1-6)
+let fzCurrent = null;
+let fzGuessesUsed = 0;
+let fzHistory = [];
+let fzLocked = false;
+let fzOffsetX = 50;
+let fzOffsetY = 50;
+let fzLastFpEarned = 0;
+let fzPlayed = 0;
+let fzWon = 0;
+
+function openFlagZoom(){
+  document.getElementById("flagZoomOverlay").classList.add("open");
+  startFlagZoom();
+}
+function closeFlagZoom(){
+  document.getElementById("flagZoomOverlay").classList.remove("open");
+}
+function flagZoomPool(){
+  const byPack = buildQuizPool("unlocked");
+  return flattenPool(byPack).map(entry => entry.flag);
+}
+function startFlagZoom(){
+  const pool = flagZoomPool();
+  if(pool.length < 4){
+    document.getElementById("flagZoomBox").innerHTML = `
+      <div class="modal-title">🔎 Flag Zoom</div>
+      <div class="conn-intro-line">Unlock at least 4 flags first - roll a few more before playing this mode.</div>
+      <button class="modal-close" onclick="closeFlagZoom()">Close</button>
+    `;
+    return;
+  }
+  fzCurrent = pool[Math.floor(Math.random() * pool.length)];
+  fzGuessesUsed = 0;
+  fzHistory = [];
+  fzLocked = false;
+  fzLastFpEarned = 0;
+  // Pick a crop focus once per round so zooming out reveals more of the same
+  // spot rather than jumping around the flag.
+  fzOffsetX = 20 + Math.random() * 60;
+  fzOffsetY = 20 + Math.random() * 60;
+  renderFlagZoom();
+}
+function renderFlagZoom(){
+  const box = document.getElementById("flagZoomBox");
+  const zoomPct = FZ_ZOOM_STEPS[Math.min(fzGuessesUsed, FZ_ZOOM_STEPS.length - 1)];
+  const frameStyle = `background-image:url('${fzCurrent.imageUrl}'); background-size:${zoomPct}% auto; background-position:${fzOffsetX}% ${fzOffsetY}%;`;
+  const guessesLeft = FZ_MAX_GUESSES - fzGuessesUsed;
+  const historyHTML = fzHistory.map(h => `
+    <div class="fz-history-row ${h.correct ? 'fz-correct' : 'fz-wrong'}">
+      <span>${h.typed}</span><span>${h.correct ? '✅' : '❌'}</span>
+    </div>
+  `).join("");
+  const over = fzLocked;
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🔎 Flag Zoom${fzPlayed > 0 ? ` · ${fzWon}/${fzPlayed} solved` : ''}</div>
+    <div class="conn-intro-line">Guess the country before the flag fully zooms out.</div>
+    <div class="fz-frame" style="${frameStyle}"></div>
+    <div class="fz-guess-count">${over ? 'Round over' : `Guess ${fzGuessesUsed + 1} of ${FZ_MAX_GUESSES} · ${guessesLeft} left`}</div>
+    ${fzHistory.length ? `<div class="fz-history">${historyHTML}</div>` : ''}
+    ${!over ? `
+      <div class="fz-input-row">
+        <input type="text" class="flag-search" id="fzGuessInput" placeholder="Type the country's name..." autocomplete="off"
+               onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitFlagZoomGuess(); }">
+        <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitFlagZoomGuess()">Guess</button>
+      </div>
+      <div class="conn-action-row"><button class="modal-close" onclick="giveUpFlagZoom()">Give Up</button></div>
+    ` : `
+      <div class="hl-gameover">
+        ${fzLastFpEarned > 0
+          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ It's ${fzCurrent.name}!</div><div class="hl-gameover-score">+${fzLastFpEarned.toLocaleString()} FP</div>`
+          : `<div class="hl-gameover-title" style="color:#e05555;">❌ It was ${fzCurrent.name}</div>`}
+        <div class="conn-action-row">
+          <button class="ghost-btn" onclick="startFlagZoom()">🔁 Play Again</button>
+          <button class="modal-close" onclick="closeFlagZoom()">Close</button>
+        </div>
+      </div>
+    `}
+  `;
+  const inputEl = document.getElementById("fzGuessInput");
+  if(inputEl) inputEl.focus();
+}
+async function resolveFlagZoomRound(isCorrect){
+  fzLocked = true;
+  fzPlayed++;
+  if(isCorrect){
+    fzWon++;
+    fzLastFpEarned = FZ_FP_BY_GUESS[Math.min(fzGuessesUsed, FZ_FP_BY_GUESS.length - 1)];
+    totalFP += fzLastFpEarned;
+    await saveProgress();
+    renderStats();
+  } else {
+    fzLastFpEarned = 0;
+  }
+  renderFlagZoom();
+}
+async function submitFlagZoomGuess(){
+  if(fzLocked || !fzCurrent) return;
+  const input = document.getElementById("fzGuessInput");
+  const typed = input ? input.value.trim() : "";
+  if(!typed) return;
+  const isCorrect = isTypedAnswerCorrect(typed, fzCurrent.name);
+  fzHistory.push({typed, correct:isCorrect});
+  fzGuessesUsed++;
+  if(isCorrect || fzGuessesUsed >= FZ_MAX_GUESSES){
+    await resolveFlagZoomRound(isCorrect);
+  } else {
+    renderFlagZoom();
+  }
+}
+function giveUpFlagZoom(){
+  if(fzLocked || !fzCurrent) return;
+  resolveFlagZoomRound(false);
+}
+
+// ---------- Land Shape ----------
+// Same streak-based architecture as Silhouette Guess: Type Answer pays more FP
+// per streak point than Select (8 options), and the streak keeps climbing until
+// a miss. Pool is only countries that (a) have a traced shape in
+// COUNTRY_SHAPE_URLS and (b) the player has already unlocked.
+const LS_FP_PER_STREAK_TYPE = 30;
+const LS_FP_PER_STREAK_SELECT = 14;
+let lsCurrent = null;
+let lsScore = 0;
+let lsBestStreak = 0;
+let lsAnswerMode = "type"; // "type" | "select" - locked in per round via the toggle
+let lsOptions = null;
+let lsCorrectIndex = -1;
+let lsPickedIndex = -1;
+let lsRoundLocked = false;
+let lsLastFpEarned = 0;
+let lsLastTyped = "";
+
+function landShapePool(){
+  return COUNTRIES.filter(c => COUNTRY_SHAPE_URLS[c.name] && collectedFlagNames.includes(c.name));
+}
+function currentLsFpRate(){
+  return lsAnswerMode === "select" ? LS_FP_PER_STREAK_SELECT : LS_FP_PER_STREAK_TYPE;
+}
+function openLandShape(){
+  document.getElementById("landShapeOverlay").classList.add("open");
+  lsCurrent = null;
+  renderLandShapeIntro();
+}
+function closeLandShape(){
+  document.getElementById("landShapeOverlay").classList.remove("open");
+}
+function setLsAnswerMode(mode){
+  lsAnswerMode = mode;
+  renderLandShapeIntro();
+}
+function renderLandShapeIntro(){
+  const box = document.getElementById("landShapeBox");
+  const pool = landShapePool();
+  const rate = currentLsFpRate();
+  box.innerHTML = `
+    <div class="modal-title">🗺️ Land Shape</div>
+    <div class="conn-intro-line">Name the country from its land border silhouette. Streak keeps climbing until you miss one.</div>
+    ${pool.length < 4 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Not enough traced shapes unlocked yet (need at least 4). Trace a few more countries into COUNTRY_SHAPE_URLS, or unlock more flags that already have shapes.</div>
+      <button class="modal-close" onclick="closeLandShape()">Close</button>
+    ` : `
+      <div class="quiz-lock-toggle">
+        <button class="${lsAnswerMode==='type' ? 'active' : ''}" onclick="setLsAnswerMode('type')">Type Answer</button>
+        <button class="${lsAnswerMode==='select' ? 'active' : ''}" onclick="setLsAnswerMode('select')">Select Country (8 options)</button>
+      </div>
+      <div class="conn-intro-line">${lsAnswerMode === 'select' ? `+${rate} FP per streak point - fewer options to lean on than typing, so it pays less.` : `+${rate} FP per streak point - full credit for typing it yourself.`}</div>
+      <div class="quiz-streak-row"><span>🔥 Streak: ${lsScore}</span><span>🏆 Best: ${lsBestStreak}</span></div>
+      <button class="quiz-submit-btn" onclick="startLandShape()">Start</button>
+    `}
+  `;
+}
+function buildLandShapeRound(){
+  const pool = landShapePool();
+  const country = pool[Math.floor(Math.random() * pool.length)];
+  if(lsAnswerMode !== "select") return {country, options:null, correctIndex:-1};
+  const distractorPool = pool.filter(c => c.name !== country.name).length >= 7 ? pool : COUNTRIES;
+  const distractors = shuffleArr(distractorPool.filter(c => c.name !== country.name)).slice(0, 7);
+  const options = shuffleArr([country.name, ...distractors.map(c => c.name)]);
+  return {country, options, correctIndex: options.indexOf(country.name)};
+}
+function startLandShape(){
+  lsScore = 0;
+  lsRoundLocked = false;
+  lsLastFpEarned = 0;
+  lsLastTyped = "";
+  const round = buildLandShapeRound();
+  lsCurrent = round.country;
+  lsOptions = round.options;
+  lsCorrectIndex = round.correctIndex;
+  renderLandShape(null);
+}
+function advanceLandShape(){
+  const round = buildLandShapeRound();
+  lsCurrent = round.country;
+  lsOptions = round.options;
+  lsCorrectIndex = round.correctIndex;
+  lsRoundLocked = false;
+  renderLandShape(null);
+}
+async function resolveLandShapeRound(isCorrect){
+  lsLastFpEarned = 0;
+  if(isCorrect){
+    lsScore += 1;
+    if(lsScore > lsBestStreak) lsBestStreak = lsScore;
+    lsLastFpEarned = currentLsFpRate() * lsScore;
+    totalFP += lsLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderLandShape({correct:isCorrect});
+}
+async function submitLandShapeGuess(){
+  if(lsRoundLocked || !lsCurrent) return;
+  const input = document.getElementById("lsGuessInput");
+  const typed = input ? input.value.trim() : "";
+  if(!typed) return;
+  lsRoundLocked = true;
+  lsLastTyped = typed;
+  await resolveLandShapeRound(isTypedAnswerCorrect(typed, lsCurrent.name));
+}
+async function guessLandShapeOption(idx){
+  if(lsRoundLocked || !lsCurrent) return;
+  lsRoundLocked = true;
+  lsPickedIndex = idx;
+  await resolveLandShapeRound(idx === lsCorrectIndex);
+}
+function renderLandShape(resultState){
+  const box = document.getElementById("landShapeBox");
+  const locked = lsRoundLocked;
+  const isSelect = lsAnswerMode === "select";
+
+  const answerAreaHTML = isSelect ? `
+    <div class="quiz-option-grid">
+      ${lsOptions.map((name, i) => {
+        let cls = "quiz-option";
+        if(locked){
+          if(i === lsCorrectIndex) cls += " correct";
+          else if(i === lsPickedIndex) cls += " incorrect";
+        }
+        return `<div class="${cls}" ${locked ? '' : `onclick="guessLandShapeOption(${i})"`}>${name}</div>`;
+      }).join("")}
+    </div>
+  ` : (!locked ? `
+    <div class="fz-input-row">
+      <input type="text" class="flag-search" id="lsGuessInput" placeholder="Type the country's name..." autocomplete="off"
+             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitLandShapeGuess(); }">
+      <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitLandShapeGuess()">Guess</button>
+    </div>
+  ` : '');
+
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🗺️ Land Shape${isSelect ? ' · Select' : ''} · Streak: ${lsScore}${lsBestStreak ? ` · Best: ${lsBestStreak}` : ""}</div>
+    <div class="conn-intro-line">Which country's border is this?</div>
+    <div class="ls-shape-frame"><img src="${lsCurrent.shapeUrl || COUNTRY_SHAPE_URLS[lsCurrent.name]}" alt="Land silhouette"></div>
+    ${answerAreaHTML}
+    ${!locked ? `
+      <div class="conn-action-row"><button class="modal-close" onclick="closeLandShape()">Give Up</button></div>
+    ` : `
+      <div class="hl-gameover">
+        ${resultState.correct
+          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ Correct! It's ${lsCurrent.name}</div><div class="hl-gameover-score">+${lsLastFpEarned.toLocaleString()} FP</div>`
+          : `<div class="hl-gameover-title" style="color:#e05555;">❌ Streak ended at ${lsScore} - it was ${lsCurrent.name}${!isSelect ? ` (you typed "${lsLastTyped}")` : ''}</div>`}
+        <div class="conn-action-row">
+          ${resultState.correct
+            ? `<button class="quiz-submit-btn" onclick="advanceLandShape()">Next Shape →</button>`
+            : `<button class="ghost-btn" onclick="startLandShape()">🔁 Play Again</button><button class="modal-close" onclick="closeLandShape()">Close</button>`}
+        </div>
+      </div>
+    `}
+  `;
+  const inputEl = document.getElementById("lsGuessInput");
+  if(inputEl) inputEl.focus();
+}
+
+// ---------- Odd One Out ----------
+// Show 4 flags where 3 share a hidden BADGE_DEFS trait and 1 doesn't - the
+// player has to spot the one that breaks the pattern without being told what
+// the pattern is. The shared trait is only revealed after they answer.
+// Restricted to the Standard pool since BADGE_DEFS' check() functions assume
+// COUNTRIES' field shapes; pack sets use their own separate trait logic.
+const OO_FP_PER_STREAK = 20;
+const OO_ROUND_TRIES = 40;
+let ooFlags = [];       // 4 country objects for this round, in display order
+let ooOddIndex = -1;
+let ooBadge = null;
+let ooScore = 0;
+let ooBestStreak = 0;
+let ooLocked = false;
+let ooPickedIndex = -1;
+let ooLastFpEarned = 0;
+
+function oddOneOutPool(){
+  return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+}
+function openOddOneOut(){
+  document.getElementById("oddOneOutOverlay").classList.add("open");
+  renderOddOneOutIntro();
+}
+function closeOddOneOut(){
+  document.getElementById("oddOneOutOverlay").classList.remove("open");
+}
+function renderOddOneOutIntro(){
+  const box = document.getElementById("oddOneOutBox");
+  const pool = oddOneOutPool();
+  box.innerHTML = `
+    <div class="modal-title">🕵️ Odd One Out</div>
+    <div class="conn-intro-line">Three of the four flags share something in common - find the one that doesn't belong. Streak keeps climbing until you miss.</div>
+    ${pool.length < 6 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 6 flags first - roll a few more before playing this mode.</div>
+      <button class="modal-close" onclick="closeOddOneOut()">Close</button>
+    ` : `
+      <div class="quiz-streak-row"><span>🔥 Streak: ${ooScore}</span><span>🏆 Best: ${ooBestStreak}</span></div>
+      <button class="quiz-submit-btn" onclick="startOddOneOut()">Start</button>
+    `}
+  `;
+}
+// Tries a bunch of random badges until it finds one that splits the unlocked
+// pool into "3+ flags with it" and "1+ flags without it" - returns null if the
+// pool is too homogeneous (e.g. everything unlocked shares every trait).
+function buildOddOneOutRound(){
+  const pool = oddOneOutPool();
+  const badgePool = shuffleArr(BADGE_DEFS);
+  for(let i = 0; i < Math.min(OO_ROUND_TRIES, badgePool.length); i++){
+    const badge = badgePool[i];
+    const matching = pool.filter(c => { try{ return !!badge.check(c); }catch(e){ return false; } });
+    const nonMatching = pool.filter(c => !matching.includes(c));
+    if(matching.length >= 3 && nonMatching.length >= 1){
+      const group = shuffleArr(matching).slice(0, 3);
+      const odd = nonMatching[Math.floor(Math.random() * nonMatching.length)];
+      const flags = shuffleArr([...group, odd]);
+      return {flags, oddIndex: flags.indexOf(odd), badge};
+    }
+  }
+  return null;
+}
+function startOddOneOut(){
+  const round = buildOddOneOutRound();
+  if(!round){
+    document.getElementById("oddOneOutBox").innerHTML = `
+      <div class="modal-title">🕵️ Odd One Out</div>
+      <div class="conn-intro-line" style="color:var(--muted);">Couldn't find a fair round with your current unlocked flags - unlock a wider variety and try again.</div>
+      <button class="modal-close" onclick="closeOddOneOut()">Close</button>
+    `;
+    return;
+  }
+  ooScore = 0;
+  ooLocked = false;
+  ooLastFpEarned = 0;
+  ooFlags = round.flags;
+  ooOddIndex = round.oddIndex;
+  ooBadge = round.badge;
+  renderOddOneOut(null);
+}
+function advanceOddOneOut(){
+  const round = buildOddOneOutRound();
+  if(!round){ renderOddOneOutIntro(); return; }
+  ooFlags = round.flags;
+  ooOddIndex = round.oddIndex;
+  ooBadge = round.badge;
+  ooLocked = false;
+  renderOddOneOut(null);
+}
+async function resolveOddOneOutRound(isCorrect){
+  ooLastFpEarned = 0;
+  if(isCorrect){
+    ooScore += 1;
+    if(ooScore > ooBestStreak) ooBestStreak = ooScore;
+    ooLastFpEarned = OO_FP_PER_STREAK * ooScore;
+    totalFP += ooLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderOddOneOut({correct:isCorrect});
+}
+async function guessOddOneOut(idx){
+  if(ooLocked) return;
+  ooLocked = true;
+  ooPickedIndex = idx;
+  await resolveOddOneOutRound(idx === ooOddIndex);
+}
+function renderOddOneOut(resultState){
+  const box = document.getElementById("oddOneOutBox");
+  const locked = ooLocked;
+  const gridHTML = `
+    <div class="quiz-flagimg-grid oo-grid">
+      ${ooFlags.map((flag, i) => {
+        let cls = "quiz-flagimg-option";
+        if(locked){
+          if(i === ooOddIndex) cls += " correct";
+          else if(i === ooPickedIndex) cls += " incorrect";
+        }
+        return `<div class="${cls}" ${locked ? '' : `onclick="guessOddOneOut(${i})"`}>
+          ${flagVisualHTML(flag, "custom-flag-grid-lg")}
+          ${locked ? `<div class="quiz-reveal-name" style="font-size:0.72rem;">${flag.name}</div>` : ''}
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🕵️ Odd One Out · Streak: ${ooScore}${ooBestStreak ? ` · Best: ${ooBestStreak}` : ""}</div>
+    <div class="conn-intro-line">Which flag doesn't share the hidden trait?</div>
+    ${gridHTML}
+    ${!locked ? `
+      <div class="conn-action-row"><button class="modal-close" onclick="closeOddOneOut()">Give Up</button></div>
+    ` : `
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${resultState.correct ? '#3ecf6a' : '#e05555'};">
+          ${resultState.correct ? '✅ Correct!' : '❌ Streak ended at ' + ooScore + '.'} The trait was: ${ooBadge.icon} ${ooBadge.name}
+        </div>
+        ${resultState.correct ? `<div class="hl-gameover-score">+${ooLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="conn-action-row">
+          ${resultState.correct
+            ? `<button class="quiz-submit-btn" onclick="advanceOddOneOut()">Next Round →</button>`
+            : `<button class="ghost-btn" onclick="startOddOneOut()">🔁 Play Again</button><button class="modal-close" onclick="closeOddOneOut()">Close</button>`}
+        </div>
+      </div>
+    `}
+  `;
 }
 
 // ---------- Init ----------
