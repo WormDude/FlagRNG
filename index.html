@@ -1542,13 +1542,49 @@ const SETS = [
        colors:["red","light blue","green","black","yellow","white"], bands:3, continent:"North America", founded:2018, animal:true, sun:true},
     ],
     packBadges:[
-      {id:"usState", name:"Fifty Stars", icon:"🇺🇸", how:"Roll a US state.", check:c=>c.country==="United States"},
+      {id:"usState", name:"Fifty Stars", icon:"🇺🇧🇷🇸", how:"Roll a US state.", check:c=>c.country==="United States"},
       {id:"caProvTerr", name:"Maple Leaf...and Quebec", icon:"🇨🇦", how:"Roll a Canadian province or territory.", check:c=>c.country==="Canada"},
       {id:"mxState", name:"Cacti", icon:"🇲🇽", how:"Roll a Mexican state.", check:c=>c.country==="Mexico"},
       {id:"pmCommune", name:"France (Maple)", icon:"🇵🇲", how:"Roll a Saint Pierre and Miquelon commune.", check:c=>c.country==="Saint Pierre and Miquelon"},
       {id:"niDistrict", name:"Lake Nicaragua", icon:"🇳🇮", how:"Roll a Nicaraguan district.", check:c=>c.country==="Nicaragua"},
       {id:"hnDistrict", name:"Five Stars", icon:"🇭🇳", how:"Roll a Honduran department.", check:c=>c.country==="Honduras"},
       {id:"Barb", name:"Barbuda no Antigua", icon:"🇦🇬", how:"Roll an Antiguan and Barbudan dependency.", check:c=>c.country==="Antigua and Barbuda"},
+    ]
+  },
+  {
+    id:"sasub", name:"South American Subdivisions", icon:"🌎",
+    blurb:"Flags of subdivisions in South America, like Amazonas or Galapagos.",
+    flags:[
+      {name:"Acre", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Bandeira_do_Acre.svg/1920px-Bandeira_do_Acre.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","red"], bands:2, continent:"South America", founded:1995, stars:true},
+      {name:"Alagoas", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Bandeira_de_Alagoas.svg/1920px-Bandeira_de_Alagoas.svg.png", noEmoji:true, country:"Brazil", colors:["red","white","blue","yellow","green","black"], bands:3, continent:"South America", founded:1963, crest:true, stars:true, animal:true, leaf:true, buildingIcon:true, sun:true},
+      {name:"Amapá", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Bandeira_do_Amap%C3%A1.svg/1920px-Bandeira_do_Amap%C3%A1.svg.png", noEmoji:true, country:"Brazil", colors:["green","yellow","black","white","blue"], bands:5, continent:"South America", founded:1988},
+      {name:"Amazonas", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Bandeira_do_Amazonas.svg/1920px-Bandeira_do_Amazonas.svg.png", noEmoji:true, country:"Brazil", colors:["red","white","blue"], bands:3, continent:"South America", founded:1982, stars:true},
+      {name:"Bahia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bandeira_da_Bahia.svg/1920px-Bandeira_da_Bahia.svg.png", noEmoji:true, country:"Brazil", colors:["red","white","blue"], bands:4, continent:"South America", founded:1960},
+      {name:"Ceará", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Bandeira_do_Cear%C3%A1.svg/1920px-Bandeira_do_Cear%C3%A1.svg.png", noEmoji:true, country:"Brazil", colors:["green","yellow","light blue","white","black","brown"], bands:0, continent:"South America", founded:1922, crest:true, leaf:true, ship:true, buildingIcon:true, animal:true},
+      {name:"Federal District", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Bandeira_do_Distrito_Federal_%28Brasil%29.svg/1920px-Bandeira_do_Distrito_Federal_%28Brasil%29.svg.png", noEmoji:true, country:"Brazil", colors:["green","yellow","white"], bands:0, continent:"South America", founded:1969},
+      {name:"Espírito Santo", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Bandeira_do_Esp%C3%ADrito_Santo.svg/1920px-Bandeira_do_Esp%C3%ADrito_Santo.svg.png", noEmoji:true, country:"Brazil", colors:["light blue","white","pink"], bands:3, continent:"South America", founded:1947, script:true},
+      {name:"Goiás", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Flag_of_Goi%C3%A1s.svg/1920px-Flag_of_Goi%C3%A1s.svg.png", noEmoji:true, country:"Brazil", colors:["blue","green","yellow","white"], bands:8, continent:"South America", founded:1919, stars:true},
+      {name:"Maranhão", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Bandeira_do_Maranh%C3%A3o.svg/1920px-Bandeira_do_Maranh%C3%A3o.svg.png", noEmoji:true, country:"Brazil", colors:["blue","red","black","white"], bands:9, continent:"South America", founded:1889, stars:true},
+      {name:"Mato Grosso", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Bandeira_de_Mato_Grosso.svg/1920px-Bandeira_de_Mato_Grosso.svg.png", noEmoji:true, country:"Brazil", colors:["blue","yellow","green","white"], bands:0, continent:"South America", founded:1890, stars:true},
+      {name:"Mato Grosso do Sul", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Bandeira_de_Mato_Grosso_do_Sul.svg/1920px-Bandeira_de_Mato_Grosso_do_Sul.svg.png", noEmoji:true, country:"Brazil", colors:["light blue","yellow","green","white"], bands:3, continent:"South America", founded:1979, stars:true},
+      {name:"Minas Gerais", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Bandeira_de_Minas_Gerais.svg/1920px-Bandeira_de_Minas_Gerais.svg.png", noEmoji:true, country:"Brazil", colors:["red","black","white"], bands:0, continent:"South America", founded:1963, script:true},
+      {name:"Pará", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Bandeira_do_Par%C3%A1.svg/1920px-Bandeira_do_Par%C3%A1.svg.png", noEmoji:true, country:"Brazil", colors:["red","blue","white"], bands:3, continent:"South America", founded:1890, stars:true},
+      {name:"Paraíba", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Bandeira_da_Para%C3%ADba.svg/1920px-Bandeira_da_Para%C3%ADba.svg.png", noEmoji:true, country:"Brazil", colors:["red","black","white"], bands:2, continent:"South America", founded:1930, script:true},
+      {name:"Paraná", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Bandeira_do_Paran%C3%A1.svg/1920px-Bandeira_do_Paran%C3%A1.svg.png", noEmoji:true, country:"Brazil", colors:["green","blue","white"], bands:3, continent:"South America", founded:1892, script:true, stars:true, leaf:true},
+      {name:"Pernambuco", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Bandeira_de_Pernambuco.svg/1920px-Bandeira_de_Pernambuco.svg.png", noEmoji:true, country:"Brazil", colors:["red","yellow","green","blue","white"], bands:2, continent:"South America", founded:1917, cross:true, stars:true, sun:true},
+      {name:"Piauí", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Bandeira_do_Piau%C3%AD.svg/1920px-Bandeira_do_Piau%C3%AD.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","blue","white"], bands:13, continent:"South America", founded:1922, stars:true, script:true},
+      {name:"Rio de Janeiro", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Bandeira_do_estado_do_Rio_de_Janeiro.svg/1920px-Bandeira_do_estado_do_Rio_de_Janeiro.svg.png", noEmoji:true, country:"Brazil", colors:["light blue","white","gray","brown","green","black","yellow","orange"], bands:0, continent:"South America", founded:1965, stars:true, script:true, crest:true, leaf:true, animal:true},
+      {name:"Rio Grande do Norte", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Bandeira_do_Rio_Grande_do_Norte.svg/1920px-Bandeira_do_Rio_Grande_do_Norte.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","black","orange"], bands:2, continent:"South America", founded:1957, crest:true, stars:true, leaf:true, ship:true, human:true},
+      {name:"Rio Grande do Norte", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Bandeira_do_Rio_Grande_do_Sul.svg/1920px-Bandeira_do_Rio_Grande_do_Sul.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","black","brown","gray"], bands:3, continent:"South America", founded:1966, crest:true, stars:true, leaf:true, swordFlag:true, script:true},
+      {name:"Rondônia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Bandeira_de_Rond%C3%B4nia.svg/1920px-Bandeira_de_Rond%C3%B4nia.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","blue","white"], bands:2, continent:"South America", founded:1981, stars:true, triangle:true},
+      {name:"Roraima", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Bandeira_de_Roraima.svg/1920px-Bandeira_de_Roraima.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","red"], bands:4, continent:"South America", founded:1996, stars:true},
+      {name:"Santa Catarina", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Bandeira_de_Santa_Catarina.svg/1920px-Bandeira_de_Santa_Catarina.svg.png", noEmoji:true, country:"Brazil", colors:["white","red","brown","yellow","black","gray","green"], bands:3, continent:"South America", founded:null, crest:true, stars:true, animal:true, script:true, leaf:true},
+      {name:"São Paulo", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bandeira_do_estado_de_S%C3%A3o_Paulo.svg/1920px-Bandeira_do_estado_de_S%C3%A3o_Paulo.svg.png", noEmoji:true, country:"Brazil", colors:["black","white","red","yellow","blue"], bands:13, continent:"South America", founded:1946, stars:true, mapShape:true},
+      {name:"Sergipe", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Bandeira_de_Sergipe.svg/1920px-Bandeira_de_Sergipe.svg.png", noEmoji:true, country:"Brazil", colors:["white","green","yellow","blue"], bands:4, continent:"South America", founded:1952, stars:true},
+      {name:"Tocantins", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bandeira_do_Tocantins.svg/1920px-Bandeira_do_Tocantins.svg.png", noEmoji:true, country:"Brazil", colors:["white","yellow","blue"], bands:3, continent:"South America", founded:1989, sun:true},
+    ],
+    packBadges:[
+      {id:"brState", name:"Twenty-Seven Stars", icon:"🇧🇷", how:"Roll a Brazilian state.", check:c=>c.country==="Brazil"},
     ]
   },
   {
@@ -2542,6 +2578,9 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something.
 const CHANGELOG = [
+  { version: "v1.06", date: "Jul 28 2026", notes: [
+    "Added a new pack: South American Subdivisons (currently only has Brazil)",
+  ]},
   { version: "v1.05", date: "Jul 27 2026", notes: [
     "Added just a few more gamemodes",
     "Maybe some other stuff I probably forgot"
@@ -6335,6 +6374,7 @@ let ooPickedIndex = -1;
 let ooLastFpEarned = 0;
 let ooRecentBadgeIds = [];   // last few badge ids used, so we don't repeat the same trait round after round
 let ooRecentOddNames = [];   // last few "odd one" flag names, so the same outlier doesn't keep getting picked
+let ooRecentFlagNames = [];  // last few flags shown in ANY slot, so the same trio of "matching" flags doesn't keep reappearing
 
 function oddOneOutPool(){
   return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
@@ -6384,10 +6424,16 @@ function buildOddOneOutRound(){
   if(pickFrom.length === 0) pickFrom = candidates;
   const chosen = pickFrom[Math.floor(Math.random() * pickFrom.length)];
 
-  const group = shuffleArr(chosen.matching).slice(0, 3);
+  // Prefer matching flags we haven't shown recently so the same trio doesn't
+  // keep reappearing every round; fall back to the full matching set if that
+  // leaves fewer than 3 to choose from (small pools).
+  let matchPool = chosen.matching.filter(c => !ooRecentFlagNames.includes(c.name));
+  if(matchPool.length < 3) matchPool = chosen.matching;
+  const group = shuffleArr(matchPool).slice(0, 3);
   // Same idea for the odd flag itself - avoid repeating a recently-seen outlier
   // when there's another option available.
-  let oddPool = chosen.nonMatching.filter(c => !ooRecentOddNames.includes(c.name));
+  let oddPool = chosen.nonMatching.filter(c => !ooRecentOddNames.includes(c.name) && !ooRecentFlagNames.includes(c.name));
+  if(oddPool.length === 0) oddPool = chosen.nonMatching.filter(c => !ooRecentOddNames.includes(c.name));
   if(oddPool.length === 0) oddPool = chosen.nonMatching;
   const odd = oddPool[Math.floor(Math.random() * oddPool.length)];
 
@@ -6397,10 +6443,15 @@ function buildOddOneOutRound(){
   if(ooRecentBadgeIds.length > 5) ooRecentBadgeIds.shift();
   ooRecentOddNames.push(odd.name);
   if(ooRecentOddNames.length > 5) ooRecentOddNames.shift();
+  flags.forEach(c => ooRecentFlagNames.push(c.name));
+  while(ooRecentFlagNames.length > 12) ooRecentFlagNames.shift();
 
   return {flags, oddIndex: flags.indexOf(odd), badge: chosen.badge};
 }
 function startOddOneOut(){
+  ooRecentFlagNames = [];
+  ooRecentOddNames = [];
+  ooRecentBadgeIds = [];
   const round = buildOddOneOutRound();
   if(!round){
     document.getElementById("oddOneOutBox").innerHTML = `
@@ -6514,6 +6565,7 @@ let elBestStreak = 0;
 let elLocked = false;
 let elPickedIndex = -1;
 let elLastFpEarned = 0;
+let elRecentNames = [];     // names used in recent rounds, so the same flags don't keep reappearing
 
 function openEliminationLadder(){
   document.getElementById("eliminationLadderOverlay").classList.add("open");
@@ -6569,18 +6621,43 @@ function buildEliminationRound(statKey){
   const stat = HL_STATS.find(s => s.key === statKey);
   const pool = elPoolFor(stat);
   if(pool.length < EL_FLAG_COUNT) return null;
+  // Prefer flags we haven't shown in the last few rounds so the same lineup
+  // doesn't keep coming back; fall back to the full pool if that leaves too
+  // little to work with (small pools).
+  let drawPool = pool.filter(c => !elRecentNames.includes(c.name));
+  if(drawPool.length < EL_FLAG_COUNT) drawPool = pool;
   for(let i = 0; i < EL_ROUND_TRIES; i++){
-    const group = shuffleArr(pool).slice(0, EL_FLAG_COUNT);
+    const group = shuffleArr(drawPool).slice(0, EL_FLAG_COUNT);
     const values = group.map(stat.getValue);
     if(new Set(values).size < EL_FLAG_COUNT) continue; // tie - reshuffle and try again
     const direction = Math.random() < 0.5 ? 'higher' : 'lower';
     const targetVal = direction === 'higher' ? Math.max(...values) : Math.min(...values);
     const correctIndex = values.indexOf(targetVal);
+    group.forEach(c => {
+      elRecentNames.push(c.name);
+    });
+    while(elRecentNames.length > EL_FLAG_COUNT * 3) elRecentNames.shift();
     return {statKey, direction, flags: group, correctIndex};
+  }
+  // Couldn't find a tie-free round from the trimmed pool (can happen with a
+  // narrow stat range) - retry once against the full pool before giving up.
+  if(drawPool !== pool){
+    for(let i = 0; i < EL_ROUND_TRIES; i++){
+      const group = shuffleArr(pool).slice(0, EL_FLAG_COUNT);
+      const values = group.map(stat.getValue);
+      if(new Set(values).size < EL_FLAG_COUNT) continue;
+      const direction = Math.random() < 0.5 ? 'higher' : 'lower';
+      const targetVal = direction === 'higher' ? Math.max(...values) : Math.min(...values);
+      const correctIndex = values.indexOf(targetVal);
+      group.forEach(c => elRecentNames.push(c.name));
+      while(elRecentNames.length > EL_FLAG_COUNT * 3) elRecentNames.shift();
+      return {statKey, direction, flags: group, correctIndex};
+    }
   }
   return null;
 }
 function startEliminationLadder(statKey){
+  elRecentNames = [];
   const round = buildEliminationRound(statKey);
   if(!round){
     document.getElementById("eliminationLadderBox").innerHTML = `
@@ -6693,7 +6770,7 @@ const CC_CONFUSABLES = {
 };
 // Timer: starts generous, tightens as the streak grows, down to a hard floor.
 const CC_TIME_START = 7;     // seconds on streak 0
-const CC_TIME_FLOOR = 2.5;   // seconds, minimum ever given
+const CC_TIME_FLOOR = 1;   // seconds, minimum ever given
 const CC_TIME_STEP = 0.35;   // seconds shaved off per streak point
 let ccFlag = null;
 let ccOptions = [];       // 4 continent strings, in display order
@@ -6789,6 +6866,7 @@ function buildContinentCallRound(){
   return null;
 }
 function startContinentCall(){
+  ccRecentNames = [];
   const round = buildContinentCallRound();
   if(!round){
     document.getElementById("continentCallBox").innerHTML = `
@@ -6814,7 +6892,7 @@ function applyContinentCallRound(round){
   ccOptions = round.options;
   ccCorrectIndex = round.correctIndex;
   ccRecentNames.push(round.flag.name);
-  if(ccRecentNames.length > 5) ccRecentNames.shift();
+  if(ccRecentNames.length > 10) ccRecentNames.shift();
   renderContinentCall(null);
   startContinentCallTimer();
 }
