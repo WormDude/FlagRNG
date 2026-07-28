@@ -1917,28 +1917,9 @@ SETS.filter(s => !s.isStandard).forEach(s => {
 const ALL_FLAGS = COUNTRIES.concat(...SETS.filter(s => !s.isStandard).map(s => s.flags));
 
 // Standard countries don't carry a .id the way pack flags do (they're tracked by
-// .name instead) - but +Packs below needs every flag, standard included, to have
-// one so collectedPackFlagIds can track it like any other pack pull.
+// .name instead) - other systems (like collectedPackFlagIds) expect every flag,
+// standard included, to have one just like any other pack's flags do.
 COUNTRIES.forEach(f => { if(!f.id) f.id = f.name.toLowerCase().replace(/[^a-z0-9]+/g, ""); });
-
-// ---------- +Packs ----------
-// The "everything pack": every flag from every pack, standard included, pooled
-// into one shared draw pool. Pays out extra FP per pull (see PLUS_PACKS_FP_MULTIPLIER)
-// to make up for the fact it has its own separate daily spin like any other pack -
-// pulling from here doesn't touch Standard's or any individual pack's free roll.
-const PLUS_PACKS_FP_MULTIPLIER = 2;
-SETS.push({
-  id:"plusPacks", name:"+Packs", icon:"➕",
-  blurb:"Every flag from every pack, standard included, in one shared draw. Pays 2x FP per pull.",
-  flags: ALL_FLAGS,
-  fpMultiplier: PLUS_PACKS_FP_MULTIPLIER,
-  // +Packs is a meta-pool over every other pack's flags, not standalone content - so
-  // it's excluded (via isMegaPack) from anywhere that totals up "unique" flags/badges
-  // across sets (Flags Seen counter, the Flag Collection browser, Hint Hunter's pool,
-  // the locked/unlocked breakdown) to avoid counting every flag twice. It still shows
-  // up normally anywhere that just lists equippable packs, like the Packs sidebar.
-  isMegaPack: true,
-});
 
 // ---------- Land Shape image lookup ----------
 // Fill this in with your traced country outlines. Key = country name EXACTLY as
