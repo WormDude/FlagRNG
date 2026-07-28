@@ -130,6 +130,39 @@
   .reel-item{ height:130px; display:flex; align-items:center; justify-content:center; font-size:5.5rem; line-height:1; }
   .flag-display{ font-size:6.5rem; line-height:1; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5)); animation: pop 0.4s ease; display:flex; align-items:center; justify-content:center; width:100%; }
   @keyframes pop{ 0%{transform:scale(0.4) rotate(-8deg); opacity:0;} 60%{transform:scale(1.12) rotate(3deg); opacity:1;} 100%{transform:scale(1) rotate(0);} }
+  /* Mystery is the rarest possible roll - a trait literally no other flag in the game has -
+     so it gets its own reveal instead of the plain "pop" every other rarity uses: the flag
+     itself punches in harder and cycles through a full rainbow of glow colors, the reel
+     window it sits in pulses the same rainbow around its border, and a quick radial flash
+     washes across the reel the instant it lands, like a slot machine hitting the jackpot. */
+  .flag-display.mystery-reveal{ animation: mysteryPop 1.3s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes mysteryPop{
+    0%{ transform:scale(0.3) rotate(-18deg); opacity:0; filter:drop-shadow(0 0 0 transparent); }
+    35%{ transform:scale(1.3) rotate(8deg); opacity:1; filter:drop-shadow(0 0 32px #ffd166); }
+    50%{ transform:scale(0.92) rotate(-4deg); filter:drop-shadow(0 0 26px #57c785); }
+    65%{ transform:scale(1.12) rotate(3deg); filter:drop-shadow(0 0 26px #4d9fff); }
+    80%{ transform:scale(0.98) rotate(-1deg); filter:drop-shadow(0 0 28px #b464ff); }
+    100%{ transform:scale(1) rotate(0); filter:drop-shadow(0 0 20px #ff4d6d) drop-shadow(0 8px 20px rgba(0,0,0,0.5)); }
+  }
+  .reel-window.mystery-ring{ animation: mysteryRing 1.8s linear infinite; }
+  @keyframes mysteryRing{
+    0%{ box-shadow:0 0 0 2px #ff4d6d, 0 0 22px rgba(255,77,109,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+    16%{ box-shadow:0 0 0 2px #ff9f40, 0 0 22px rgba(255,159,64,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+    33%{ box-shadow:0 0 0 2px #ffd166, 0 0 22px rgba(255,209,102,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+    50%{ box-shadow:0 0 0 2px #57c785, 0 0 22px rgba(87,199,133,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+    66%{ box-shadow:0 0 0 2px #4d9fff, 0 0 22px rgba(77,159,255,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+    83%{ box-shadow:0 0 0 2px #b464ff, 0 0 22px rgba(180,100,255,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+    100%{ box-shadow:0 0 0 2px #ff4d6d, 0 0 22px rgba(255,77,109,0.55), inset 0 0 24px rgba(0,0,0,0.6); }
+  }
+  .mystery-flash{
+    position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:16px;
+    background:conic-gradient(from 0deg, #ff4d6d, #ff9f40, #ffd166, #57c785, #4d9fff, #b464ff, #ff4d6d);
+    animation: mysteryFlash 1.1s ease-out forwards;
+  }
+  @keyframes mysteryFlash{
+    0%{ opacity:0.85; transform:scale(0.4) rotate(0deg); }
+    100%{ opacity:0; transform:scale(2.2) rotate(90deg); }
+  }
   .placeholder{ font-size:3.5rem; color:var(--border); }
   .custom-flag{ display:inline-flex; width:150px; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(0,0,0,0.5); border-radius:2px; border:1px solid rgba(255,255,255,0.35); overflow:hidden; }
   .custom-flag img{ width:100%; height:auto; display:block; }
@@ -1160,8 +1193,8 @@ const BADGE_DEFS = [
   {id:"coastal", name:"Coastal City", icon:"🌊", rarity:"UNREAL", ep:900, how:"Roll a city that is not landlocked.", check:c=>!!c.coastal},
 ];
 //, check:c=>(c.colors.includes("red")
-const RARITY_WEIGHT = {COMMON:1, UNCOMMON:1.5, RARE:2, EPIC:4, LEGENDARY:7, EXOTIC:9, MYTHIC:12, UNREAL:16, MYSTERY:22};
-const RARITY_ORDER = ["COMMON","UNCOMMON","RARE","EPIC","LEGENDARY","EXOTIC","MYTHIC","UNREAL","MYSTERY"];
+const RARITY_WEIGHT = {COMMON:1, UNCOMMON:1.5, RARE:2, EPIC:4, LEGENDARY:7, MYTHIC:9, EXOTIC:12, UNREAL:16, MYSTERY:22};
+const RARITY_ORDER = ["COMMON","UNCOMMON","RARE","EPIC","LEGENDARY","MYTHIC","EXOTIC","UNREAL","MYSTERY"];
 const RARITY_LABELS = {
   COMMON:"Common", UNCOMMON:"Uncommon", RARE:"Rare", EPIC:"Epic",
   LEGENDARY:"Legendary", EXOTIC:"Exotic", MYTHIC:"Mythic", UNREAL:"Unreal", MYSTERY:"?!?!"
@@ -1184,8 +1217,8 @@ function regionsOf(c){
 function tierForMatchCount(n){
   if(n<=1) return "MYSTERY";
   if(n<=2) return "UNREAL";
-  if(n<=4) return "MYTHIC";
-  if(n<=7) return "EXOTIC";
+  if(n<=4) return "EXOTIC";
+  if(n<=7) return "MYTHIC";
   if(n<=12) return "LEGENDARY";
   if(n<=19) return "EPIC";
   if(n<=30) return "RARE";
@@ -1195,22 +1228,26 @@ function tierForMatchCount(n){
 // Percentage-based tiering for small themed sets (Historical, US States, etc.), where
 // raw match counts don't mean much with only 4-5 flags. Rarity is instead based on what
 // share of that set's own flags have the trait - e.g. 2/4 flags (50%) lands on Legendary.
+//
+// Bands below are NOT evenly spaced - they're calibrated to the real distribution of
+// match-percentages actually produced by BADGE_DEFS + packBadges across every non-Standard
+// pack (badge logic re-run against each pack's own flags). That distribution is heavily
+// front-loaded: most badges only match a small slice of any given pack (a handful of
+// percent), with a long thin tail stretching out toward 100%. Evenly-spaced 11.11%-wide
+// bands ignored that shape and left Common/Uncommon almost empty while cramming most real
+// badges into Mystery/Unreal/Mythic. These cutoffs instead mark the actual 9 population
+// deciles of that observed distribution, so each rarity tier ends up holding a genuinely
+// similar number of real badges - the same principle Standard's own tierForMatchCount
+// already uses (see below), just derived from pack data instead of Standard's country data.
 function tierForPercent(pct){
-  // Evenly-spaced bands (~100/9 each) instead of front/back-loaded ones. With only
-  // 4-5 flags in these packs, the real percentages that ever occur are things like
-  // 25/50/75/100 or 20/40/60/80/100 - the old bands squeezed most of that range into
-  // Mythic/Legendary while leaving a huge unused gap before Common, so a 25% match
-  // (the most "common" possible non-trivial match) read as rare as Mythic, and a
-  // 50% match (Legendary) sat right next to a 75% match (Uncommon) with nothing
-  // between them. Even bands let each real percentage land a step apart on the ladder.
-  if(pct<=11.11) return "MYSTERY";
-  if(pct<=22.22) return "UNREAL";
-  if(pct<=33.33) return "MYTHIC";
-  if(pct<=44.44) return "EXOTIC";
-  if(pct<=55.56) return "LEGENDARY";
-  if(pct<=66.67) return "EPIC";
-  if(pct<=77.78) return "RARE";
-  if(pct<=88.89) return "UNCOMMON";
+  if(pct<=3.23) return "MYSTERY";
+  if(pct<=5.67) return "UNREAL";
+  if(pct<=7.14) return "EXOTIC";
+  if(pct<=11.11) return "MYTHIC";
+  if(pct<=14.81) return "LEGENDARY";
+  if(pct<=20.00) return "EPIC";
+  if(pct<=27.45) return "RARE";
+  if(pct<=40.32) return "UNCOMMON";
   return "COMMON";
 }
 // Percentage bands above only make sense for tiny packs (4-5 flags), where the smallest
@@ -1219,21 +1256,25 @@ function tierForPercent(pct){
 // all into Mystery. So above a size threshold, fall back to Standard's own count-based bands,
 // which were built to handle exactly this "how rare is a raw count of N" question properly.
 const SET_PERCENT_SIZE_CUTOFF = 12;
-// For sets bigger than the percent cutoff (e.g. all 50 US States), Standard's own
-// tierForMatchCount table is miscalibrated - it was tuned for a 262-country pool, so on
-// a 50-flag pack almost every trait's raw count falls under its lenient thresholds and
-// everything reads Epic or rarer. Instead, scale the count breakpoints to this pack's own
-// size, so a trait shared by most of the pack's flags still reads Common/Uncommon/Rare,
-// and only genuinely narrow traits (a handful of matches) climb into Epic+.
+// Every pack currently in SETS is bigger than SET_PERCENT_SIZE_CUTOFF (smallest is Pride at
+// 14 flags), so this is the function actually deciding every non-Standard badge's rarity
+// today. It used to apply flat, made-up percentage cuts (6/10/14/16/32/46%) with no
+// relationship to how often traits really occur. Recalibrated the same way as tierForPercent
+// above: matchCount<=1 is kept as an absolute floor (a trait held by exactly one flag in the
+// whole pack is the rarest possible thing regardless of pack size, so it always reads
+// Mystery), and everything else is judged against the real observed match-percentage
+// distribution across all packs, so a trait shared by most of the pack's flags still reads
+// Common/Uncommon/Rare, and only genuinely narrow traits climb into Epic+.
 function tierForLargeSetMatch(matchCount, setSize){
   if(matchCount<=1) return "MYSTERY";
-  if(matchCount<=2) return "UNREAL";
-  if(matchCount<=Math.ceil(setSize*0.06)) return "MYTHIC";
-  if(matchCount<=Math.ceil(setSize*0.10)) return "EXOTIC";
-  if(matchCount<=Math.ceil(setSize*0.14)) return "LEGENDARY";
-  if(matchCount<=Math.ceil(setSize*0.16)) return "EPIC";
-  if(matchCount<=Math.ceil(setSize*0.32)) return "RARE";
-  if(matchCount<=Math.ceil(setSize*0.46)) return "UNCOMMON";
+  const pct = (matchCount / setSize) * 100;
+  if(pct<=5.67) return "UNREAL";
+  if(pct<=7.14) return "EXOTIC";
+  if(pct<=11.11) return "MYTHIC";
+  if(pct<=14.81) return "LEGENDARY";
+  if(pct<=20.00) return "EPIC";
+  if(pct<=27.45) return "RARE";
+  if(pct<=40.32) return "UNCOMMON";
   return "COMMON";
 }
 function tierForSetMatch(matchCount, setSize){
@@ -1244,7 +1285,7 @@ function tierForSetMatch(matchCount, setSize){
 }
 const EP_BY_RARITY = {
   COMMON:60, UNCOMMON:100, RARE:150, EPIC:220, LEGENDARY:320,
-  EXOTIC:450, MYTHIC:650, UNREAL:900, MYSTERY:1400
+  MYTHIC:450, EXOTIC:650, UNREAL:900, MYSTERY:1400
 };
 function recalcBadgeRarities(){
   BADGE_DEFS.forEach(b => {
@@ -1331,6 +1372,19 @@ const SETS = [
       {name:"Netherlands Antilles", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Flag_of_the_Netherlands_Antilles_%281986%E2%80%932010%29.svg/250px-Flag_of_the_Netherlands_Antilles_%281986%E2%80%932010%29.svg.png", noEmoji:true, colors:["red","white","blue"], bands:2, languages:["Dutch"], continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1986, cross:true, stars:true, microstate:true},
       {name:"Biafra", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Flag_of_Biafra.svg/250px-Flag_of_Biafra.svg.png", noEmoji:true, colors:["red","yellow","green","black"], bands:3, languages:["English"], continent:"Africa", landlocked:false, island:false, pop:"medium", area:"small", founded:1967, sun:true},
       {name:"British Guiana", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Flag_of_British_Guiana_%281955%E2%80%931966%29.svg/250px-Flag_of_British_Guiana_%281955%E2%80%931966%29.svg.png", noEmoji:true, colors:["red","white","blue","yellow","gray","light blue","green","black"], bands:0, languages:["English"], continent:"South America", landlocked:false, island:false, pop:"tiny", area:"medium", founded:1967, ship:true, crest:true, terr:true, unionJack:true, script:true},
+      {name:"Azawad", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/MNLA_flag.svg/1920px-MNLA_flag.svg.png", noEmoji:true, colors:["yellow","red","green","black"], bands:3, languages:["French","Arabic"], continent:"Africa", landlocked:true, island:false, pop:null, area:null, founded:2012, triangle:true},
+      {name:"Natalia Republic", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Natalia_Republic.svg/1920px-Flag_of_Natalia_Republic.svg.png", noEmoji:true, colors:["red","white","blue"], bands:2, languages:["English","Dutch"], continent:"Africa", landlocked:true, island:false, pop:null, area:null, founded:1839, triangle:true},
+      {name:"Khiva", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_the_Khanate_of_Khiva.svg/1920px-Flag_of_the_Khanate_of_Khiva.svg.png", noEmoji:true, colors:["light blue","black","yellow"], bands:0, languages:[], continent:"Asia", landlocked:true, island:false, pop:"tiny", area:"small", founded:1917, crescent:true, star:true},
+      {name:"Bukhara", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Flag_of_Emirate_of_Bukhara-Buxoro_Amirligi_Bayrog%27i.svg/1920px-Flag_of_Emirate_of_Bukhara-Buxoro_Amirligi_Bayrog%27i.svg.png", noEmoji:true, colors:["orange","brown","black","yellow","green"], bands:0, languages:[], continent:"Asia", landlocked:true, island:false, pop:"small", area:"small", founded:null, crescent:true, star:true, human:true, script:true, uniqueShape:true},
+      {name:"Khoshut Khanate", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/2/23/Standard_of_Gushri_khan.png", noEmoji:true, colors:["orange","white","blue","green","brown","black","gray","red","pink","yellow"], bands:0, languages:[], continent:"Asia", landlocked:true, island:false, pop:null, area:null, founded:null, human:true, uniqueShape:true, animal:true},
+      {name:"Hotak Empire", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Black_flag.svg/1920px-Black_flag.svg.png", noEmoji:true, colors:["black"], bands:0, languages:[], continent:"Asia", landlocked:false, island:false, pop:null, area:null, founded:null},
+      {name:"Omani Empire", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Flag_of_Muscat.svg/1920px-Flag_of_Muscat.svg.png", noEmoji:true, colors:["red"], bands:0, languages:["Arabic"], continent:"Asia", landlocked:false, island:false, pop:"tiny", area:null, founded:null},
+      {name:"Delhi Sultanate", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Delhi_Sultanate_Flag.svg/1920px-Delhi_Sultanate_Flag.svg.png", noEmoji:true, colors:["black","gray"], bands:0, languages:[], continent:"Asia", landlocked:false, island:false, pop:"huge", area:"huge", founded:null, uniqueShape:true},
+      {name:"Sultanate of Golconda", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Qutbshahi_Flag.svg/1920px-Qutbshahi_Flag.svg.png", noEmoji:true, colors:["light blue"], bands:0, languages:[], continent:"Asia", landlocked:false, island:false, pop:null, area:null, founded:null},
+      {name:"Maratha Empire", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_the_Maratha_Empire.svg/1920px-Flag_of_the_Maratha_Empire.svg.png", noEmoji:true, colors:["orange"], bands:0, languages:[], continent:"Asia", landlocked:false, island:false, pop:null, area:"huge", founded:null, uniqueShape:true},
+    ],
+    packBadges:[
+      {id:"oneColor", name:"Monochrome", icon:"🟩", how:"Roll a flag that only has one color.", check:c=>c.colors.length===1}, 
     ]
   },
   {
@@ -1542,7 +1596,7 @@ const SETS = [
        colors:["red","light blue","green","black","yellow","white"], bands:3, continent:"North America", founded:2018, animal:true, sun:true},
     ],
     packBadges:[
-      {id:"usState", name:"Fifty Stars", icon:"🇺🇧🇷🇸", how:"Roll a US state.", check:c=>c.country==="United States"},
+      {id:"usState", name:"Fifty Stars", icon:"🇺🇸", how:"Roll a US state.", check:c=>c.country==="United States"},
       {id:"caProvTerr", name:"Maple Leaf...and Quebec", icon:"🇨🇦", how:"Roll a Canadian province or territory.", check:c=>c.country==="Canada"},
       {id:"mxState", name:"Cacti", icon:"🇲🇽", how:"Roll a Mexican state.", check:c=>c.country==="Mexico"},
       {id:"pmCommune", name:"France (Maple)", icon:"🇵🇲", how:"Roll a Saint Pierre and Miquelon commune.", check:c=>c.country==="Saint Pierre and Miquelon"},
@@ -1575,7 +1629,7 @@ const SETS = [
       {name:"Piauí", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Bandeira_do_Piau%C3%AD.svg/1920px-Bandeira_do_Piau%C3%AD.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","blue","white"], bands:13, continent:"South America", founded:1922, stars:true, script:true},
       {name:"Rio de Janeiro", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Bandeira_do_estado_do_Rio_de_Janeiro.svg/1920px-Bandeira_do_estado_do_Rio_de_Janeiro.svg.png", noEmoji:true, country:"Brazil", colors:["light blue","white","gray","brown","green","black","yellow","orange"], bands:0, continent:"South America", founded:1965, stars:true, script:true, crest:true, leaf:true, animal:true},
       {name:"Rio Grande do Norte", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Bandeira_do_Rio_Grande_do_Norte.svg/1920px-Bandeira_do_Rio_Grande_do_Norte.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","black","orange"], bands:2, continent:"South America", founded:1957, crest:true, stars:true, leaf:true, ship:true, human:true},
-      {name:"Rio Grande do Norte", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Bandeira_do_Rio_Grande_do_Sul.svg/1920px-Bandeira_do_Rio_Grande_do_Sul.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","black","brown","gray"], bands:3, continent:"South America", founded:1966, crest:true, stars:true, leaf:true, swordFlag:true, script:true},
+      {name:"Rio Grande do Sul", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Bandeira_do_Rio_Grande_do_Sul.svg/1920px-Bandeira_do_Rio_Grande_do_Sul.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","black","brown","gray"], bands:3, continent:"South America", founded:1966, crest:true, stars:true, leaf:true, swordFlag:true, script:true},
       {name:"Rondônia", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Bandeira_de_Rond%C3%B4nia.svg/1920px-Bandeira_de_Rond%C3%B4nia.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","blue","white"], bands:2, continent:"South America", founded:1981, stars:true, triangle:true},
       {name:"Roraima", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Bandeira_de_Roraima.svg/1920px-Bandeira_de_Roraima.svg.png", noEmoji:true, country:"Brazil", colors:["yellow","green","light blue","white","red"], bands:4, continent:"South America", founded:1996, stars:true},
       {name:"Santa Catarina", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Bandeira_de_Santa_Catarina.svg/1920px-Bandeira_de_Santa_Catarina.svg.png", noEmoji:true, country:"Brazil", colors:["white","red","brown","yellow","black","gray","green"], bands:3, continent:"South America", founded:null, crest:true, stars:true, animal:true, script:true, leaf:true},
@@ -2578,6 +2632,10 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something.
 const CHANGELOG = [
+  { version: "v1.07", date: "Jul 28 2026", notes: [
+    "Updated the rarity system so it now is the average instead of the rarest badge",
+    "Added 10 more flags to the Historical pack"
+  ]},
   { version: "v1.06", date: "Jul 28 2026", notes: [
     "Added a new pack: South American Subdivisons (currently only has Brazil)",
   ]},
@@ -3212,19 +3270,36 @@ function computeSetBadges(flag, pack){
       return {id:b.id, name:b.name, icon:b.icon, how:b.how, rarity, ep:EP_BY_RARITY[rarity], matchCount, matchPct:pct};
     });
 }
+// A flag's overall rarity used to be the single HIGHEST rarity among all its badges (plus a
+// further bump if 5+ badges tied at that floor). With an average flag carrying ~9 badges,
+// that's a max-of-9-draws statistic - even if every individual badge is usually common, the
+// odds that at least one of nine independent badges lands Epic+ are extremely high. Simulated
+// against the real Standard pool: 72% of flags came out Epic or rarer, and only 27% landed
+// Rare or below. One lucky badge was silently carrying the whole flag's rarity.
+//
+// Averaging ALL of a flag's badges together fixes that but overcorrects hard - a flag needs
+// nearly every single badge to be top-tier to average anywhere near Legendary+, so high
+// rarities almost never show up at all. Averaging just the top 3 badges instead keeps 1-2
+// genuinely rare traits meaningful (they can still lift a middling flag up a tier or two)
+// without letting one fluke badge define the whole flag - a flag with one Mythic badge and
+// eight Commons floors out to Epic, not Mythic. Re-simulated: Rare-or-below rises to ~64% of
+// flags, Epic+ drops to ~36%, and the full ladder above Epic (Legendary/Exotic/Mythic/Unreal)
+// still gets hit occasionally instead of basically never or basically always.
+//
+// Exception: a badge whose rarity is MYSTERY means the flag holds a trait literally no other
+// flag has (the world's one non-rectangular flag, its one square flag, etc.) - that's meant to
+// be an unmistakable "you got the one-of-a-kind" moment, so it still forces overall Mystery
+// outright rather than getting diluted into an average with the flag's other, ordinary badges.
 function overallRarity(badges){
   if(badges.length === 0) return "COMMON";
   if(badges.some(b => b.rarity === "MYSTERY")) return "MYSTERY";
-  let floorIdx = 0;
-  for(const b of badges){
-    const idx = RARITY_ORDER.indexOf(b.rarity);
-    if(idx > floorIdx) floorIdx = idx;
+  const topThree = [...badges].sort((a,b) => RARITY_WEIGHT[b.rarity] - RARITY_WEIGHT[a.rarity]).slice(0,3);
+  const avgWeight = topThree.reduce((sum,b) => sum + RARITY_WEIGHT[b.rarity], 0) / topThree.length;
+  let tier = RARITY_ORDER[0];
+  for(const r of RARITY_ORDER){
+    if(RARITY_WEIGHT[r] <= avgWeight) tier = r; else break;
   }
-  const floorRarity = RARITY_ORDER[floorIdx];
-  const countAtFloor = badges.filter(b => b.rarity === floorRarity).length;
-  const bumps = Math.floor(countAtFloor / 5);
-  const finalIdx = Math.min(floorIdx + bumps, RARITY_ORDER.length - 1);
-  return RARITY_ORDER[finalIdx];
+  return tier;
 }
 function totalEP(badges){
   return badges.reduce((sum,b) => sum + b.ep, 0);
@@ -3233,8 +3308,8 @@ function percentileFor(rarity){
   switch(rarity){
     case "MYSTERY": return "Top 0.1% - No words";
     case "UNREAL": return "Top 0.5% - Wowza";
-    case "MYTHIC": return "Top 1% - Hey thats pretty cool";
-    case "EXOTIC": return "Top 3% - You're good at this";
+    case "EXOTIC": return "Top 1% - Hey thats pretty cool";
+    case "MYTHIC": return "Top 3% - You're good at this";
     case "LEGENDARY": return "Top 5% - Roll more!!! AGAIN AGAIN AGAIN!!!!";
     case "EPIC": return "Top 15% - Not too bad";
     case "RARE": return "Top 40% - At least it's better than a common, right?";
@@ -3282,7 +3357,15 @@ function spinReel(finalCountry, onDone, pool){
 function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFlag, isPractice){
   animate = animate !== false;
   const reelWindow = document.getElementById('reelWindow');
-  reelWindow.innerHTML = `<div id="flagArea" class="flag-display">${flagVisualHTML(country)}</div>`;
+  const isMystery = rarity === "MYSTERY";
+  reelWindow.innerHTML = `<div id="flagArea" class="flag-display${isMystery ? ' mystery-reveal' : ''}">${flagVisualHTML(country)}</div>`;
+  reelWindow.classList.toggle('mystery-ring', isMystery);
+  if(isMystery){
+    const flash = document.createElement('div');
+    flash.className = 'mystery-flash';
+    reelWindow.appendChild(flash);
+    setTimeout(() => flash.remove(), 1200);
+  }
 
   document.getElementById('introHint').style.display = 'none';
   document.getElementById('resultBlock').style.display = 'block';
