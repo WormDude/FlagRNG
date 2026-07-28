@@ -772,6 +772,10 @@
   <div class="modal-box quiz-box" id="silhouetteGuessBox"></div>
 </div>
 
+<div class="modal-overlay" id="hintHunterOverlay" onclick="if(event.target===this) closeHintHunter()">
+  <div class="modal-box quiz-box" id="hintHunterBox"></div>
+</div>
+
 <div class="modal-overlay" id="gamemodeHubOverlay" onclick="if(event.target===this) closeGamemodeHub()">
   <div class="modal-box quiz-box" id="gamemodeHubBox"></div>
 </div>
@@ -788,6 +792,18 @@
   <div class="modal-box quiz-box" id="oddOneOutBox"></div>
 </div>
 
+<div class="modal-overlay" id="continentCallOverlay" onclick="if(event.target===this) closeContinentCall()">
+  <div class="modal-box quiz-box" id="continentCallBox"></div>
+</div>
+
+<div class="modal-overlay" id="flagdleOverlay" onclick="if(event.target===this) closeFlagdle()">
+  <div class="modal-box quiz-box" id="flagdleBox"></div>
+</div>
+
+<div class="modal-overlay" id="eliminationLadderOverlay" onclick="if(event.target===this) closeEliminationLadder()">
+  <div class="modal-box quiz-box" id="eliminationLadderBox"></div>
+</div>
+
 <script>
 // ---------- Flag / Country dataset ----------
 // bands: number of stripes/bands in the flag design (0 = plain field/no stripe layout, 5 = "5 or more")
@@ -797,7 +813,7 @@ const COUNTRIES = [
   {name:"Japan", imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/960px-Flag_of_Japan.svg.png?_=20111003030759", colors:["white","red"], bands:0, continent:"Asia", landlocked:false, island:true, pop:"large", area:"medium", founded:1870, sun:true, wc26:true},
   {name:"Bhutan", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Flag_of_Bhutan.svg/960px-Flag_of_Bhutan.svg.png", colors:["yellow","orange","white","black"], bands:2, continent:"Asia", landlocked:true, island:false, pop:"tiny", area:"small", founded:1969, animal:true},
   {name:"Kiribati", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Flag_of_Kiribati.svg/960px-Flag_of_Kiribati.svg.png", colors:["red","blue","yellow","white","black"], bands:7, continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1979, stars:true, sun:true, animal:true, microstate:true},
-  {name:"Sri Lanka", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Sri_Lanka.svg/960px-Flag_of_Sri_Lanka.svg.png", colors:["yellow","maroon","green","orange","black"], bands:0, continent:"Asia", landlocked:false, island:true, pop:"medium", area:"small", founded:1972, animal:true, leaf:true},
+  {name:"Sri Lanka", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Sri_Lanka.svg/960px-Flag_of_Sri_Lanka.svg.png", colors:["yellow","red","green","orange","black"], bands:0, continent:"Asia", landlocked:false, island:true, pop:"medium", area:"small", founded:1972, animal:true, leaf:true},
   {name:"Mexico", id:"mexico_country", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Mexico.svg/960px-Flag_of_Mexico.svg.png", colors:["green","white","red","black","light blue","yellow","brown","pink"], bands:3, languages:["Spanish"], continent:"North America", landlocked:false, island:false, pop:"large", area:"large", founded:1968, animal:true, crest:true, leaf:true, wc26:true},
   {name:"Nicaragua", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Nicaragua.svg/960px-Flag_of_Nicaragua.svg.png", colors:["blue","white","green","red","yellow","purple","light blue"], bands:3, languages:["Spanish"], continent:"North America", landlocked:false, island:false, pop:"small", area:"small", founded:1908, sun:true, crest:true, script:true},
   {name:"Belize", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Flag_of_Belize.svg/960px-Flag_of_Belize.svg.png", colors:["blue","red","white","black","green","yellow","brown","light blue"], bands:3, languages:["English"], continent:"North America", landlocked:false, island:false, pop:"tiny", area:"small", founded:1981, crest:true, leaf:true, script:true},
@@ -1900,6 +1916,30 @@ SETS.filter(s => !s.isStandard).forEach(s => {
 // to pull ANY flag in the game into the same round, not just standard countries.
 const ALL_FLAGS = COUNTRIES.concat(...SETS.filter(s => !s.isStandard).map(s => s.flags));
 
+// Standard countries don't carry a .id the way pack flags do (they're tracked by
+// .name instead) - but +Packs below needs every flag, standard included, to have
+// one so collectedPackFlagIds can track it like any other pack pull.
+COUNTRIES.forEach(f => { if(!f.id) f.id = f.name.toLowerCase().replace(/[^a-z0-9]+/g, ""); });
+
+// ---------- +Packs ----------
+// The "everything pack": every flag from every pack, standard included, pooled
+// into one shared draw pool. Pays out extra FP per pull (see PLUS_PACKS_FP_MULTIPLIER)
+// to make up for the fact it has its own separate daily spin like any other pack -
+// pulling from here doesn't touch Standard's or any individual pack's free roll.
+const PLUS_PACKS_FP_MULTIPLIER = 2;
+SETS.push({
+  id:"plusPacks", name:"+Packs", icon:"➕",
+  blurb:"Every flag from every pack, standard included, in one shared draw. Pays 2x FP per pull.",
+  flags: ALL_FLAGS,
+  fpMultiplier: PLUS_PACKS_FP_MULTIPLIER,
+  // +Packs is a meta-pool over every other pack's flags, not standalone content - so
+  // it's excluded (via isMegaPack) from anywhere that totals up "unique" flags/badges
+  // across sets (Flags Seen counter, the Flag Collection browser, Hint Hunter's pool,
+  // the locked/unlocked breakdown) to avoid counting every flag twice. It still shows
+  // up normally anywhere that just lists equippable packs, like the Packs sidebar.
+  isMegaPack: true,
+});
+
 // ---------- Land Shape image lookup ----------
 // Fill this in with your traced country outlines. Key = country name EXACTLY as
 // it appears in COUNTRIES above (e.g. "United States", "Türkiye"), value = a
@@ -1920,6 +1960,19 @@ const COUNTRY_SHAPE_URLS = {
    "Liechtenstein": "https://github.com/WormDude/tstflgrng/blob/main/LIECH.png?raw=true",
    "United States": "https://github.com/WormDude/tstflgrng/blob/main/USA.png?raw=true",
    "Saint Kitts and Nevis": "https://github.com/WormDude/tstflgrng/blob/main/stkitts.png?raw=true",
+  "Canada": "https://github.com/WormDude/tstflgrng/blob/main/canada.png?raw=true",
+  "Brazil": "https://github.com/WormDude/tstflgrng/blob/main/brazil.png?raw=true",
+  "Mexico": "https://github.com/WormDude/tstflgrng/blob/main/mexico.png?raw=true",
+  "Japan": "https://github.com/WormDude/tstflgrng/blob/main/japan.png?raw=true",
+  "Russia": "https://github.com/WormDude/tstflgrng/blob/main/russia.png?raw=true",
+  "Italy": "https://github.com/WormDude/tstflgrng/blob/main/italy.png?raw=true",
+  "Cyprus": "https://github.com/WormDude/tstflgrng/blob/main/cyprus.png?raw=true",
+  "Trinidad and Tobago": "https://github.com/WormDude/tstflgrng/blob/main/trinandtobag.png?raw=true",
+  "China": "https://github.com/WormDude/tstflgrng/blob/main/china.png?raw=true",
+  "Australia": "https://github.com/WormDude/tstflgrng/blob/main/australia.png?raw=true",
+  "France": "https://github.com/WormDude/tstflgrng/blob/main/france.png?raw=true",
+  "Spain": "https://github.com/WormDude/tstflgrng/blob/main/spain.png?raw=true",
+  "Vatican City": "https://github.com/WormDude/tstflgrng/blob/main/vatican.png?raw=true",
 };
 
 let hasRolled = false;
@@ -2273,7 +2326,7 @@ function updateCountdownText(){
 function allSetsFlagCounts(){
   let total = COUNTRIES.length;
   let unlocked = collectedFlagNames.length;
-  SETS.filter(s => !s.isStandard).forEach(s => {
+  SETS.filter(s => !s.isStandard && !s.isMegaPack).forEach(s => {
     total += s.flags.length;
     unlocked += getPackCollectedIds(s.id).length;
   });
@@ -2416,7 +2469,7 @@ function renderFlagCollection(){
     combinedTotal += COUNTRIES.length;
     combinedUnlocked += collectedFlagNames.length;
   }
-  SETS.filter(s => !s.isStandard && flagSetFilterIds.includes(s.id)).forEach(s => {
+  SETS.filter(s => !s.isStandard && !s.isMegaPack && flagSetFilterIds.includes(s.id)).forEach(s => {
     combinedTotal += s.flags.length;
     combinedUnlocked += getPackCollectedIds(s.id).length;
   });
@@ -2453,7 +2506,7 @@ function renderFlagCollection(){
     <div class="flag-grid">${cardsFor(COUNTRIES, collectedFlagNames, 'standard', true) || '<div class="flag-empty-note">No flags match your search.</div>'}</div>
   ` : '';
 
-  const setSectionsHTML = SETS.filter(s => !s.isStandard && flagSetFilterIds.includes(s.id)).map(s => {
+  const setSectionsHTML = SETS.filter(s => !s.isStandard && !s.isMegaPack && flagSetFilterIds.includes(s.id)).map(s => {
     const owned = getPackCollectedIds(s.id);
     const setCardsHTML = cardsFor(s.flags, owned, s.id, false);
     return `
@@ -2464,7 +2517,7 @@ function renderFlagCollection(){
     `;
   }).join('');
 
-  const setToggleChipsHTML = SETS.map(s => `
+  const setToggleChipsHTML = SETS.filter(s => !s.isMegaPack).map(s => `
     <button class="set-filter-chip ${flagSetFilterIds.includes(s.id) ? 'active' : ''}" onclick="toggleFlagSetFilter('${s.id}')">${s.icon} ${s.name}</button>
   `).join('');
 
@@ -2508,6 +2561,10 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something.
 const CHANGELOG = [
+  { version: "v1.05", date: "Jul 27 2026", notes: [
+    "Added just a few more gamemodes",
+    "Maybe some other stuff I probably forgot"
+  ]},
   { version: "v1.04", date: "Jul 27 2026", notes: [
     "Added a Flag Fact of the Day",
     "Compressed all gamemodes into one button",
@@ -2848,6 +2905,9 @@ async function rollPackSet(packId, practice){
     const badges = computeSetBadges(flag, pack);
     const rarity = overallRarity(badges);
     let ep = totalEP(badges);
+    if(pack.fpMultiplier){
+      ep = Math.round(ep * pack.fpMultiplier);
+    }
     let usedDoubler = false;
     if(!practice && fpDoublers > 0){
       ep *= 2;
@@ -3444,7 +3504,7 @@ function buildQuizPool(lockMode){
     const unlocked = standardUnlocked(f);
     if((lockMode === "unlocked") === unlocked) addTo("standard", {flag:f, packId:"standard"});
   });
-  SETS.forEach(s => {
+  SETS.filter(s => !s.isMegaPack).forEach(s => {
     const owned = collectedPackFlagIds[s.id] || [];
     s.flags.forEach(f => {
       const unlocked = owned.includes(f.id);
@@ -5058,6 +5118,15 @@ const HL_STATS = [
   {key:"founded", icon:"🕰️", label:"Flag Year", desc:"Which flag design was adopted more recently?",
    higherLabel:"NEWER FLAG", lowerLabel:"OLDER FLAG",
    filter:c=>typeof c.founded === "number", getValue:c=>c.founded, getDisplay:c=>(c.founded<0 ? `${Math.abs(c.founded)} BC` : c.founded)},
+  {key:"bands", icon:"📏", label:"Stripe Count", desc:"Which flag has more bands/stripes in its design?",
+   higherLabel:"MORE BANDS", lowerLabel:"FEWER BANDS",
+   filter:c=>typeof c.bands === "number", getValue:c=>c.bands, getDisplay:c=>`${c.bands} ${c.bands===1?'band':'bands'}`},
+  {key:"colorCount", icon:"🎨", label:"Color Count", desc:"Which flag uses more distinct colors?",
+   higherLabel:"MORE COLORS", lowerLabel:"FEWER COLORS",
+   filter:c=>Array.isArray(c.colors), getValue:c=>c.colors.length, getDisplay:c=>`${c.colors.length} ${c.colors.length===1?'color':'colors'}`},
+  {key:"nameLength", icon:"🔤", label:"Name Length", desc:"Which country's name has more letters?",
+   higherLabel:"LONGER NAME", lowerLabel:"SHORTER NAME",
+   filter:c=>typeof c.name === "string", getValue:c=>c.name.replace(/[^A-Za-z]/g,"").length, getDisplay:c=>`${c.name.replace(/[^A-Za-z]/g,"").length} letters`},
 ];
 
 let hlStatKey = null;
@@ -5636,6 +5705,293 @@ function renderSilhouetteGuess(resultState){
 }
 
 
+// ---------- Hint Hunter ----------
+// No flag image at all - just a name to guess. Every wrong guess earns you a
+// hint, but you choose which one: each hint round offers 2 random candidate
+// hints (never repeating a used-up one, except Color which stays in the pool
+// until every color on the flag has been named). Fewer hints used = more FP.
+let hhCurrentEntry = null;      // {flag, packId, packName}
+let hhIncludePacks = false;
+let hhRevealed = {};            // { hintId: true } for one-shot hints
+let hhRevealedColors = [];      // colors already shown, for the repeatable Color hint
+let hhRevealedSymbols = [];     // symbol tags already shown, for the repeatable Symbol hint
+let hhHintLog = [];             // [{label, text}] in reveal order, for display
+let hhWrongGuesses = 0;
+let hhScore = 0;                // current streak
+let hhLastFpEarned = 0;
+let hhLastTyped = "";
+let hhPhase = "guess";          // "guess" | "choose" | "result"
+let hhHintChoices = [];         // the 2 hint candidates currently offered
+let hhBestStreaks = { standard: 0, packs: 0 };
+const HH_FP_BASE = 30;
+const HH_FP_BASE_PACKS = 55;
+
+const HH_SYMBOL_TAGS = [
+  ["stars","a star"], ["cross","a cross"], ["crescent","a crescent"], ["sun","a sun"],
+  ["animal","an animal"], ["human","a human figure"], ["crest","a crest or coat of arms"],
+  ["crown","a crown"], ["leaf","a plant or leaf"], ["script","text or a script"],
+  ["ship","a ship"], ["swordFlag","a sword or weapon"], ["buildingIcon","a building"],
+  ["triangle","a triangle shape"], ["unionJack","a Union Jack canton"],
+  ["uniqueShape","a non-rectangular shape"], ["mapShape","a map outline"],
+  ["twoSided","a different design on each side"],
+];
+
+function hhPool(includePacks){
+  const entries = COUNTRIES.map(f => ({flag:f, packId:"standard", packName:"Standard"}));
+  if(includePacks){
+    SETS.filter(s => !s.isStandard && !s.isMegaPack).forEach(s => {
+      s.flags.forEach(f => entries.push({flag:f, packId:s.id, packName:s.name}));
+    });
+  }
+  return entries;
+}
+
+function currentHhFpRate(){ return hhIncludePacks ? HH_FP_BASE_PACKS : HH_FP_BASE; }
+
+function openHintHunter(){
+  document.getElementById("hintHunterOverlay").classList.add("open");
+  hhCurrentEntry = null;
+  renderHintHunterIntro();
+}
+function closeHintHunter(){
+  document.getElementById("hintHunterOverlay").classList.remove("open");
+}
+function setHhPoolMode(includePacks){
+  hhIncludePacks = includePacks;
+  renderHintHunterIntro();
+}
+
+function renderHintHunterIntro(){
+  const box = document.getElementById("hintHunterBox");
+  const rate = currentHhFpRate();
+  box.innerHTML = `
+    <div class="modal-icon">🧩</div>
+    <div class="modal-title">Hint Hunter</div>
+    <div class="modal-desc">No flag shown - just guess the name outright. Get it wrong and you'll be offered a choice of 2 hints; pick whichever sounds most useful. The fewer hints you need, the more FP you earn.</div>
+    <div class="quiz-lock-toggle">
+      <button class="${!hhIncludePacks ? 'active' : ''}" onclick="setHhPoolMode(false)">Standard Only</button>
+      <button class="${hhIncludePacks ? 'active' : ''}" onclick="setHhPoolMode(true)">+ Pack Flags (more FP)</button>
+    </div>
+    <div class="conn-intro-line">Solve with zero hints for the full ${rate} FP per streak level${hhIncludePacks ? ', pack flags included' : ''}. Each hint you take chips away at the payout.</div>
+    <div class="quiz-streak-row"><span>🔥 Streak: ${hhScore}</span><span>🏆 Best: ${hhBestStreaks[hhIncludePacks ? 'packs' : 'standard']}</span></div>
+    <div class="conn-action-row">
+      <button class="quiz-submit-btn" onclick="startHintHunter()">Start</button>
+      <button class="modal-close" onclick="closeHintHunter()">Close</button>
+    </div>
+  `;
+}
+
+function hhPickEntry(){
+  const pool = hhPool(hhIncludePacks);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function startHintHunter(){
+  hhScore = 0;
+  beginHintHunterRound();
+}
+
+function advanceHintHunter(){
+  beginHintHunterRound();
+}
+
+function beginHintHunterRound(){
+  hhCurrentEntry = hhPickEntry();
+  hhRevealed = {};
+  hhRevealedColors = [];
+  hhRevealedSymbols = [];
+  hhHintLog = [];
+  hhWrongGuesses = 0;
+  hhLastFpEarned = 0;
+  hhLastTyped = "";
+  hhPhase = "guess";
+  hhHintChoices = [];
+  renderHintHunter();
+}
+
+// Builds the list of hints not yet exhausted for the current flag. Color and
+// Symbol stay available as long as there's still something new to reveal;
+// everything else is one-shot and disappears from the list once used.
+function hhBuildCandidates(){
+  const {flag, packId, packName} = hhCurrentEntry;
+  const list = [];
+
+  if(!hhRevealed.continent){
+    list.push({id:"continent", label:"Continent", reveal:() => `This flag is from ${continentsOf(flag).join(" & ")}.`});
+  }
+  if(hhIncludePacks && packId !== "standard" && !hhRevealed.pack){
+    list.push({id:"pack", label:"Pack", reveal:() => `This flag belongs to the "${packName}" pack.`});
+  }
+  const uniqueColors = [...new Set(flag.colors || [])];
+  if(hhRevealedColors.length < uniqueColors.length){
+    list.push({id:"color", label:"Color", reveal:() => {
+      const remaining = uniqueColors.filter(c => !hhRevealedColors.includes(c));
+      const pick = remaining[Math.floor(Math.random() * remaining.length)];
+      hhRevealedColors.push(pick);
+      return `This flag contains the color ${pick}.`;
+    }});
+  }
+  if(!hhRevealed.bandcount && typeof flag.bands === "number"){
+    list.push({id:"bandcount", label:"Band Count", reveal:() => {
+      const n = flag.bands;
+      const desc = n === 0 ? "no bands/stripes" : n >= 5 ? "5 or more bands/stripes" : `${n} band${n===1?'':'s'}/stripe${n===1?'':'s'}`;
+      return `This flag has ${desc}.`;
+    }});
+  }
+  if(!hhRevealed.adopted && typeof flag.founded === "number"){
+    list.push({id:"adopted", label:"Adopted", reveal:() => {
+      const y = flag.founded;
+      if(y < 0) return `This flag (or its design lineage) dates to ancient times, before year 1.`;
+      const century = Math.floor(y / 100) * 100;
+      return `This flag was adopted sometime in the ${century}s.`;
+    }});
+  }
+  if(!hhRevealed.colorcount && flag.colors && flag.colors.length){
+    list.push({id:"colorcount", label:"Color Count", reveal:() => {
+      const n = new Set(flag.colors).size;
+      return `This flag uses ${n} distinct color${n===1?'':'s'}.`;
+    }});
+  }
+  if(!hhRevealed.landlocked && typeof flag.landlocked === "boolean"){
+    list.push({id:"landlocked", label:"Landlocked", reveal:() => `This place is ${flag.landlocked ? "" : "not "}landlocked.`});
+  }
+  if(!hhRevealed.island && typeof flag.island === "boolean"){
+    list.push({id:"island", label:"Island", reveal:() => `This place is ${flag.island ? "" : "not "}an island.`});
+  }
+  if(!hhRevealed.population && flag.pop){
+    list.push({id:"population", label:"Population Size", reveal:() => `Population size tier: ${flag.pop}.`});
+  }
+  if(!hhRevealed.area && flag.area){
+    list.push({id:"area", label:"Area Size", reveal:() => `Area size tier: ${flag.area}.`});
+  }
+  const trueSymbols = HH_SYMBOL_TAGS.filter(([key]) => flag[key] && !hhRevealedSymbols.includes(key));
+  if(trueSymbols.length){
+    list.push({id:"symbol", label:"Symbol", reveal:() => {
+      const [key, desc] = trueSymbols[Math.floor(Math.random() * trueSymbols.length)];
+      hhRevealedSymbols.push(key);
+      return `This flag features ${desc}.`;
+    }});
+  }
+  if(!hhRevealed.language && flag.languages && flag.languages.length){
+    list.push({id:"language", label:"Language", reveal:() => `Language(s) associated with this place: ${flag.languages.join(", ")}.`});
+  }
+  if(!hhRevealed.firstletter){
+    list.push({id:"firstletter", label:"First Letter", reveal:() => `The name starts with the letter "${flag.name[0].toUpperCase()}".`});
+  }
+  if(!hhRevealed.namelength){
+    list.push({id:"namelength", label:"Name Length", reveal:() => `The name is ${flag.name.length} characters long (including spaces).`});
+  }
+
+  return list;
+}
+
+function hhOfferHintChoice(){
+  const candidates = hhBuildCandidates();
+  hhHintChoices = shuffleArr(candidates).slice(0, 2);
+  hhPhase = hhHintChoices.length ? "choose" : "guess"; // if truly nothing left to offer, just let them keep guessing
+  renderHintHunter();
+}
+
+function hhChooseHint(idx){
+  const chosen = hhHintChoices[idx];
+  if(!chosen) return;
+  const text = chosen.reveal();
+  if(chosen.id !== "color" && chosen.id !== "symbol") hhRevealed[chosen.id] = true;
+  hhHintLog.push({label: chosen.label, text});
+  hhPhase = "guess";
+  renderHintHunter();
+}
+
+async function resolveHhRound(isCorrect){
+  const bestKey = hhIncludePacks ? "packs" : "standard";
+  hhLastFpEarned = 0;
+  if(isCorrect){
+    hhScore += 1;
+    if(!hhBestStreaks[bestKey] || hhScore > hhBestStreaks[bestKey]) hhBestStreaks[bestKey] = hhScore;
+    const hintsUsed = hhHintLog.length;
+    const rate = Math.round(currentHhFpRate() * Math.max(0.25, 1 - hintsUsed * 0.12));
+    hhLastFpEarned = rate * hhScore;
+    totalFP += hhLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  hhPhase = "result";
+  renderHintHunter(isCorrect);
+}
+
+async function submitHhGuess(){
+  if(hhPhase !== "guess" || !hhCurrentEntry) return;
+  const input = document.getElementById("hhGuessInput");
+  const typed = input ? input.value.trim() : "";
+  if(!typed) return;
+  hhLastTyped = typed;
+  const correct = isTypedAnswerCorrect(typed, hhCurrentEntry.flag.name);
+  if(correct){
+    await resolveHhRound(true);
+  } else {
+    hhWrongGuesses += 1;
+    hhOfferHintChoice();
+  }
+}
+
+async function giveUpHintHunter(){
+  await resolveHhRound(false);
+}
+
+function renderHintHunter(justResolvedCorrect){
+  const box = document.getElementById("hintHunterBox");
+  if(!hhCurrentEntry){ box.innerHTML = ""; return; }
+  const bestKey = hhIncludePacks ? "packs" : "standard";
+  const best = hhBestStreaks[bestKey];
+
+  const hintLogHTML = hhHintLog.length ? `
+    <div class="stats-row" style="margin-bottom:10px;">
+      ${hhHintLog.map(h => `<div class="stat-chip"><b>${h.label}:</b> ${h.text}</div>`).join("")}
+    </div>
+  ` : "";
+
+  let bodyHTML = "";
+  if(hhPhase === "choose"){
+    bodyHTML = `
+      <div class="conn-intro-line">Wrong guess. Pick a hint:</div>
+      <div class="quiz-option-grid">
+        ${hhHintChoices.map((h, i) => `<div class="quiz-option" onclick="hhChooseHint(${i})">${h.label}</div>`).join("")}
+      </div>
+      <div class="conn-action-row"><button class="modal-close" onclick="giveUpHintHunter()">Give Up</button></div>
+    `;
+  } else if(hhPhase === "result"){
+    const correct = !!justResolvedCorrect;
+    bodyHTML = `
+      <div class="hl-gameover">
+        ${correct
+          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ Correct! It's ${hhCurrentEntry.flag.name}</div><div class="hl-gameover-score">+${hhLastFpEarned.toLocaleString()} FP (${hhHintLog.length} hint${hhHintLog.length===1?'':'s'} used)</div>`
+          : `<div class="hl-gameover-title" style="color:#e05555;">❌ Streak ended at ${hhScore} - it was ${hhCurrentEntry.flag.name}${hhLastTyped ? ` (last guess: "${hhLastTyped}")` : ''}</div>`}
+        <div class="conn-action-row">
+          ${correct
+            ? `<button class="quiz-submit-btn" onclick="advanceHintHunter()">Next Flag →</button>`
+            : `<button class="ghost-btn" onclick="startHintHunter()">🔁 Play Again</button><button class="modal-close" onclick="closeHintHunter()">Close</button>`}
+        </div>
+      </div>
+    `;
+  } else {
+    bodyHTML = `
+      <div class="cs-input-row">
+        <input type="text" class="flag-search" id="hhGuessInput" placeholder="Type your guess..." autocomplete="off"
+               onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitHhGuess(); }">
+        <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitHhGuess()">Guess</button>
+      </div>
+      <div class="conn-action-row"><button class="modal-close" onclick="giveUpHintHunter()">Give Up</button></div>
+    `;
+  }
+
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🧩 Hint Hunter${hhIncludePacks ? ' · +Packs' : ''} · Streak: ${hhScore}${best ? ` · Best: ${best}` : ""}</div>
+    ${hintLogHTML}
+    ${bodyHTML}
+  `;
+  const inputEl = document.getElementById("hhGuessInput");
+  if(inputEl) inputEl.focus();
+}
 
 
 // ---------- Gamemode Hub ----------
@@ -5647,9 +6003,13 @@ const GAMEMODES = [
   {icon:"📊", title:"Higher or Lower", desc:"Guess whether the next flag ranks higher or lower.", action:"openHigherLower"},
   {icon:"⏱️", title:"Category Sprint", desc:"Race the clock naming flags in a category.", action:"openCategorySprint"},
   {icon:"🌑", title:"Silhouette Guess", desc:"Name the flag with all its color stripped away.", action:"openSilhouetteGuess"},
+  {icon:"🧩", title:"Hint Hunter", desc:"No flag shown - guess the name, choosing your own hints when you're wrong.", action:"openHintHunter"},
   {icon:"🔎", title:"Flag Zoom", desc:"A flag starts zoomed in tight - guess before it fully unzooms.", action:"openFlagZoom"},
   {icon:"🗺️", title:"Land Shape", desc:"Name the country from its land border silhouette.", action:"openLandShape", inProgress:true},
   {icon:"🕵️", title:"Odd One Out", desc:"Three flags share a hidden trait - find the one that doesn't.", action:"openOddOneOut"},
+  {icon:"⚔️", title:"Elimination Ladder", desc:"Four flags enter, one survives - pick the extreme or you're out.", action:"openEliminationLadder"},
+  {icon:"🌍", title:"Continent Call", desc:"A flag flashes up - name the continent before your streak snaps.", action:"openContinentCall"},
+  {icon:"🕵️", title:"Flag Detective", desc:"A mystery flag from your collection. Guess and get scored on continent, colors, stripes, decade, and more.", action:"openFlagdle"},
 ];
 function openGamemodeHub(){
   document.getElementById("gamemodeHubOverlay").classList.add("open");
@@ -5858,7 +6218,7 @@ function renderLandShapeIntro(){
   const rate = currentLsFpRate();
   box.innerHTML = `
     <div class="modal-title">🗺️ Land Shape</div>
-    <div class="conn-intro-line">Name the country from its land border silhouette. Streak keeps climbing until you miss one.</div>
+    <div class="conn-intro-line">Name the country from its land border silhouette. Streak keeps climbing until you miss one.⚠️ BORDERS ARE NOT 100% ACCURATE AND SIZES ARE NOT TO SCALE ⚠️</div>
     ${pool.length < 4 ? `
       <div class="conn-intro-line" style="color:var(--muted);">Not enough traced shapes unlocked yet (need at least 4). Trace a few more countries into COUNTRY_SHAPE_URLS, or unlock more flags that already have shapes.</div>
       <button class="modal-close" onclick="closeLandShape()">Close</button>
@@ -5992,6 +6352,8 @@ let ooBestStreak = 0;
 let ooLocked = false;
 let ooPickedIndex = -1;
 let ooLastFpEarned = 0;
+let ooRecentBadgeIds = [];   // last few badge ids used, so we don't repeat the same trait round after round
+let ooRecentOddNames = [];   // last few "odd one" flag names, so the same outlier doesn't keep getting picked
 
 function oddOneOutPool(){
   return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
@@ -6018,24 +6380,44 @@ function renderOddOneOutIntro(){
     `}
   `;
 }
-// Tries a bunch of random badges until it finds one that splits the unlocked
-// pool into "3+ flags with it" and "1+ flags without it" - returns null if the
-// pool is too homogeneous (e.g. everything unlocked shares every trait).
+// Scans every badge (not just the first hit) that splits the unlocked pool into
+// "3+ flags with it" and "1+ flags without it", then picks randomly among the
+// valid ones - preferring badges/odd-flags we haven't used in the last few
+// rounds so the same trait or outlier doesn't keep showing up. Returns null if
+// the pool is too homogeneous (e.g. everything unlocked shares every trait).
 function buildOddOneOutRound(){
   const pool = oddOneOutPool();
-  const badgePool = shuffleArr(BADGE_DEFS);
-  for(let i = 0; i < Math.min(OO_ROUND_TRIES, badgePool.length); i++){
-    const badge = badgePool[i];
+  const candidates = []; // {badge, matching, nonMatching}
+  for(const badge of BADGE_DEFS){
     const matching = pool.filter(c => { try{ return !!badge.check(c); }catch(e){ return false; } });
+    if(matching.length < 3) continue;
     const nonMatching = pool.filter(c => !matching.includes(c));
-    if(matching.length >= 3 && nonMatching.length >= 1){
-      const group = shuffleArr(matching).slice(0, 3);
-      const odd = nonMatching[Math.floor(Math.random() * nonMatching.length)];
-      const flags = shuffleArr([...group, odd]);
-      return {flags, oddIndex: flags.indexOf(odd), badge};
-    }
+    if(nonMatching.length < 1) continue;
+    candidates.push({badge, matching, nonMatching});
   }
-  return null;
+  if(candidates.length === 0) return null;
+
+  // Prefer candidates whose badge hasn't been used recently; fall back to the
+  // full candidate list if that filters out everything (small pools).
+  let pickFrom = candidates.filter(c => !ooRecentBadgeIds.includes(c.badge.id));
+  if(pickFrom.length === 0) pickFrom = candidates;
+  const chosen = pickFrom[Math.floor(Math.random() * pickFrom.length)];
+
+  const group = shuffleArr(chosen.matching).slice(0, 3);
+  // Same idea for the odd flag itself - avoid repeating a recently-seen outlier
+  // when there's another option available.
+  let oddPool = chosen.nonMatching.filter(c => !ooRecentOddNames.includes(c.name));
+  if(oddPool.length === 0) oddPool = chosen.nonMatching;
+  const odd = oddPool[Math.floor(Math.random() * oddPool.length)];
+
+  const flags = shuffleArr([...group, odd]);
+
+  ooRecentBadgeIds.push(chosen.badge.id);
+  if(ooRecentBadgeIds.length > 5) ooRecentBadgeIds.shift();
+  ooRecentOddNames.push(odd.name);
+  if(ooRecentOddNames.length > 5) ooRecentOddNames.shift();
+
+  return {flags, oddIndex: flags.indexOf(odd), badge: chosen.badge};
 }
 function startOddOneOut(){
   const round = buildOddOneOutRound();
@@ -6120,6 +6502,626 @@ function renderOddOneOut(resultState){
       </div>
     `}
   `;
+}
+
+// ---------- Elimination Ladder ----------
+// Three flags, one stat (reuses HL_STATS from Higher/Lower). Each round asks
+// for either the highest or lowest value among the three - guess wrong and the
+// run ends. Ties are avoided when picking the trio so there's always exactly
+// one correct answer.
+
+const EL_FP_PER_STREAK = 15;
+const EL_FP_PER_STREAK_PACKS = 30;   // +Pack Flags pool - wider variety, pays more
+const EL_ROUND_TRIES = 40;
+const EL_FLAG_COUNT = 4;
+
+let elIncludePacks = false;  // this run's pool choice, locked in once Start is pressed
+
+function elCurrentFpRate(){ return elIncludePacks ? EL_FP_PER_STREAK_PACKS : EL_FP_PER_STREAK; }
+function elPoolFor(stat){
+  const source = elIncludePacks ? ALL_FLAGS : COUNTRIES;
+  const owned = elIncludePacks ? source.filter(c => stat.filter(c)) : source.filter(stat.filter).filter(c => collectedFlagNames.includes(c.name));
+  return owned;
+}
+
+let elStatKey = null;
+let elDirection = 'higher'; // 'higher' = pick the max, 'lower' = pick the min
+let elFlags = [];           // 3 country objects for this round
+let elCorrectIndex = -1;
+let elScore = 0;
+let elBestStreak = 0;
+let elLocked = false;
+let elPickedIndex = -1;
+let elLastFpEarned = 0;
+
+function openEliminationLadder(){
+  document.getElementById("eliminationLadderOverlay").classList.add("open");
+  renderEliminationLadderIntro();
+}
+function closeEliminationLadder(){
+  document.getElementById("eliminationLadderOverlay").classList.remove("open");
+}
+function renderEliminationLadderIntro(){
+  const box = document.getElementById("eliminationLadderBox");
+  const activeKey = elStatKey || HL_STATS[0].key;
+  const rate = elCurrentFpRate();
+  box.innerHTML = `
+    <div class="modal-title">⚔️ Elimination Ladder</div>
+    <div class="conn-intro-line">Four flags face off. Pick the one that's highest or lowest by the stat shown - one wrong pick and the run ends.</div>
+    <div class="quiz-lock-toggle">
+      <button class="${!elIncludePacks ? 'active' : ''}" onclick="setElPoolMode(false)">Standard Only</button>
+      <button class="${elIncludePacks ? 'active' : ''}" onclick="setElPoolMode(true)">+ Pack Flags (more FP)</button>
+    </div>
+    <div class="hl-stat-picker">
+      ${HL_STATS.map(stat => {
+        const pool = elPoolFor(stat);
+        const locked = pool.length < EL_FLAG_COUNT;
+        return `<button class="hl-stat-btn" ${locked ? 'disabled' : ''} onclick="${locked ? '' : `selectEliminationStat('${stat.key}')`}" style="${activeKey===stat.key ? 'border-color:var(--accent);color:var(--accent);' : ''}">
+          ${stat.icon} ${stat.label}
+          <small>${locked ? `Unlock at least ${EL_FLAG_COUNT} flags with this stat first` : stat.desc}</small>
+        </button>`;
+      }).join("")}
+    </div>
+    <div class="quiz-streak-row"><span>🔥 Streak: ${elScore}</span><span>🏆 Best: ${elBestStreak}</span></div>
+    <div class="conn-intro-line">${rate} FP per streak level${elIncludePacks ? ' with pack flags mixed in' : ''}.</div>
+    ${(() => {
+      const activeStat = HL_STATS.find(s => s.key === activeKey);
+      const activePool = elPoolFor(activeStat);
+      return activePool.length < EL_FLAG_COUNT
+        ? `<div class="conn-intro-line" style="color:var(--muted);">Unlock at least ${EL_FLAG_COUNT} flags with this stat first.</div><button class="quiz-submit-btn" disabled>Start</button>`
+        : `<button class="quiz-submit-btn" onclick="startEliminationLadder('${activeKey}')">Start</button>`;
+    })()}
+    <div class="conn-action-row"><button class="modal-close" onclick="closeEliminationLadder()">Close</button></div>
+  `;
+}
+function setElPoolMode(includePacks){
+  elIncludePacks = includePacks;
+  renderEliminationLadderIntro();
+}
+function selectEliminationStat(statKey){
+  elStatKey = statKey;
+  renderEliminationLadderIntro();
+}
+// Tries a bunch of random groups (from unlocked flags with this stat) until it
+// finds EL_FLAG_COUNT flags with distinct values, so there's never a tie for the answer.
+function buildEliminationRound(statKey){
+  const stat = HL_STATS.find(s => s.key === statKey);
+  const pool = elPoolFor(stat);
+  if(pool.length < EL_FLAG_COUNT) return null;
+  for(let i = 0; i < EL_ROUND_TRIES; i++){
+    const group = shuffleArr(pool).slice(0, EL_FLAG_COUNT);
+    const values = group.map(stat.getValue);
+    if(new Set(values).size < EL_FLAG_COUNT) continue; // tie - reshuffle and try again
+    const direction = Math.random() < 0.5 ? 'higher' : 'lower';
+    const targetVal = direction === 'higher' ? Math.max(...values) : Math.min(...values);
+    const correctIndex = values.indexOf(targetVal);
+    return {statKey, direction, flags: group, correctIndex};
+  }
+  return null;
+}
+function startEliminationLadder(statKey){
+  const round = buildEliminationRound(statKey);
+  if(!round){
+    document.getElementById("eliminationLadderBox").innerHTML = `
+      <div class="modal-title">⚔️ Elimination Ladder</div>
+      <div class="conn-intro-line" style="color:var(--muted);">Couldn't find four flags with distinct values - unlock a wider variety and try again.</div>
+      <button class="modal-close" onclick="closeEliminationLadder()">Close</button>
+    `;
+    return;
+  }
+  elScore = 0;
+  elLocked = false;
+  elLastFpEarned = 0;
+  applyEliminationRound(round);
+}
+function advanceEliminationLadder(){
+  const round = buildEliminationRound(elStatKey);
+  if(!round){ renderEliminationLadderIntro(); return; }
+  elLocked = false;
+  applyEliminationRound(round);
+}
+function applyEliminationRound(round){
+  elStatKey = round.statKey;
+  elDirection = round.direction;
+  elFlags = round.flags;
+  elCorrectIndex = round.correctIndex;
+  renderEliminationLadder(null);
+}
+async function guessElimination(idx){
+  if(elLocked) return;
+  elLocked = true;
+  elPickedIndex = idx;
+  const isCorrect = idx === elCorrectIndex;
+  elLastFpEarned = 0;
+  if(isCorrect){
+    elScore += 1;
+    if(elScore > elBestStreak) elBestStreak = elScore;
+    elLastFpEarned = elCurrentFpRate() * elScore;
+    totalFP += elLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderEliminationLadder({correct:isCorrect});
+}
+function renderEliminationLadder(resultState){
+  const stat = HL_STATS.find(s => s.key === elStatKey);
+  const box = document.getElementById("eliminationLadderBox");
+  const locked = elLocked;
+  const promptLabel = elDirection === 'higher'
+    ? (stat.higherLabel || 'HIGHEST')
+    : (stat.lowerLabel || 'LOWEST');
+
+  const hideFlagArt = elStatKey === "bands" || elStatKey === "colorCount";
+  const hideName = elStatKey === "nameLength";
+
+  const gridHTML = `
+    <div class="quiz-flagimg-grid oo-grid">
+      ${elFlags.map((flag, i) => {
+        let cls = "quiz-flagimg-option";
+        if(locked){
+          if(i === elCorrectIndex) cls += " correct";
+          else if(i === elPickedIndex) cls += " incorrect";
+        }
+        return `<div class="${cls}" ${locked ? '' : `onclick="guessElimination(${i})"`}>
+          ${(hideFlagArt && !locked) ? '' : flagVisualHTML(flag, "custom-flag-grid-lg")}
+          ${(hideName && !locked) ? '' : `<div class="quiz-reveal-name" style="font-size:0.72rem;">${flag.name}</div>`}
+          ${locked ? `<div class="hl-card-value">${stat.getDisplay(flag)}</div>` : ''}
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+
+  box.innerHTML = `
+    <div class="quiz-flash-counter">⚔️ Elimination Ladder · Streak: ${elScore}${elBestStreak ? ` · Best: ${elBestStreak}` : ""}</div>
+    <div class="conn-intro-line">${stat.icon} Which flag has the <b>${promptLabel}</b> ${stat.label.toLowerCase()}?</div>
+    ${gridHTML}
+    ${!locked ? `
+      <div class="conn-action-row"><button class="modal-close" onclick="closeEliminationLadder()">Give Up</button></div>
+    ` : `
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${resultState.correct ? '#3ecf6a' : '#e05555'};">
+          ${resultState.correct ? '✅ Correct!' : '❌ Streak ended at ' + elScore + '.'}
+        </div>
+        ${resultState.correct ? `<div class="hl-gameover-score">+${elLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="conn-action-row">
+          ${resultState.correct
+            ? `<button class="quiz-submit-btn" onclick="advanceEliminationLadder()">Next Round →</button>`
+            : `<button class="ghost-btn" onclick="startEliminationLadder('${elStatKey}')">🔁 Play Again</button><button class="modal-close" onclick="closeEliminationLadder()">Close</button>`}
+        </div>
+      </div>
+    `}
+  `;
+}
+
+// ---------- Continent Call ----------
+// A flag flashes up, pick its continent from four options (one right, three
+// wrong). Streak-based like Odd One Out / Elimination Ladder. Transcontinental
+// flags (e.g. Türkiye) accept any of their listed continents as correct.
+const CC_FP_PER_STREAK = 12;
+const CC_ROUND_TRIES = 40;
+const CC_ALL_CONTINENTS = ["Africa","Asia","Europe","North America","South America","Oceania"];
+// Continents that get commonly mixed up with each other - used to pick nastier,
+// more plausible wrong answers instead of pure random distractors.
+const CC_CONFUSABLES = {
+  "Europe": ["Asia","North America"],
+  "Asia": ["Europe","Africa","Oceania"],
+  "Africa": ["Asia","South America"],
+  "North America": ["South America","Europe"],
+  "South America": ["North America","Africa"],
+  "Oceania": ["Asia","North America"],
+};
+// Timer: starts generous, tightens as the streak grows, down to a hard floor.
+const CC_TIME_START = 7;     // seconds on streak 0
+const CC_TIME_FLOOR = 2.5;   // seconds, minimum ever given
+const CC_TIME_STEP = 0.35;   // seconds shaved off per streak point
+let ccFlag = null;
+let ccOptions = [];       // 4 continent strings, in display order
+let ccCorrectIndex = -1;
+let ccScore = 0;
+let ccBestStreak = 0;
+let ccLocked = false;
+let ccPickedIndex = -1;
+let ccLastFpEarned = 0;
+let ccRecentNames = [];   // last few flag names used, so the same flag doesn't repeat back-to-back
+let ccTimerId = null;
+let ccTimeLeft = CC_TIME_START;
+let ccRoundTime = CC_TIME_START;
+
+function continentCallPool(){
+  return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+}
+function continentsFor(flag){
+  return flag.continents && flag.continents.length ? flag.continents : [flag.continent];
+}
+function ccTimeForStreak(streak){
+  return Math.max(CC_TIME_FLOOR, CC_TIME_START - streak * CC_TIME_STEP);
+}
+function stopContinentCallTimer(){
+  if(ccTimerId){ clearInterval(ccTimerId); ccTimerId = null; }
+}
+function startContinentCallTimer(){
+  stopContinentCallTimer();
+  ccRoundTime = ccTimeForStreak(ccScore);
+  ccTimeLeft = ccRoundTime;
+  updateCcTimerDisplay();
+  ccTimerId = setInterval(() => {
+    ccTimeLeft = Math.max(0, ccTimeLeft - 0.1);
+    updateCcTimerDisplay();
+    if(ccTimeLeft <= 0){
+      stopContinentCallTimer();
+      guessContinentCall(-1); // no pick made in time = wrong
+    }
+  }, 100);
+}
+function updateCcTimerDisplay(){
+  const el = document.getElementById("ccTimerDisplay");
+  if(!el) return;
+  el.textContent = ccTimeLeft.toFixed(1);
+  el.classList.toggle("cs-timer-low", ccTimeLeft <= Math.min(2, ccRoundTime * 0.35));
+  const bar = document.getElementById("ccTimerBar");
+  if(bar) bar.style.width = `${Math.max(0, (ccTimeLeft / ccRoundTime) * 100)}%`;
+}
+function openContinentCall(){
+  document.getElementById("continentCallOverlay").classList.add("open");
+  renderContinentCallIntro();
+}
+function closeContinentCall(){
+  stopContinentCallTimer();
+  document.getElementById("continentCallOverlay").classList.remove("open");
+}
+function renderContinentCallIntro(){
+  const box = document.getElementById("continentCallBox");
+  const pool = continentCallPool();
+  box.innerHTML = `
+    <div class="modal-title">🌍 Continent Call</div>
+    <div class="conn-intro-line">A flag flashes up - pick the continent it belongs to before your streak snaps.</div>
+    ${pool.length < 4 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 4 flags first - roll a few more before playing this mode.</div>
+      <button class="modal-close" onclick="closeContinentCall()">Close</button>
+    ` : `
+      <div class="quiz-streak-row"><span>🔥 Streak: ${ccScore}</span><span>🏆 Best: ${ccBestStreak}</span></div>
+      <button class="quiz-submit-btn" onclick="startContinentCall()">Start</button>
+    `}
+  `;
+}
+function buildContinentCallRound(){
+  const pool = continentCallPool();
+  if(pool.length < 4) return null;
+  let flagPool = pool.filter(c => !ccRecentNames.includes(c.name));
+  if(flagPool.length === 0) flagPool = pool;
+  for(let i = 0; i < CC_ROUND_TRIES; i++){
+    const flag = flagPool[Math.floor(Math.random() * flagPool.length)];
+    const correctSet = continentsFor(flag);
+    const correct = correctSet[Math.floor(Math.random() * correctSet.length)];
+    const otherContinents = CC_ALL_CONTINENTS.filter(c => !correctSet.includes(c));
+    // The higher the streak, the more of the wrong options are pulled from the
+    // "commonly confused with correct" list instead of totally random ones.
+    const confusablePriority = shuffleArr((CC_CONFUSABLES[correct] || []).filter(c => otherContinents.includes(c)));
+    const confusableCount = Math.min(confusablePriority.length, otherContinents.length - 1, ccScore >= 5 ? 3 : ccScore >= 2 ? 2 : 1);
+    const chosenConfusables = confusablePriority.slice(0, confusableCount);
+    const remainingPool = shuffleArr(otherContinents.filter(c => !chosenConfusables.includes(c)));
+    const wrongChoices = [...chosenConfusables, ...remainingPool].slice(0, 3);
+    if(wrongChoices.length < 3) continue; // shouldn't happen with 6 continents, but be safe
+    const options = shuffleArr([correct, ...wrongChoices]);
+    return {flag, options, correctIndex: options.indexOf(correct)};
+  }
+  return null;
+}
+function startContinentCall(){
+  const round = buildContinentCallRound();
+  if(!round){
+    document.getElementById("continentCallBox").innerHTML = `
+      <div class="modal-title">🌍 Continent Call</div>
+      <div class="conn-intro-line" style="color:var(--muted);">Couldn't find a fair round with your current unlocked flags - unlock a wider variety and try again.</div>
+      <button class="modal-close" onclick="closeContinentCall()">Close</button>
+    `;
+    return;
+  }
+  ccScore = 0;
+  ccLocked = false;
+  ccLastFpEarned = 0;
+  applyContinentCallRound(round);
+}
+function advanceContinentCall(){
+  const round = buildContinentCallRound();
+  if(!round){ stopContinentCallTimer(); renderContinentCallIntro(); return; }
+  ccLocked = false;
+  applyContinentCallRound(round);
+}
+function applyContinentCallRound(round){
+  ccFlag = round.flag;
+  ccOptions = round.options;
+  ccCorrectIndex = round.correctIndex;
+  ccRecentNames.push(round.flag.name);
+  if(ccRecentNames.length > 5) ccRecentNames.shift();
+  renderContinentCall(null);
+  startContinentCallTimer();
+}
+async function guessContinentCall(idx){
+  if(ccLocked) return;
+  stopContinentCallTimer();
+  ccLocked = true;
+  ccPickedIndex = idx;
+  const isCorrect = idx === ccCorrectIndex;
+  ccLastFpEarned = 0;
+  if(isCorrect){
+    ccScore += 1;
+    if(ccScore > ccBestStreak) ccBestStreak = ccScore;
+    ccLastFpEarned = CC_FP_PER_STREAK * ccScore;
+    totalFP += ccLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderContinentCall({correct:isCorrect});
+}
+function renderContinentCall(resultState){
+  const box = document.getElementById("continentCallBox");
+  const locked = ccLocked;
+  const optionsHTML = `
+    <div class="quiz-option-grid">
+      ${ccOptions.map((opt, i) => {
+        let cls = "quiz-option";
+        if(locked){
+          if(i === ccCorrectIndex) cls += " correct";
+          else if(i === ccPickedIndex) cls += " incorrect";
+        }
+        return `<div class="${cls}" ${locked ? '' : `onclick="guessContinentCall(${i})"`}>${opt}</div>`;
+      }).join("")}
+    </div>
+  `;
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🌍 Continent Call · Streak: ${ccScore}${ccBestStreak ? ` · Best: ${ccBestStreak}` : ""}</div>
+    ${!locked ? `
+      <div class="quiz-flash-counter" id="ccTimerDisplay">${ccTimeLeft.toFixed(1)}</div>
+      <div style="height:6px; border-radius:4px; background:rgba(255,255,255,0.12); overflow:hidden; margin-bottom:10px;">
+        <div id="ccTimerBar" style="height:100%; width:100%; background:var(--accent, #3ecf6a); transition:width 0.1s linear;"></div>
+      </div>
+    ` : ''}
+    <div class="conn-intro-line">Which continent is this flag from?</div>
+    <div class="flag-display">${flagVisualHTML(ccFlag, "custom-flag")}</div>
+    ${locked ? `<div class="quiz-reveal-name" style="font-size:0.8rem; margin-bottom:6px;">${ccFlag.name}</div>` : ''}
+    ${optionsHTML}
+    ${!locked ? `
+      <div class="conn-action-row"><button class="modal-close" onclick="closeContinentCall()">Give Up</button></div>
+    ` : `
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${resultState.correct ? '#3ecf6a' : '#e05555'};">
+          ${resultState.correct ? '✅ Correct!' : (ccPickedIndex === -1 ? '⏱️ Too slow! Streak ended at ' + ccScore + '.' : '❌ Streak ended at ' + ccScore + '.')}
+        </div>
+        ${resultState.correct ? `<div class="hl-gameover-score">+${ccLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="conn-action-row">
+          ${resultState.correct
+            ? `<button class="quiz-submit-btn" onclick="advanceContinentCall()">Next Round →</button>`
+            : `<button class="ghost-btn" onclick="startContinentCall()">🔁 Play Again</button><button class="modal-close" onclick="closeContinentCall()">Close</button>`}
+        </div>
+      </div>
+    `}
+  `;
+}
+
+// ---------- Flag Detective (Flagdle) ----------
+// Matle-style guessing game: a mystery flag is picked, and every guess you make
+// gets scored back across several attributes - continent, colors, stripe count,
+// decade adopted, landlocked/island status, population size - narrowing down the
+// answer within a limited number of tries. Standard Only keeps the mystery flag
+// and every guess restricted to flags you've actually collected; +Pack Flags opens
+// both up to every flag in the game (any pack, owned or not) for more variety and
+// a bigger payout.
+const FLD_MAX_GUESSES = 6;
+const FLD_POP_ORDER = ["tiny","small","medium","large","huge"];
+const FLD_FP_MULT = 20;
+const FLD_FP_MULT_PACKS = 35;   // +Pack Flags pool - wider variety, pays more
+let fldIncludePacks = false;    // this run's pool choice, locked in once Start is pressed
+let fldTarget = null;
+let fldPoolCache = [];
+let fldGuesses = [];
+let fldSolved = false;
+let fldGivenUp = false;
+let fldLastFpEarned = 0;
+let fldStreak = 0;
+let fldBestStreaks = {standard:0, packs:0};
+let fldError = "";
+let fldLastTargetName = null;
+
+function fldPool(includePacks){
+  const source = includePacks ? ALL_FLAGS : COUNTRIES;
+  const base = source.filter(c => Array.isArray(c.colors) && typeof c.bands === "number");
+  return includePacks ? base : base.filter(c => collectedFlagNames.includes(c.name));
+}
+function fldCurrentFpMult(){ return fldIncludePacks ? FLD_FP_MULT_PACKS : FLD_FP_MULT; }
+function fldDecadeFor(year){
+  return Math.floor(year / 10) * 10;
+}
+// Which pack a flag belongs to, or null for Standard flags. Only meaningful
+// when +Pack Flags is on, since Standard-only rounds never mix packs.
+function fldPackNameFor(flag){
+  if(COUNTRIES.includes(flag)) return null;
+  const s = SETS.find(s => !s.isStandard && s.flags && s.flags.includes(flag));
+  return s ? s.name : null;
+}
+function fldCompare(guess, target){
+  const guessColors = guess.colors || [];
+  const targetColors = target.colors || [];
+  const shared = guessColors.filter(c => targetColors.includes(c)).length;
+  const exactColors = shared === guessColors.length && shared === targetColors.length;
+  const cmp = (g, t) => g === t ? "eq" : (g < t ? "higher" : "lower"); // direction target sits relative to guess
+  const popCmp = (FLD_POP_ORDER.includes(guess.pop) && FLD_POP_ORDER.includes(target.pop))
+    ? cmp(FLD_POP_ORDER.indexOf(guess.pop), FLD_POP_ORDER.indexOf(target.pop)) : "unknown";
+  const areaCmp = (FLD_POP_ORDER.includes(guess.area) && FLD_POP_ORDER.includes(target.area))
+    ? cmp(FLD_POP_ORDER.indexOf(guess.area), FLD_POP_ORDER.indexOf(target.area)) : "unknown";
+  const guessPack = fldIncludePacks ? (fldPackNameFor(guess) || "Standard") : null;
+  const targetPack = fldIncludePacks ? (fldPackNameFor(target) || "Standard") : null;
+  const decadeCmp = (typeof guess.founded === "number" && typeof target.founded === "number")
+    ? cmp(fldDecadeFor(guess.founded), fldDecadeFor(target.founded)) : "unknown";
+  return {
+    continentMatch: guess.continent === target.continent,
+    colorsShared: shared, colorsTotal: targetColors.length, colorsExact: exactColors,
+    bandsCmp: cmp(guess.bands, target.bands),
+    decadeCmp,
+    landlockedMatch: !!guess.landlocked === !!target.landlocked,
+    islandMatch: !!guess.island === !!target.island,
+    popCmp, areaCmp,
+    packMatch: fldIncludePacks ? (guessPack === targetPack) : null,
+    packName: guessPack
+  };
+}
+function openFlagdle(){
+  document.getElementById("flagdleOverlay").classList.add("open");
+  renderFlagdleIntro();
+}
+function closeFlagdle(){
+  document.getElementById("flagdleOverlay").classList.remove("open");
+}
+function setFldPoolMode(includePacks){
+  fldIncludePacks = includePacks;
+  renderFlagdleIntro();
+}
+function renderFlagdleIntro(){
+  const box = document.getElementById("flagdleBox");
+  const pool = fldPool(fldIncludePacks);
+  const best = fldBestStreaks[fldIncludePacks ? 'packs' : 'standard'];
+  box.innerHTML = `
+    <div class="modal-title">🕵️ Flag Detective</div>
+    <div class="conn-intro-line">A mystery flag. Guess flags to score back continent, colors, stripe count, decade, geography, and population, and close in on the answer. ${FLD_MAX_GUESSES} guesses.</div>
+    <div class="quiz-lock-toggle">
+      <button class="${!fldIncludePacks ? 'active' : ''}" onclick="setFldPoolMode(false)">Standard Only</button>
+      <button class="${fldIncludePacks ? 'active' : ''}" onclick="setFldPoolMode(true)">+ Pack Flags (more FP)</button>
+    </div>
+    ${pool.length < 6 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">${fldIncludePacks ? 'Not enough eligible flags in the pack pool yet.' : 'Unlock at least 6 flags first.'}</div>
+      <button class="modal-close" onclick="closeFlagdle()">Close</button>
+    ` : `
+      <div class="quiz-streak-row"><span>🔥 Streak: ${fldStreak}</span><span>🏆 Best: ${best}</span></div>
+      <div class="conn-intro-line">${fldCurrentFpMult()}+ FP per solve${fldIncludePacks ? ', any flag in the game is fair game' : ''}.</div>
+      <button class="quiz-submit-btn" onclick="startFlagdle()">Start</button>
+    `}
+  `;
+}
+function startFlagdle(){
+  fldPoolCache = fldPool(fldIncludePacks);
+  if(fldPoolCache.length < 6){ renderFlagdleIntro(); return; }
+  let candidates = fldPoolCache.filter(c => c.name !== fldLastTargetName);
+  if(candidates.length === 0) candidates = fldPoolCache;
+  fldTarget = candidates[Math.floor(Math.random() * candidates.length)];
+  fldLastTargetName = fldTarget.name;
+  fldGuesses = [];
+  fldSolved = false;
+  fldGivenUp = false;
+  fldLastFpEarned = 0;
+  fldError = "";
+  renderFlagdle();
+  setTimeout(() => { const el = document.getElementById("fldGuessInput"); if(el) el.focus(); }, 0);
+}
+function submitFlagdleGuess(){
+  if(fldSolved || fldGivenUp) return;
+  const input = document.getElementById("fldGuessInput");
+  if(!input) return;
+  const typed = input.value;
+  if(!typed.trim()) return;
+  const match = fldPoolCache.find(f => isTypedAnswerCorrect(typed, f.name));
+  if(!match){ fldError = fldIncludePacks ? "That's not a valid flag." : "That's not a flag in your collection."; renderFlagdle(); return; }
+  if(fldGuesses.some(g => g.flag.name === match.name)){ fldError = "Already guessed that one."; renderFlagdle(); return; }
+  fldError = "";
+  input.value = "";
+  const feedback = fldCompare(match, fldTarget);
+  fldGuesses.push({flag: match, feedback});
+  if(match.name === fldTarget.name){
+    fldOnSolved();
+    return;
+  }
+  if(fldGuesses.length >= FLD_MAX_GUESSES){
+    fldGivenUp = true;
+    fldStreak = 0;
+    renderFlagdle();
+    return;
+  }
+  renderFlagdle();
+  setTimeout(() => { const el = document.getElementById("fldGuessInput"); if(el) el.focus(); }, 0);
+}
+async function fldOnSolved(){
+  fldSolved = true;
+  fldStreak += 1;
+  const bestKey = fldIncludePacks ? 'packs' : 'standard';
+  if(fldStreak > fldBestStreaks[bestKey]) fldBestStreaks[bestKey] = fldStreak;
+  const guessesUsed = fldGuesses.length;
+  fldLastFpEarned = Math.max(15, (FLD_MAX_GUESSES - guessesUsed + 1) * fldCurrentFpMult());
+  totalFP += fldLastFpEarned;
+  renderStats();
+  await saveProgress();
+  renderFlagdle();
+}
+function fldGiveUp(){
+  if(fldSolved || fldGivenUp) return;
+  fldGivenUp = true;
+  fldStreak = 0;
+  renderFlagdle();
+}
+function fldArrow(cmp){
+  if(cmp === "eq") return `<span style="color:#3ecf6a;">✅</span>`;
+  if(cmp === "higher") return `<span style="color:#e0c23e;">▲</span>`;
+  if(cmp === "lower") return `<span style="color:#e0c23e;">▼</span>`;
+  return `<span style="color:var(--muted);">?</span>`;
+}
+function fldChip(label, html, exact){
+  return `<div style="flex:1; min-width:64px; text-align:center; padding:6px 2px; border-radius:6px; background:rgba(255,255,255,0.06); border:1px solid ${exact ? '#3ecf6a' : 'rgba(255,255,255,0.15)'};">
+    <div style="font-size:0.55rem; color:var(--muted); margin-bottom:2px;">${label}</div>
+    <div style="font-size:0.8rem; font-weight:700;">${html}</div>
+  </div>`;
+}
+function renderFlagdleGuessRow(g){
+  const f = g.feedback;
+  const chips = [
+    fldChip("Continent", f.continentMatch ? "✅" : "❌", f.continentMatch),
+    fldChip("Colors", f.colorsExact ? "✅" : `${f.colorsShared}/${f.colorsTotal}`, f.colorsExact),
+    fldChip("Bands", fldArrow(f.bandsCmp), f.bandsCmp === "eq"),
+    fldChip("Decade", fldArrow(f.decadeCmp), f.decadeCmp === "eq"),
+    fldChip("Landlocked", f.landlockedMatch ? "✅" : "❌", f.landlockedMatch),
+    fldChip("Island", f.islandMatch ? "✅" : "❌", f.islandMatch),
+    fldChip("Pop.", fldArrow(f.popCmp), f.popCmp === "eq"),
+    ...(f.packMatch !== null ? [fldChip("Pack", f.packMatch ? "✅" : "❌", f.packMatch)] : []),
+  ].join("");
+  return `
+    <div style="margin-bottom:8px;">
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+        <img src="${g.flag.imageUrl}" style="width:26px; height:auto; border-radius:2px;">
+        <span style="font-size:0.8rem; font-weight:700;">${g.flag.name}</span>
+      </div>
+      <div style="display:flex; gap:4px; flex-wrap:wrap;">${chips}</div>
+    </div>`;
+}
+function renderFlagdle(){
+  const box = document.getElementById("flagdleBox");
+  const locked = fldSolved || fldGivenUp;
+  const guessesLeft = FLD_MAX_GUESSES - fldGuesses.length;
+  const best = fldBestStreaks[fldIncludePacks ? 'packs' : 'standard'];
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🕵️ Flag Detective${fldIncludePacks ? ' · +Packs' : ''} · Streak: ${fldStreak}${best ? ` · Best: ${best}` : ""}</div>
+    ${!locked ? `<div class="conn-intro-line">${guessesLeft} guess${guessesLeft === 1 ? "" : "es"} left</div>` : ""}
+    <div>${fldGuesses.map(renderFlagdleGuessRow).join("") || `<div class="conn-intro-line" style="color:var(--muted);">No guesses yet - who's it going to be?</div>`}</div>
+    ${!locked ? `
+      <input type="text" class="flag-search" id="fldGuessInput" placeholder="${fldIncludePacks ? 'Type any flag...' : 'Type a flag you own...'}" autocomplete="off"
+             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitFlagdleGuess(); }">
+      ${fldError ? `<div class="conn-intro-line" style="color:#e05555; margin-top:4px;">${fldError}</div>` : ""}
+      <button class="quiz-submit-btn" onclick="submitFlagdleGuess()" style="margin-top:10px;">Guess</button>
+      <div class="conn-action-row"><button class="ghost-btn" onclick="fldGiveUp()">Give Up</button><button class="modal-close" onclick="closeFlagdle()">Close</button></div>
+    ` : `
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${fldSolved ? '#3ecf6a' : '#e05555'};">
+          ${fldSolved ? `✅ It was ${fldTarget.name}!` : `❌ Out of guesses. It was ${fldTarget.name}.`}
+        </div>
+        ${fldSolved ? `<div class="hl-gameover-score">+${fldLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="flag-display">${flagVisualHTML(fldTarget, "custom-flag")}</div>
+        <div class="conn-action-row">
+          <button class="quiz-submit-btn" onclick="startFlagdle()">🔁 Play Again</button>
+          <button class="modal-close" onclick="closeFlagdle()">Close</button>
+        </div>
+      </div>
+    `}
+  `;
+  if(!locked){
+    const input = document.getElementById("fldGuessInput");
+    if(input && document.activeElement !== input) input.focus();
+  }
 }
 
 // ---------- Init ----------
