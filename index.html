@@ -414,12 +414,15 @@
   .fz-guess-count{ text-align:center; color:var(--muted); font-size:0.8rem; margin-bottom:6px; }
   .fz-input-row{ display:flex; gap:8px; margin:14px 0; }
   .fz-input-row input{ flex:1; }
-  /* ---------- Land Shape ---------- */
-  .ls-shape-frame{
-    width:220px; height:220px; margin:14px auto; display:flex; align-items:center; justify-content:center;
-    background:var(--panel2); border:1px solid var(--border); border-radius:10px;
+  /* ---------- Palette Guess ---------- */
+  .pg-swatch-frame{
+    width:260px; margin:14px auto; display:flex; flex-wrap:wrap; gap:6px; align-items:center; justify-content:center;
+    background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px;
   }
-  .ls-shape-frame img{ max-width:85%; max-height:85%; object-fit:contain; filter:brightness(0) invert(1); opacity:0.92; }
+  .pg-swatch{
+    width:64px; height:64px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);
+    box-shadow:0 2px 6px rgba(0,0,0,0.35);
+  }
   .oo-grid{ grid-template-columns:repeat(2,1fr) !important; max-width:340px; margin-left:auto; margin-right:auto; }
   .collection-toggle{ margin-top:16px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
   .collection-panel{
@@ -712,6 +715,7 @@
 <body>
 
 <div class="fp-counter">🚩 <span id="fpCounterTotal">0</span> FP</div>
+<button id="devModeBtn" onclick="devGrantFP()" style="display:none; position:fixed; top:16px; left:16px; z-index:50; background:#ff4d6d; color:#fff; border:none; border-radius:999px; padding:8px 16px; font-weight:700; font-size:0.85rem; cursor:pointer; box-shadow:0 4px 16px rgba(255,77,109,0.35);">🛠️ DEV +25M FP</button>
 
 <h1>FlagRNG</h1>
 <div class="subtitle">🎲 "Gambling" but with flags 🚩</div>
@@ -817,8 +821,8 @@
   <div class="modal-box quiz-box" id="flagZoomBox"></div>
 </div>
 
-<div class="modal-overlay" id="landShapeOverlay" onclick="if(event.target===this) closeLandShape()">
-  <div class="modal-box quiz-box" id="landShapeBox"></div>
+<div class="modal-overlay" id="paletteGuessOverlay" onclick="if(event.target===this) closePaletteGuess()">
+  <div class="modal-box quiz-box" id="paletteGuessBox"></div>
 </div>
 
 <div class="modal-overlay" id="oddOneOutOverlay" onclick="if(event.target===this) closeOddOneOut()">
@@ -1095,6 +1099,14 @@ const COUNTRIES = [
   {name:"Mauritius",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Mauritius.svg/330px-Flag_of_Mauritius.svg.png", colors:["green","red","blue","yellow"], bands:4, languages:["French","English"], continent:"Africa", landlocked:false, island:true, pop:"small", area:"small", founded:1968},
   {name:"Réunion",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Proposed_flag_of_R%C3%A9union_%28VAR%29.svg/250px-Proposed_flag_of_R%C3%A9union_%28VAR%29.svg.png", colors:["red","light blue","yellow"], bands:0, languages:["French"], continent:"Africa", landlocked:false, island:true, pop:"tiny", area:"small", founded:2003, sun:true, triangle:true},
   {name:"Easter Island",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Flag_of_Rapa_Nui%2C_Chile.svg/330px-Flag_of_Rapa_Nui%2C_Chile.svg.png", colors:["red","white"], bands:0, languages:["Spanish"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:2006},
+  {name:"Navassa Island",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/5/5d/Unofficial_Flag_of_Navasa_Island.webp", colors:["blue","white","green","yellow"], bands:2, languages:[], continent:"North America", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, buildingIcon:true, mapShape:true},
+  {name:"Midway Atoll",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Flag_of_the_Midway_Islands_%28local%29.svg/1920px-Flag_of_the_Midway_Islands_%28local%29.svg.png", colors:["white","brown","black","blue","light blue","yellow"], bands:3, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, animal:true},
+  {name:"Wake Island",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Flag_of_Wake_Island.svg/1920px-Flag_of_Wake_Island.svg.png", colors:["white","red","blue","yellow"], bands:3, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1976, mapShape:true, script:true, stars:true, triangle:true},
+  {name:"Johnston Atoll",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Flag_of_the_Johnston_Atoll.svg/1920px-Flag_of_the_Johnston_Atoll.svg.png", colors:["white","blue","yellow"], bands:3, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, mapShape:true, script:true, stars:true, animal:true},
+  {name:"Kingman Reef",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Flag_of_Kingman_Reef_%28unofficial%29.svg/960px-Flag_of_Kingman_Reef_%28unofficial%29.svg.png?_=20251219054759", colors:["white","light blue","gray","black"], bands:2, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, animal:true},
+  {name:"Palmyra Atoll",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Flag_of_Palmyra_Atoll_%28local%29.svg/1920px-Flag_of_Palmyra_Atoll_%28local%29.svg.png", colors:["yellow","red","blue"], bands:3, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, sun:true},
+  {name:"Howland, Baker, and Jarvis Islands",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg/960px-Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg.png?_=20200906195744", colors:["white","red","blue"], bands:5, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, stars:true},
+  {name:"Howland, Baker, and Jarvis Islands",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg/960px-Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg.png?_=20200906195744", colors:["white","red","blue"], bands:5, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, stars:true},
 
   // Unrecognized / de facto territories - no official flag emoji exists, rendered via a real flag image
   {name:"Transnistria", noEmoji:true, imageUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Transnistria_(state).svg", colors:["green","red","yellow"], languages:["Slavic"], bands:3, continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:2000, stars:true, breakAway:true},
@@ -2019,6 +2031,18 @@ const SETS = [
        colors:["orange","white","yellow","light blue","blue"], bands:5, founded:2018},
       {name:"Disability", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Visually_Safe_Disability_Pride_Flag.svg/500px-Visually_Safe_Disability_Pride_Flag.svg.png", noEmoji:true,
        colors:["gray","white","yellow","light blue","green","red"], bands:7, founded:2021},
+      {name:"Graysexual", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Grey_asexuality_flag.svg/1920px-Grey_asexuality_flag.svg.png", noEmoji:true,
+       colors:["gray","white","purple"], bands:5, founded:null},
+      {name:"Aegosexual", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Aegosexual_flag.svg/1920px-Aegosexual_flag.svg.png", noEmoji:true,
+       colors:["gray","white","purple","black"], bands:4, founded:null},
+      {name:"Demisexual", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Demisexual_Pride_Flag.svg/1920px-Demisexual_Pride_Flag.svg.png", noEmoji:true,
+       colors:["gray","white","purple","black"], bands:3, founded:null, triangle:true},
+      {name:"Two-spirit", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Two-Spirit_Flag.svg/1920px-Two-Spirit_Flag.svg.png", noEmoji:true,
+       colors:["red","orange","yellow","green","blue","purple","white","black"], bands:6, founded:null, animal:true},
+      {name:"Polyamory", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Tricolor_Polyamory_Pride_Flag.svg/1920px-Tricolor_Polyamory_Pride_Flag.svg.png", noEmoji:true,
+       colors:["light blue","pink","purple","white","yellow"], bands:3, founded:2022, triangle:true},
+      {name:"Polysexual", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Polysexuality_Pride_Flag.svg/1920px-Polysexuality_Pride_Flag.svg.png", noEmoji:true,
+       colors:["light blue","pink","green"], bands:3, founded:2022, triangle:true},
     ]
   },
   {
@@ -2134,6 +2158,12 @@ let mythicCharms = 0;
 let fpDoublers = 0;
 let flagGuarantees = 0;
 let fpBoostOwned = false;
+let fpAmpLevel = 0; // how many Payout Amplifier levels owned - each is +7% permanent FP, stacking
+function permanentFpMultiplier(){
+  let mult = fpBoostOwned ? 1.15 : 1;
+  mult *= Math.pow(1.07, fpAmpLevel);
+  return mult;
+}
 let itemPrices = {};
 let lastRollCountryName = null;
 let lastRollSetId = "standard"; // which set the most recent roll (of any kind) belongs to
@@ -2150,6 +2180,18 @@ let dailyFlagStreak = 0; // consecutive days the daily flag has been played (att
 let dailyFlagBestStreak = 0;
 let dailyFlagLastPlayedDate = null; // last date the streak was credited, drives streak increment/reset
 const STORAGE_KEY = "flagdle-progress-v3";
+// Flip to false (or delete the button in the HTML) before sharing a build -
+// this just fast-forwards FP for testing shop items/gamemodes without grinding.
+const DEV_MODE = false ;
+const DEV_FP_GRANT = 25000000;
+async function devGrantFP(){
+  if(!DEV_MODE) return;
+  totalFP += DEV_FP_GRANT;
+  await saveProgress();
+  renderStats();
+  renderShop();
+  updateRollButtonState();
+}
 
 function getPackCollectedIds(packId){ return collectedPackFlagIds[packId] || []; }
 
@@ -2213,6 +2255,8 @@ const SHOP_ITEMS = [
    desc:"Guarantees your very next roll on the equipped set lands on a flag from that set you haven't collected yet (if any remain)."},
   {id:"fpBoost", name:"Permanent FP Boost", icon:"📈", baseCost:8000, costScale:1, stackable:false, category:"Boosts",
    desc:"Permanently increases all FP you earn from every set's rolls by 15%, forever. One-time purchase."},
+  {id:"fpAmplifier", name:"Payout Amplifier", icon:"⚡", baseCost:4000, costScale:1.15, stackable:true, category:"Boosts",
+   desc:"Permanently increases all FP you earn from every set's rolls by 7%, stacking with every level you own. Price climbs slower than other items, so it stays worth stacking."},
 ];
 
 function getOwnedCount(itemId){
@@ -2222,6 +2266,7 @@ function getOwnedCount(itemId){
     case 'mythicCharm': return mythicCharms;
     case 'fpDoubler': return fpDoublers;
     case 'flagGuarantee': return flagGuarantees;
+    case 'fpAmplifier': return fpAmpLevel;
     default: return 0;
   }
 }
@@ -2262,6 +2307,7 @@ async function loadProgress(){
       fpDoublers = data.fpDoublers || 0;
       flagGuarantees = data.flagGuarantees || 0;
       fpBoostOwned = !!data.fpBoostOwned;
+      fpAmpLevel = data.fpAmpLevel || 0;
       itemPrices = data.itemPrices || {};
       lastRollCountryName = data.lastRollCountryName || null;
       lastRollSetId = data.lastRollSetId || "standard";
@@ -2307,6 +2353,7 @@ async function loadProgress(){
     fpDoublers = 0;
     flagGuarantees = 0;
     fpBoostOwned = false;
+    fpAmpLevel = 0;
     itemPrices = {};
     lastRollCountryName = null;
     lastRollSetId = "standard";
@@ -2353,7 +2400,7 @@ function saveProgress(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       collectedBadgeIds, collectedSetBadgeIds, collectedFlagNames, collectedPackFlagIds, lastSetSpinDates, equippedSetId, totalRollCount, totalFP,
       extraRollTokens, luckyCharms, mythicCharms, fpDoublers,
-      flagGuarantees, fpBoostOwned, itemPrices,
+      flagGuarantees, fpBoostOwned, fpAmpLevel, itemPrices,
       lastRollCountryName, lastRollSetId, lastRollEP, lastRollDate, lastStandardRollDate, lastRollNewBadgeIds, lastRollWasNewFlag, hasRolledToday: hasRolled,
       hlHighScores, catSprintBestStreak, sgBestStreaks,
       dailyFlagState, dailyFlagStreak, dailyFlagBestStreak, dailyFlagLastPlayedDate
@@ -2384,6 +2431,7 @@ function resetProgress(){
   fpDoublers = 0;
   flagGuarantees = 0;
   fpBoostOwned = false;
+  fpAmpLevel = 0;
   itemPrices = {};
   lastRollCountryName = null;
   lastRollSetId = "standard";
@@ -2705,6 +2753,11 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something.
 const CHANGELOG = [
+  { version: "v1.09", date: "Jul 29 2026", notes: [
+    "Added the US Minor Outlying Islands to Standard",
+    "Added more pride flags",
+    "Added a new stackable item in the shop"
+  ]},
   { version: "v1.08", date: "Jul 29 2026", notes: [
     "More cities",
     "More historical nations"
@@ -2798,6 +2851,7 @@ const COUNTRY_ABBREVIATIONS = {
   "United Provinces of the Río de la Plata": ["Rio de la Plata"],
   "Soviet Union": ["USSR"],
   "Prince Edward Island": ["PEI"],
+  "Howland, Baker, and Jarvis Islands": ["Howland Island","Baker Island","Jarvis Island","Baker, Howland, and Jarvis Islands","Jarvis, Howland, and Baker Islands","Howland, Jarvis, and Baker Islands","Baker, Jarvis, and Howland Islands","Jarvis, Baker, and Howland Islands"]
 };
 
 function isDailyFlagGuessCorrect(typed, target){
@@ -3081,8 +3135,8 @@ async function rollPackSet(packId, practice){
       ep *= 2;
       usedDoubler = true;
     }
-    if(!practice && fpBoostOwned){
-      ep = Math.round(ep * 1.15);
+    if(!practice){
+      ep = Math.round(ep * permanentFpMultiplier());
     }
 
     const owned = getPackCollectedIds(packId);
@@ -3093,7 +3147,7 @@ async function rollPackSet(packId, practice){
     const setCollected = collectedSetBadgeIds[packId] || [];
     const badgesForDisplay = badges.map(b => ({...b, isNew: !practice && !setCollected.includes(b.id)}));
 
-    renderResult(flag, badgesForDisplay, rarity, ep, usedDoubler, true, isNew, practice);
+    renderResult(flag, badgesForDisplay, rarity, ep, usedDoubler, true, isNew, practice, practice ? 1 : permanentFpMultiplier());
 
     if(!practice){
       if(usingCharm === 'mythic') mythicCharms -= 1;
@@ -3198,9 +3252,12 @@ async function buyItem(itemId){
   if(itemId === 'fpDoubler') fpDoublers += 1;
   if(itemId === 'flagGuarantee') flagGuarantees += 1;
   if(itemId === 'fpBoost') fpBoostOwned = true;
+  if(itemId === 'fpAmplifier') fpAmpLevel += 1;
 
   if(item.stackable){
-    itemPrices[item.id] = Math.round(cost * item.costScale);
+    let nextCost = Math.round(cost * item.costScale);
+    if(item.maxCost) nextCost = Math.min(nextCost, item.maxCost);
+    itemPrices[item.id] = nextCost;
   }
 
   await saveProgress();
@@ -3444,7 +3501,7 @@ function spinReel(finalCountry, onDone, pool){
   }, TOTAL_DURATION + 150);
 }
 
-function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFlag, isPractice){
+function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFlag, isPractice, boostMult){
   animate = animate !== false;
   const reelWindow = document.getElementById('reelWindow');
   const isMystery = rarity === "MYSTERY";
@@ -3490,7 +3547,8 @@ function renderResult(country, badges, rarity, ep, doublerNote, animate, isNewFl
   const revealFinalResult = () => {
     pill.innerHTML = `<span class="rarity-pill rarity-${rarity}">${rarityLabel(rarity)}</span>`;
     percentileEl.textContent = percentileFor(rarity);
-    epEl.textContent = isPractice ? 'Nothing earned (practice)' : `${ep.toLocaleString()} FP earned${doublerNote ? ' (2× Doubler applied!)' : ''}`;
+    const boostPct = boostMult && boostMult > 1 ? Math.round((boostMult - 1) * 100) : 0;
+    epEl.textContent = isPractice ? 'Nothing earned (practice)' : `${ep.toLocaleString()} FP earned${doublerNote ? ' (2× Doubler applied!)' : ''}${boostPct > 0 ? ` (Boosted by ${boostPct}%!)` : ''}`;
   };
 
   if(animate && ascending.length > 0){
@@ -3571,14 +3629,14 @@ async function doRoll(practice){
       ep *= 2;
       usedDoubler = true;
     }
-    if(!practice && fpBoostOwned){
-      ep = Math.round(ep * 1.15);
+    if(!practice){
+      ep = Math.round(ep * permanentFpMultiplier());
     }
 
     const isNewFlag = !practice && !collectedFlagNames.includes(country.name);
     const badgesForDisplay = badges.map(b => ({...b, isNew: !practice && !collectedBadgeIds.includes(b.id)}));
 
-    renderResult(country, badgesForDisplay, rarity, ep, usedDoubler, true, isNewFlag, practice);
+    renderResult(country, badgesForDisplay, rarity, ep, usedDoubler, true, isNewFlag, practice, practice ? 1 : permanentFpMultiplier());
 
     if(!practice){
       hasRolled = true;
@@ -6198,7 +6256,7 @@ const GAMEMODES = [
   {icon:"🌑", title:"Silhouette Guess", desc:"Name the flag with all its color stripped away.", action:"openSilhouetteGuess"},
   {icon:"🧩", title:"Hint Hunter", desc:"No flag shown - guess the name, choosing your own hints when you're wrong.", action:"openHintHunter"},
   {icon:"🔎", title:"Flag Zoom", desc:"A flag starts zoomed in tight - guess before it fully unzooms.", action:"openFlagZoom"},
-  {icon:"🗺️", title:"Land Shape", desc:"Name the country from its land border silhouette.", action:"openLandShape", inProgress:true},
+  {icon:"🎨", title:"Palette Guess", desc:"Just the flag's colors as swatches - no shapes, no layout. Name the country.", action:"openPaletteGuess", inProgress:false },
   {icon:"🕵️", title:"Odd One Out", desc:"Three flags share a hidden trait - find the one that doesn't.", action:"openOddOneOut"},
   {icon:"⚔️", title:"Elimination Ladder", desc:"Four flags enter, one survives - pick the extreme or you're out.", action:"openEliminationLadder"},
   {icon:"🌍", title:"Continent Call", desc:"A flag flashes up - name the continent before your streak snaps.", action:"openContinentCall"},
@@ -6369,163 +6427,217 @@ function giveUpFlagZoom(){
   resolveFlagZoomRound(false);
 }
 
-// ---------- Land Shape ----------
-// Same streak-based architecture as Silhouette Guess: Type Answer pays more FP
-// per streak point than Select (8 options), and the streak keeps climbing until
-// a miss. Pool is only countries that (a) have a traced shape in
-// COUNTRY_SHAPE_URLS and (b) the player has already unlocked.
-const LS_FP_PER_STREAK_TYPE = 30;
-const LS_FP_PER_STREAK_SELECT = 14;
-let lsCurrent = null;
-let lsScore = 0;
-let lsBestStreak = 0;
-let lsAnswerMode = "type"; // "type" | "select" - locked in per round via the toggle
-let lsOptions = null;
-let lsCorrectIndex = -1;
-let lsPickedIndex = -1;
-let lsRoundLocked = false;
-let lsLastFpEarned = 0;
-let lsLastTyped = "";
+// ---------- Palette Guess ----------
+// Same streak-based architecture as Land Shape used to have: Type Answer pays
+// more FP per streak point than Select (8 options), and the streak keeps
+// climbing until a miss. Instead of a traced border, the round shows the
+// flag's color list as shuffled swatches - no shapes, no layout, no hint about
+// which color goes where. Pool is any unlocked country with a colors array.
+const PG_FP_PER_STREAK_TYPE = 30;
+const PG_FP_PER_STREAK_TYPE_PACKS = 54;
+const PG_FP_PER_STREAK_SELECT = 14;
+const PG_FP_PER_STREAK_SELECT_PACKS = 25;
+const PG_COLOR_HEX = {
+  "red":"#d63a3a", "white":"#f2f2f2", "blue":"#2f5fd6", "light blue":"#5fb8e8",
+  "green":"#2f9e4f", "yellow":"#f2c14e", "black":"#1a1a1a", "orange":"#e8822f",
+  "purple":"#8a4fd6", "pink":"#e86fb0", "brown":"#8a5a35", "gray":"#8b93a7"
+};
+let pgCurrent = null;
+let pgScore = 0;
+let pgBestStreak = 0;
+let pgAnswerMode = "type"; // "type" | "select" - locked in per round via the toggle
+let pgIncludePacks = false; // this run's pool choice, locked in once Start is pressed
+let pgOptions = null;
+let pgCorrectIndex = -1;
+let pgPickedIndex = -1;
+let pgRoundLocked = false;
+let pgLastFpEarned = 0;
+let pgLastTyped = "";
+let pgMatchedName = null; // the specific tied country name the player's typed guess matched, if different from pgCurrent
 
-function landShapePool(){
-  return COUNTRIES.filter(c => COUNTRY_SHAPE_URLS[c.name] && collectedFlagNames.includes(c.name));
+function paletteGuessPool(){
+  const basePool = pgIncludePacks ? ALL_FLAGS : COUNTRIES;
+  return basePool.filter(c => c.colors && c.colors.length >= 2 && collectedFlagNames.includes(c.name));
 }
-function currentLsFpRate(){
-  return lsAnswerMode === "select" ? LS_FP_PER_STREAK_SELECT : LS_FP_PER_STREAK_TYPE;
+function pgColorSignature(colors){
+  return colors.map(c => String(c).toLowerCase()).sort().join("|");
 }
-function openLandShape(){
-  document.getElementById("landShapeOverlay").classList.add("open");
-  lsCurrent = null;
-  renderLandShapeIntro();
+// Several flags share an identical color set (e.g. Tonga and Poland are both
+// just red+white) - swatches alone can't distinguish them, so any country
+// with the same signature counts as a correct answer, not just the one that
+// happened to be picked for the round.
+function pgTypedMatchesCurrent(typed){
+  if(!pgCurrent) return null;
+  const target = pgColorSignature(pgCurrent.colors);
+  const searchPool = pgIncludePacks ? ALL_FLAGS : COUNTRIES;
+  const match = searchPool.find(c => c.colors && pgColorSignature(c.colors) === target && isTypedAnswerCorrect(typed, c.name));
+  return match ? match.name : null;
 }
-function closeLandShape(){
-  document.getElementById("landShapeOverlay").classList.remove("open");
+function pgOptionMatchesCurrent(name){
+  if(!pgCurrent) return false;
+  const target = pgColorSignature(pgCurrent.colors);
+  const searchPool = pgIncludePacks ? ALL_FLAGS : COUNTRIES;
+  const found = searchPool.find(c => c.name === name);
+  return !!found && found.colors && pgColorSignature(found.colors) === target;
 }
-function setLsAnswerMode(mode){
-  lsAnswerMode = mode;
-  renderLandShapeIntro();
+function currentPgFpRate(){
+  if(pgAnswerMode === "select") return pgIncludePacks ? PG_FP_PER_STREAK_SELECT_PACKS : PG_FP_PER_STREAK_SELECT;
+  return pgIncludePacks ? PG_FP_PER_STREAK_TYPE_PACKS : PG_FP_PER_STREAK_TYPE;
 }
-function renderLandShapeIntro(){
-  const box = document.getElementById("landShapeBox");
-  const pool = landShapePool();
-  const rate = currentLsFpRate();
+function openPaletteGuess(){
+  document.getElementById("paletteGuessOverlay").classList.add("open");
+  pgCurrent = null;
+  renderPaletteGuessIntro();
+}
+function closePaletteGuess(){
+  document.getElementById("paletteGuessOverlay").classList.remove("open");
+}
+function setPgAnswerMode(mode){
+  pgAnswerMode = mode;
+  renderPaletteGuessIntro();
+}
+function setPgPoolMode(includePacks){
+  pgIncludePacks = includePacks;
+  renderPaletteGuessIntro();
+}
+function renderPaletteGuessIntro(){
+  const box = document.getElementById("paletteGuessBox");
+  const pool = paletteGuessPool();
+  const rate = currentPgFpRate();
   box.innerHTML = `
-    <div class="modal-title">🗺️ Land Shape</div>
-    <div class="conn-intro-line">Name the country from its land border silhouette. Streak keeps climbing until you miss one.⚠️ BORDERS ARE NOT 100% ACCURATE AND SIZES ARE NOT TO SCALE ⚠️</div>
+    <div class="modal-title">🎨 Palette Guess</div>
+    <div class="conn-intro-line">Just the flag's colors as shuffled swatches - no shapes, no layout. Streak keeps climbing until you miss one.</div>
     ${pool.length < 4 ? `
-      <div class="conn-intro-line" style="color:var(--muted);">Not enough traced shapes unlocked yet (need at least 4). Trace a few more countries into COUNTRY_SHAPE_URLS, or unlock more flags that already have shapes.</div>
-      <button class="modal-close" onclick="closeLandShape()">Close</button>
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 4 flags first - roll a few more before playing this mode.</div>
+      <button class="modal-close" onclick="closePaletteGuess()">Close</button>
     ` : `
       <div class="quiz-lock-toggle">
-        <button class="${lsAnswerMode==='type' ? 'active' : ''}" onclick="setLsAnswerMode('type')">Type Answer</button>
-        <button class="${lsAnswerMode==='select' ? 'active' : ''}" onclick="setLsAnswerMode('select')">Select Country (8 options)</button>
+        <button class="${!pgIncludePacks ? 'active' : ''}" onclick="setPgPoolMode(false)">Standard Only</button>
+        <button class="${pgIncludePacks ? 'active' : ''}" onclick="setPgPoolMode(true)">+ Pack Flags (more FP)</button>
       </div>
-      <div class="conn-intro-line">${lsAnswerMode === 'select' ? `+${rate} FP per streak point - fewer options to lean on than typing, so it pays less.` : `+${rate} FP per streak point - full credit for typing it yourself.`}</div>
-      <div class="quiz-streak-row"><span>🔥 Streak: ${lsScore}</span><span>🏆 Best: ${lsBestStreak}</span></div>
-      <button class="quiz-submit-btn" onclick="startLandShape()">Start</button>
+      <div class="quiz-lock-toggle">
+        <button class="${pgAnswerMode==='type' ? 'active' : ''}" onclick="setPgAnswerMode('type')">Type Answer</button>
+        <button class="${pgAnswerMode==='select' ? 'active' : ''}" onclick="setPgAnswerMode('select')">Select Country (8 options)</button>
+      </div>
+      <div class="conn-intro-line">${pgAnswerMode === 'select' ? `+${rate} FP per streak point - fewer options to lean on than typing, so it pays less.` : `+${rate} FP per streak point - full credit for typing it yourself.`}${pgIncludePacks ? ' Pack flags mixed in.' : ''}</div>
+      <div class="quiz-streak-row"><span>🔥 Streak: ${pgScore}</span><span>🏆 Best: ${pgBestStreak}</span></div>
+      <button class="quiz-submit-btn" onclick="startPaletteGuess()">Start</button>
     `}
   `;
 }
-function buildLandShapeRound(){
-  const pool = landShapePool();
+function buildPaletteGuessRound(){
+  const pool = paletteGuessPool();
   const country = pool[Math.floor(Math.random() * pool.length)];
-  if(lsAnswerMode !== "select") return {country, options:null, correctIndex:-1};
-  const distractorPool = pool.filter(c => c.name !== country.name).length >= 7 ? pool : COUNTRIES;
-  const distractors = shuffleArr(distractorPool.filter(c => c.name !== country.name)).slice(0, 7);
+  if(pgAnswerMode !== "select") return {country, options:null, correctIndex:-1};
+  const sig = pgColorSignature(country.colors);
+  const notTied = c => c.name !== country.name && pgColorSignature(c.colors || []) !== sig;
+  const distractorPool = pool.filter(notTied).length >= 7 ? pool : (pgIncludePacks ? ALL_FLAGS : COUNTRIES);
+  const distractors = shuffleArr(distractorPool.filter(notTied)).slice(0, 7);
   const options = shuffleArr([country.name, ...distractors.map(c => c.name)]);
   return {country, options, correctIndex: options.indexOf(country.name)};
 }
-function startLandShape(){
-  lsScore = 0;
-  lsRoundLocked = false;
-  lsLastFpEarned = 0;
-  lsLastTyped = "";
-  const round = buildLandShapeRound();
-  lsCurrent = round.country;
-  lsOptions = round.options;
-  lsCorrectIndex = round.correctIndex;
-  renderLandShape(null);
+function startPaletteGuess(){
+  pgScore = 0;
+  pgRoundLocked = false;
+  pgLastFpEarned = 0;
+  pgLastTyped = "";
+  pgMatchedName = null;
+  const round = buildPaletteGuessRound();
+  pgCurrent = round.country;
+  pgOptions = round.options;
+  pgCorrectIndex = round.correctIndex;
+  renderPaletteGuess(null);
 }
-function advanceLandShape(){
-  const round = buildLandShapeRound();
-  lsCurrent = round.country;
-  lsOptions = round.options;
-  lsCorrectIndex = round.correctIndex;
-  lsRoundLocked = false;
-  renderLandShape(null);
+function advancePaletteGuess(){
+  pgMatchedName = null;
+  const round = buildPaletteGuessRound();
+  pgCurrent = round.country;
+  pgOptions = round.options;
+  pgCorrectIndex = round.correctIndex;
+  pgRoundLocked = false;
+  renderPaletteGuess(null);
 }
-async function resolveLandShapeRound(isCorrect){
-  lsLastFpEarned = 0;
+async function resolvePaletteGuessRound(isCorrect){
+  pgLastFpEarned = 0;
   if(isCorrect){
-    lsScore += 1;
-    if(lsScore > lsBestStreak) lsBestStreak = lsScore;
-    lsLastFpEarned = currentLsFpRate() * lsScore;
-    totalFP += lsLastFpEarned;
+    pgScore += 1;
+    if(pgScore > pgBestStreak) pgBestStreak = pgScore;
+    pgLastFpEarned = currentPgFpRate() * pgScore;
+    totalFP += pgLastFpEarned;
     renderStats();
     await saveProgress();
   }
-  renderLandShape({correct:isCorrect});
+  renderPaletteGuess({correct:isCorrect});
 }
-async function submitLandShapeGuess(){
-  if(lsRoundLocked || !lsCurrent) return;
-  const input = document.getElementById("lsGuessInput");
+async function submitPaletteGuessGuess(){
+  if(pgRoundLocked || !pgCurrent) return;
+  const input = document.getElementById("pgGuessInput");
   const typed = input ? input.value.trim() : "";
   if(!typed) return;
-  lsRoundLocked = true;
-  lsLastTyped = typed;
-  await resolveLandShapeRound(isTypedAnswerCorrect(typed, lsCurrent.name));
+  pgRoundLocked = true;
+  pgLastTyped = typed;
+  const matchedName = pgTypedMatchesCurrent(typed);
+  pgMatchedName = matchedName;
+  await resolvePaletteGuessRound(!!matchedName);
 }
-async function guessLandShapeOption(idx){
-  if(lsRoundLocked || !lsCurrent) return;
-  lsRoundLocked = true;
-  lsPickedIndex = idx;
-  await resolveLandShapeRound(idx === lsCorrectIndex);
+async function guessPaletteGuessOption(idx){
+  if(pgRoundLocked || !pgCurrent) return;
+  pgRoundLocked = true;
+  pgPickedIndex = idx;
+  const isCorrect = idx === pgCorrectIndex || pgOptionMatchesCurrent(pgOptions[idx]);
+  pgMatchedName = isCorrect ? pgOptions[idx] : null;
+  await resolvePaletteGuessRound(isCorrect);
 }
-function renderLandShape(resultState){
-  const box = document.getElementById("landShapeBox");
-  const locked = lsRoundLocked;
-  const isSelect = lsAnswerMode === "select";
+function renderPaletteGuess(resultState){
+  const box = document.getElementById("paletteGuessBox");
+  const locked = pgRoundLocked;
+  const isSelect = pgAnswerMode === "select";
+
+  const swatchesHTML = shuffleArr(pgCurrent.colors).map(name => {
+    const hex = PG_COLOR_HEX[String(name).toLowerCase()] || "#8b93a7";
+    return `<div class="pg-swatch" style="background:${hex};" title="${name}"></div>`;
+  }).join("");
 
   const answerAreaHTML = isSelect ? `
     <div class="quiz-option-grid">
-      ${lsOptions.map((name, i) => {
+      ${pgOptions.map((name, i) => {
         let cls = "quiz-option";
         if(locked){
-          if(i === lsCorrectIndex) cls += " correct";
-          else if(i === lsPickedIndex) cls += " incorrect";
+          if(i === pgCorrectIndex) cls += " correct";
+          else if(i === pgPickedIndex) cls += " incorrect";
         }
-        return `<div class="${cls}" ${locked ? '' : `onclick="guessLandShapeOption(${i})"`}>${name}</div>`;
+        return `<div class="${cls}" ${locked ? '' : `onclick="guessPaletteGuessOption(${i})"`}>${name}</div>`;
       }).join("")}
     </div>
   ` : (!locked ? `
     <div class="fz-input-row">
-      <input type="text" class="flag-search" id="lsGuessInput" placeholder="Type the country's name..." autocomplete="off"
-             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitLandShapeGuess(); }">
-      <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitLandShapeGuess()">Guess</button>
+      <input type="text" class="flag-search" id="pgGuessInput" placeholder="Type the country's name..." autocomplete="off"
+             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitPaletteGuessGuess(); }">
+      <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitPaletteGuessGuess()">Guess</button>
     </div>
   ` : '');
 
   box.innerHTML = `
-    <div class="quiz-flash-counter">🗺️ Land Shape${isSelect ? ' · Select' : ''} · Streak: ${lsScore}${lsBestStreak ? ` · Best: ${lsBestStreak}` : ""}</div>
-    <div class="conn-intro-line">Which country's border is this?</div>
-    <div class="ls-shape-frame"><img src="${lsCurrent.shapeUrl || COUNTRY_SHAPE_URLS[lsCurrent.name]}" alt="Land silhouette"></div>
+    <div class="quiz-flash-counter">🎨 Palette Guess${pgIncludePacks ? ' · +Packs' : ''}${isSelect ? ' · Select' : ''} · Streak: ${pgScore}${pgBestStreak ? ` · Best: ${pgBestStreak}` : ""}</div>
+    <div class="conn-intro-line">Whose flag uses exactly these colors?</div>
+    <div class="pg-swatch-frame">${swatchesHTML}</div>
     ${answerAreaHTML}
     ${!locked ? `
-      <div class="conn-action-row"><button class="modal-close" onclick="closeLandShape()">Give Up</button></div>
+      <div class="conn-action-row"><button class="modal-close" onclick="closePaletteGuess()">Give Up</button></div>
     ` : `
       <div class="hl-gameover">
         ${resultState.correct
-          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ Correct! It's ${lsCurrent.name}</div><div class="hl-gameover-score">+${lsLastFpEarned.toLocaleString()} FP</div>`
-          : `<div class="hl-gameover-title" style="color:#e05555;">❌ Streak ended at ${lsScore} - it was ${lsCurrent.name}${!isSelect ? ` (you typed "${lsLastTyped}")` : ''}</div>`}
+          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ Correct! It's ${pgMatchedName || pgCurrent.name}</div><div class="hl-gameover-score">+${pgLastFpEarned.toLocaleString()} FP</div>`
+          : `<div class="hl-gameover-title" style="color:#e05555;">❌ Streak ended at ${pgScore} - it was ${pgCurrent.name}${!isSelect ? ` (you typed "${pgLastTyped}")` : ''}</div>`}
         <div class="conn-action-row">
           ${resultState.correct
-            ? `<button class="quiz-submit-btn" onclick="advanceLandShape()">Next Shape →</button>`
-            : `<button class="ghost-btn" onclick="startLandShape()">🔁 Play Again</button><button class="modal-close" onclick="closeLandShape()">Close</button>`}
+            ? `<button class="quiz-submit-btn" onclick="advancePaletteGuess()">Next Palette →</button>`
+            : `<button class="ghost-btn" onclick="startPaletteGuess()">🔁 Play Again</button><button class="modal-close" onclick="closePaletteGuess()">Close</button>`}
         </div>
       </div>
     `}
   `;
-  const inputEl = document.getElementById("lsGuessInput");
+  const inputEl = document.getElementById("pgGuessInput");
   if(inputEl) inputEl.focus();
 }
 
@@ -7357,6 +7469,10 @@ function renderFlagdle(){
 }
 
 // ---------- Init ----------
+if(DEV_MODE){
+  const devBtn = document.getElementById("devModeBtn");
+  if(devBtn) devBtn.style.display = "block";
+}
 loadProgress();
 </script>
 
