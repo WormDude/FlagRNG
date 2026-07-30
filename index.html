@@ -57,6 +57,28 @@
   .changelog-entry{
     background:var(--panel); border:1px solid var(--border); border-radius:14px;
     padding:12px 14px; box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    border-left:4px solid var(--accent);
+    background:linear-gradient(135deg, rgba(255,209,102,0.08), var(--panel) 40%);
+  }
+  .changelog-entry.is-fix{
+    border-left-color:#e05555;
+    background:linear-gradient(135deg, rgba(224,85,85,0.08), var(--panel) 40%);
+  }
+  .changelog-badge-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .changelog-badge{
+    display:inline-block; font-size:0.65rem; font-weight:800; letter-spacing:0.3px;
+    text-transform:uppercase; padding:2px 8px; border-radius:999px;
+    background:rgba(255,209,102,0.15); color:var(--accent); border:1px solid rgba(255,209,102,0.4);
+  }
+  .changelog-entry.is-fix .changelog-badge{
+    background:rgba(224,85,85,0.15); color:#e05555; border-color:rgba(224,85,85,0.4);
+  }
+  .changelog-entry.is-qol{
+    border-left-color:#4d9fff;
+    background:linear-gradient(135deg, rgba(77,159,255,0.08), var(--panel) 40%);
+  }
+  .changelog-entry.is-qol .changelog-badge{
+    background:rgba(77,159,255,0.15); color:#4d9fff; border-color:rgba(77,159,255,0.4);
   }
   .changelog-version{ font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:2px; }
   .changelog-date{ font-size:0.68rem; color:var(--muted); margin-bottom:8px; }
@@ -252,6 +274,14 @@
 
   /* ---------- Flag Quiz ---------- */
   .quiz-box{ max-width:460px; max-height:88vh; overflow-y:auto; }
+  .changelog-box{ max-width:720px; }
+  .changelog-grid{
+    display:grid; grid-template-columns:1fr; gap:12px;
+    max-height:60vh; overflow-y:auto; padding-right:6px;
+    scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+  }
+  .changelog-grid::-webkit-scrollbar{ width:6px; }
+  .changelog-grid::-webkit-scrollbar-thumb{ background:var(--border); border-radius:999px; }
   .quiz-diff-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0; }
   .quiz-diff-btn{
     background:var(--panel2); border:1px solid var(--border); color:var(--text);
@@ -728,14 +758,18 @@
 <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:18px;">
   <button class="ghost-btn" onclick="openSizeLegend()">📐 Size/Population thresholds</button>
   <button class="ghost-btn" onclick="openMemberLegend()">🤝 Member Count thresholds</button>
+  <button class="ghost-btn" onclick="openChangelog()">📝 Change Log</button>
   <button class="ghost-btn" onclick="resetProgress()">🗑️ Reset progress</button>
+</div>
+
+<div class="modal-overlay" id="changelogOverlay" onclick="if(event.target===this) closeChangelog()">
+  <div class="modal-box quiz-box changelog-box" id="changelogBox"></div>
 </div>
 
 <div class="app-layout">
 <div class="changelog-sidebar" id="changelogSidebar">
   <div id="flagFactPanel"></div>
   <div id="dailyFlagPanel"></div>
-  <div id="changelogEntries"></div>
 </div>
 
 <div class="card">
@@ -875,7 +909,7 @@ const COUNTRIES = [
   {name:"Vatican City",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Flag_of_Vatican_City_%282023%E2%80%93present%29.svg/960px-Flag_of_Vatican_City_%282023%E2%80%93present%29.svg.png?_=20241017125257", colors:["yellow","white","black","red","gray"], bands:2, languages:["Italian"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1929, cross:true, crest:true, squareFlag:true, microstate:true, crown:true},
   {name:"San Marino",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Flag_of_San_Marino.svg/960px-Flag_of_San_Marino.svg.png", colors:["white","light blue","black","green","yellow","gray"], bands:2, languages:["Italian"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1862, crest:true, microstate:true, leaf:true, script:true, crown:true, buildingIcon:true},
   {name:"Liechtenstein",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Flag_of_Liechtenstein.svg/960px-Flag_of_Liechtenstein.svg.png", colors:["blue","red","yellow","black"], bands:2, languages:["German"], continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:1937, microstate:true, crown:true},
-  {name:"Tuvalu", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Flag_of_Tuvalu.svg/960px-Flag_of_Tuvalu.svg.png", colors:["blue","yellow","red","white","light blue"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1997, stars:true, cross:true, microstate:true},
+  {name:"Tuvalu", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Flag_of_Tuvalu.svg/960px-Flag_of_Tuvalu.svg.png", colors:["blue","yellow","red","white","light blue"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1997, stars:true, cross:true, microstate:true, unionJack:true},   
   {name:"Palau", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Flag_of_Palau.svg/960px-Flag_of_Palau.svg.png", colors:["light blue","yellow"], bands:0, languages:["English"], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:1981, moonDisc:true, microstate:true},
   {name:"Bangladesh",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Flag_of_Bangladesh.svg/960px-Flag_of_Bangladesh.svg.png", colors:["green","red"], bands:0, continent:"Asia", landlocked:false, island:false, pop:"huge", area:"medium", founded:1972, sun:true},
   {name:"India",  imageUrl:"https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/960px-Flag_of_India.svg.png?_=20240827082344", colors:["orange","white","green","blue"], bands:3, languages:["English"], continent:"Asia", landlocked:false, island:false, pop:"huge", area:"huge", founded:1947, wheel:true},
@@ -2377,7 +2411,7 @@ async function loadProgress(){
   }
   renderFlagFact();
   renderDailyFlag();
-  renderChangelogSidebar();
+  // changelog now renders on demand when the button opens it
 
   if(lastRollCountryName){
     const isStandardRoll = lastRollSetId === 'standard';
@@ -2751,9 +2785,13 @@ function hasSpunSetToday(setId){
 }
 
 // ---------- Changelog ----------
-// Newest entry first. Add a new object to the top whenever you ship something.
-const CHANGELOG = [
-  { version: "v1.09.1", date: "Jul 29 2026", notes: [
+// Newest entry first. Add a new object to the top whenever you ship something. 
+const CHANGELOG = [    
+  { version: "v1.09.2", date: "Jul 29 2026", type: ["qol","fix"], notes: [
+    {text: "Made Changelog a button", type: "qol"},
+    {text: "Gave Tuvalu the Love the Brits badge", type: "fix"}
+  ]},
+  { version: "v1.09.1", date: "Jul 29 2026", type: "fix", notes: [
     "Gave Spain the Animal badge",
     "Gave San Marino the Build Up badge",
     "Gave Lebanon the Plant Life badge"
@@ -2962,24 +3000,60 @@ function renderDailyFlag(){
   `;
 }
 
-function renderChangelogSidebar(){
-  const panel = document.getElementById('changelogEntries');
-  if(!panel) return;
+function openChangelog(){
+  renderChangelog();
+  document.getElementById('changelogOverlay').classList.add('open');
+}
+function closeChangelog(){
+  document.getElementById('changelogOverlay').classList.remove('open');
+}
+function renderChangelog(){
+  const box = document.getElementById('changelogBox');
+  if(!box) return;
 
-  const entriesHTML = CHANGELOG.map(c => `
-    <div class="changelog-entry">
+  const entriesHTML = CHANGELOG.map(c => {
+    const types = Array.isArray(c.type) ? c.type : (c.type ? [c.type] : ["update"]);
+    const typeMeta = {
+      update: { cls: "is-update", badge: "✨ Update", color: "#ffd166" },
+      fix:    { cls: "is-fix",    badge: "🐛 Bug Fixes", color: "#e05555" },
+      qol:    { cls: "is-qol",    badge: "🧰 QoL", color: "#4d9fff" }
+    };
+    const metas = types.map(t => typeMeta[t] || typeMeta.update);
+    const cls = metas.map(m => m.cls).join(' ');
+    const badges = metas.map(m => `<div class="changelog-badge" style="background:${m.color}26; color:${m.color}; border-color:${m.color}66;">${m.badge}</div>`).join('');
+    // Multiple types: use the first type's color for the border, background gradient stays subtle.
+    const borderStyle = metas.length > 1
+      ? `border-left-color:${metas[0].color}; background-image:linear-gradient(135deg, ${metas[0].color}14, var(--panel) 40%);`
+      : '';
+    const noteColor = n => {
+      // Plain string notes take the entry's own color (or first type's color if mixed).
+      // A note can also be written as {text, type} to pick its own color within a mixed entry.
+      if(typeof n === "object" && n !== null){
+        const noteMeta = typeMeta[n.type] || metas[0];
+        return noteMeta.color;
+      }
+      return metas[0].color;
+    };
+    const noteText = n => (typeof n === "object" && n !== null) ? n.text : n;
+    return `
+    <div class="changelog-entry ${cls}"${borderStyle ? ` style="${borderStyle}"` : ''}>
+      <div class="changelog-badge-row">${badges}</div>
       <div class="changelog-version">${c.version}</div>
       <div class="changelog-date">${c.date}</div>
       <ul class="changelog-list">
-        ${c.notes.map(n => `<li>${n}</li>`).join('')}
+        ${c.notes.map(n => `<li style="text-decoration:underline; text-decoration-color:${noteColor(n)}; text-underline-offset:3px;">${noteText(n)}</li>`).join('')}
       </ul>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
-  panel.innerHTML = `
-    <div class="packs-title">📝 Changelog</div>
-    <div class="packs-subtitle">What's new in FlagRNG.</div>
-    ${entriesHTML}
+  box.innerHTML = `
+    <div class="modal-title">📝 Changelog</div>
+    <div class="conn-intro-line">What's new in FlagRNG.</div>
+    <div class="changelog-grid">
+      ${entriesHTML}
+    </div>
+    <div class="conn-action-row"><button class="modal-close" onclick="closeChangelog()">Close</button></div>
   `;
 }
 
@@ -6461,8 +6535,12 @@ let pgLastTyped = "";
 let pgMatchedName = null; // the specific tied country name the player's typed guess matched, if different from pgCurrent
 
 function paletteGuessPool(){
-  const basePool = pgIncludePacks ? ALL_FLAGS : COUNTRIES;
-  return basePool.filter(c => c.colors && c.colors.length >= 2 && collectedFlagNames.includes(c.name));
+  if(pgIncludePacks){
+    // +Pack Flags mode intentionally draws from every flag in the game (owned
+    // or not) for variety, same as Flag Land Distance's pack pool.
+    return ALL_FLAGS.filter(c => c.colors && c.colors.length >= 2);
+  }
+  return COUNTRIES.filter(c => c.colors && c.colors.length >= 2 && collectedFlagNames.includes(c.name));
 }
 function pgColorSignature(colors){
   return colors.map(c => String(c).toLowerCase()).sort().join("|");
@@ -6503,6 +6581,8 @@ function setPgAnswerMode(mode){
 }
 function setPgPoolMode(includePacks){
   pgIncludePacks = includePacks;
+  pgBag = [];
+  pgLastBagName = null;
   renderPaletteGuessIntro();
 }
 function renderPaletteGuessIntro(){
@@ -6530,21 +6610,28 @@ function renderPaletteGuessIntro(){
     `}
   `;
 }
-let pgRecentNames = []; // short history of recently shown flags, to avoid back-to-back (or near-back-to-back) repeats
+let pgBag = []; // shuffle-bag: holds names not yet shown in the current cycle
+let pgLastBagName = null; // last name drawn, so a reshuffle can't immediately repeat it
+function pgDrawFromBag(pool){
+  const poolNames = new Set(pool.map(c => c.name));
+  // Drop any bag entries that fell out of the pool (e.g. pack toggle changed).
+  pgBag = pgBag.filter(n => poolNames.has(n));
+  if(pgBag.length === 0){
+    pgBag = shuffleArr(pool.map(c => c.name));
+    // If the bag reshuffled and happened to start with the same flag that just
+    // ended, swap it elsewhere in the bag so it doesn't feel like a repeat.
+    if(pgBag.length > 1 && pgBag[0] === pgLastBagName){
+      const swapIdx = 1 + Math.floor(Math.random() * (pgBag.length - 1));
+      [pgBag[0], pgBag[swapIdx]] = [pgBag[swapIdx], pgBag[0]];
+    }
+  }
+  const name = pgBag.shift();
+  pgLastBagName = name;
+  return pool.find(c => c.name === name);
+}
 function buildPaletteGuessRound(){
   const pool = paletteGuessPool();
-  // Avoid repeating a flag that showed up recently. Shrinks the exclusion
-  // window automatically if the pool is too small to honor it fully.
-  const maxHistory = Math.max(0, Math.min(pgRecentNames.length, pool.length - 1));
-  let candidates = pool;
-  for(let window = maxHistory; window >= 0; window--){
-    const excluded = new Set(pgRecentNames.slice(-window));
-    const filtered = pool.filter(c => !excluded.has(c.name));
-    if(filtered.length > 0){ candidates = filtered; break; }
-  }
-  const country = candidates[Math.floor(Math.random() * candidates.length)];
-  pgRecentNames.push(country.name);
-  if(pgRecentNames.length > 8) pgRecentNames.shift();
+  const country = pgDrawFromBag(pool);
   if(pgAnswerMode !== "select") return {country, options:null, correctIndex:-1};
   const sig = pgColorSignature(country.colors);
   const notTied = c => c.name !== country.name && pgColorSignature(c.colors || []) !== sig;
@@ -6559,7 +6646,8 @@ function startPaletteGuess(){
   pgLastFpEarned = 0;
   pgLastTyped = "";
   pgMatchedName = null;
-  pgRecentNames = [];
+  pgBag = [];
+  pgLastBagName = null;
   const round = buildPaletteGuessRound();
   pgCurrent = round.country;
   pgOptions = round.options;
