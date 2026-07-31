@@ -670,6 +670,88 @@
   .hl-card-value{ font-size:1.05rem; font-weight:800; color:var(--accent); }
   .hl-card-value.hl-hidden{ color:var(--muted); font-size:0.85rem; font-weight:600; }
   .hl-vs{ flex:0 0 auto; font-size:0.75rem; font-weight:800; color:var(--muted); padding:0 2px; }
+  .hl-card-back{
+    width:64px; height:88px; margin:0 auto 8px; border-radius:6px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 6px, transparent 6px 12px),
+      linear-gradient(135deg, var(--panel2), #10141f);
+    border:1px solid rgba(255,255,255,0.25); box-shadow:0 6px 16px rgba(0,0,0,0.4);
+    display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--muted);
+  }
+  .fs-hand-grid{ display:flex; justify-content:center; align-items:flex-end; margin:22px 0 14px; padding:0 10px; }
+  .fs-hand-card{
+    background:linear-gradient(160deg, var(--panel2), #10141f);
+    border:1px solid var(--border); border-radius:12px; cursor:pointer;
+    padding:10px 6px 12px; display:flex; flex-direction:column; align-items:center; gap:6px;
+    text-align:center; box-shadow:0 6px 14px rgba(0,0,0,0.45); position:relative;
+    width:84px; margin-left:-30px; transform-origin:50% 100%;
+    transform:rotate(var(--rot,0deg)) translateY(var(--lift,0px));
+    transition:transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .fs-hand-card:first-child{ margin-left:0; }
+  .fs-hand-card::before{
+    content:''; position:absolute; top:6px; left:6px; right:6px; bottom:6px;
+    border:1px solid rgba(255,255,255,0.08); border-radius:7px; pointer-events:none;
+  }
+  .fs-hand-card:hover{
+    border-color:var(--accent); z-index:50 !important;
+    transform:rotate(0deg) translateY(-26px) scale(1.12) !important;
+    box-shadow:0 16px 30px rgba(0,0,0,0.55);
+  }
+  .fs-hand-card .fs-hand-card-name{ font-size:0.74rem; font-weight:700; line-height:1.25; }
+  .chs-board{
+    display:grid; grid-template-columns:repeat(8, 1fr); gap:1px;
+    background:#1a1a1a; border:2px solid #0a0a0a; border-radius:8px;
+    padding:5px; max-width:400px; margin:8px auto 14px; box-shadow:0 10px 24px rgba(0,0,0,0.4);
+  }
+  .chs-cell{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center; position:relative; border-radius:2px;
+  }
+  .chs-cell.light{ background:#3a3a3a; }
+  .chs-cell.dark{ background:#242424; }
+  .chs-cell.selected{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .chs-cell.legal{ cursor:pointer; }
+  .chs-cell.legal::after{ content:''; width:26%; height:26%; border-radius:50%; background:rgba(62,207,106,0.55); position:absolute; }
+  .chs-cell.legal.capture::after{ width:100%; height:100%; border-radius:2px; background:transparent; border:2.5px solid rgba(224,85,85,0.75); }
+  .chs-piece{
+    width:92%; height:92%; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:1.9rem; line-height:1; user-select:none;
+  }
+  .chs-piece.P{ color:#f4f4f4; text-shadow:0 0 1px #000, 0 1px 2px rgba(0,0,0,0.8), 0 0 6px var(--accent); }
+  .chs-piece.O{ color:#1a1a1a; text-shadow:0 0 1px #fff, 0 1px 2px rgba(0,0,0,0.6), 0 0 6px #d65b5b; }
+  .chs-status{ text-align:center; font-size:0.8rem; color:var(--muted); margin-bottom:4px; min-height:1.2em; }
+  .chs-status.check{ color:#e0c23e; font-weight:700; }
+  .chs-scorerow{ display:flex; justify-content:center; gap:18px; margin-bottom:10px; font-size:0.8rem; font-weight:700; }
+  .chs-quiz-flag{ width:120px; height:auto; border-radius:6px; margin:10px auto; display:block; box-shadow:0 4px 14px rgba(0,0,0,0.4); }
+  .chs-diff-row{ display:flex; gap:8px; justify-content:center; margin:12px 0; flex-wrap:wrap; }
+  .chs-diff-btn{
+    background:var(--panel2); border:1px solid var(--border); color:var(--text);
+    padding:8px 14px; border-radius:10px; cursor:pointer; font-size:0.78rem; font-weight:700;
+  }
+  .chs-diff-btn.active{ border-color:var(--accent); color:var(--accent); background:rgba(255,255,255,0.06); }
+  .chk-board{
+    display:grid; grid-template-columns:repeat(8, 1fr); gap:1px;
+    background:#1a1a1a; border:2px solid #0a0a0a; border-radius:8px;
+    padding:5px; max-width:400px; margin:8px auto 14px; box-shadow:0 10px 24px rgba(0,0,0,0.4);
+  }
+  .chk-cell{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center; position:relative; border-radius:2px;
+  }
+  .chk-cell.light{ background:#3a3a3a; }
+  .chk-cell.dark{ background:#242424; }
+  .chk-cell.selected{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .chk-cell.legal{ cursor:pointer; }
+  .chk-cell.legal::after{ content:''; width:26%; height:26%; border-radius:50%; background:rgba(62,207,106,0.55); position:absolute; }
+  .chk-cell.legal.capture::after{ width:60%; height:60%; border-radius:50%; background:transparent; border:2.5px solid rgba(224,85,85,0.8); }
+  .chk-piece{
+    width:78%; height:78%; border-radius:50%; cursor:pointer; position:relative;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.15);
+  }
+  .chk-piece.P{ background:radial-gradient(circle at 35% 30%, #eafff2, var(--accent)); border:1.5px solid #1f8a4d; }
+  .chk-piece.O{ background:radial-gradient(circle at 35% 30%, #ffe5e5, #b93f3f); border:1.5px solid #7a2626; }
+  .chk-piece .chk-king{ font-size:0.85rem; color:#3a2a00; text-shadow:0 1px 1px rgba(255,255,255,0.4); }
+  .chk-status{ text-align:center; font-size:0.8rem; color:var(--muted); margin-bottom:4px; min-height:1.2em; }
+  .chk-scorerow{ display:flex; justify-content:center; gap:18px; margin-bottom:10px; font-size:0.8rem; font-weight:700; }
   .hl-guess-row{ display:flex; gap:10px; margin-bottom:6px; }
   .hl-guess-btn{
     flex:1; background:linear-gradient(135deg,#ffd166,#ff9f40); border:none; color:#1a1400;
@@ -845,6 +927,22 @@
 
 <div class="modal-overlay" id="hintHunterOverlay" onclick="if(event.target===this) closeHintHunter()">
   <div class="modal-box quiz-box" id="hintHunterBox"></div>
+</div>
+
+<div class="modal-overlay" id="highStakesOverlay" onclick="if(event.target===this) closeHighStakes()">
+  <div class="modal-box quiz-box" id="highStakesBox"></div>
+</div>
+
+<div class="modal-overlay" id="flagShowdownOverlay" onclick="if(event.target===this) closeFlagShowdown()">
+  <div class="modal-box quiz-box" id="flagShowdownBox"></div>
+</div>
+
+<div class="modal-overlay" id="flagChessOverlay" onclick="if(event.target===this) closeFlagChess()">
+  <div class="modal-box quiz-box" id="flagChessBox"></div>
+</div>
+
+<div class="modal-overlay" id="flagCheckersOverlay" onclick="if(event.target===this) closeFlagCheckers()">
+  <div class="modal-box quiz-box" id="flagCheckersBox"></div>
 </div>
 
 <div class="modal-overlay" id="gamemodeHubOverlay" onclick="if(event.target===this) closeGamemodeHub()">
@@ -2786,7 +2884,10 @@ function hasSpunSetToday(setId){
 
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something. 
-const CHANGELOG = [    
+const CHANGELOG = [   
+  { version: "v1.10", date: "Jul 31 2026", notes: [
+    "I'm adding too many gamemodes (4 new gamemodes)"
+  ]},
   { version: "v1.09.2", date: "Jul 29 2026", type: ["qol","fix"], notes: [
     {text: "Made Changelog a button", type: "qol"},
     {text: "Gave Tuvalu the Love the Brits badge", type: "fix"}
@@ -6327,6 +6428,1412 @@ function renderHintHunter(justResolvedCorrect){
 // ---------- Gamemode Hub ----------
 // Single source of truth for every playable mode - the hub renders this list,
 // and the old individual buttons were collapsed into openGamemodeHub() below.
+// ---------- High Stakes ----------
+// Push-your-luck gauntlet. The pot grows multiplicatively each correct round
+// instead of linearly like the other streak modes, so it can pay far more
+// than anything else in the game - but there's no partial credit. Cash out
+// whenever you want and keep the pot, or push on and risk losing all of it
+// on a single wrong guess or a timer running out. No hints, no retries, no
+// skip, typed answers only - the floor never gets propped up for you here.
+const HS_BASE_POT = 20;          // pot after round 1, Standard pool
+const HS_BASE_POT_PACKS = 36;    // pot after round 1, +Pack Flags pool
+const HS_POT_MULT = 1.8;         // pot multiplier per additional round survived
+const HS_TIME_START = 6.5;       // seconds on round 1
+const HS_TIME_STEP = 0.5;        // seconds shaved off per round
+const HS_TIME_FLOOR = 2.2;       // seconds, minimum ever given
+const HS_ZOOM_BASE = 200;        // background-size %, round 1
+const HS_ZOOM_STEP = 40;         // % tighter per round
+const HS_ZOOM_MAX = 520;         // tightest crop ever shown
+const HS_DECOY_ROUND = 4;        // round at which decoy-flash pressure kicks in
+const HS_DECOY_MS = 900;         // how long the decoy flashes alongside the real flag
+
+let hsIncludePacks = false;
+let hsCurrent = null;
+let hsRound = 0;
+let hsPot = 0;
+let hsLocked = false;
+let hsLastTyped = "";
+let hsOffsetX = 50;
+let hsOffsetY = 50;
+let hsDecoy = null;
+let hsDecoyOnLeft = true;
+let hsShowingDecoy = false;
+let hsDecoyTimeoutId = null;
+let hsTimerId = null;
+let hsTimeLeft = 0;
+let hsRoundTime = 0;
+let hsBestPot = { standard: 0, packs: 0 };
+let hsLastResult = null; // "cashed" | "busted" | null
+let hsPushOnKeyHandler = null;
+let hsRestartKeyHandler = null;
+
+function openHighStakes(){
+  document.getElementById("highStakesOverlay").classList.add("open");
+  hsCurrent = null;
+  renderHighStakesIntro();
+}
+function closeHighStakes(){
+  stopHighStakesTimer();
+  clearHighStakesDecoyTimer();
+  disarmHsPushOnKeyListener();
+  disarmHsRestartKeyListener();
+  document.getElementById("highStakesOverlay").classList.remove("open");
+}
+function setHsPoolMode(includePacks){
+  hsIncludePacks = includePacks;
+  renderHighStakesIntro();
+}
+function highStakesPool(){
+  // Typed answers can't fairly judge a flag with a visually identical twin,
+  // same rule the other typed-answer modes use - the difficulty here comes
+  // from the timer and the crop, not from an unwinnable guess.
+  if(!hsIncludePacks){
+    const collected = COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+    const noLookalikes = collected.filter(c => !c.lookalikeGroup);
+    return noLookalikes.length >= 6 ? noLookalikes : collected;
+  }
+  // Pack flags are tracked per-pack by id (collectedPackFlagIds), not by name
+  // in collectedFlagNames - buildQuizPool already knows how to walk every
+  // pack correctly, so lean on it instead of re-deriving ownership here.
+  const owned = flattenPool(buildQuizPool("unlocked")).map(e => e.flag);
+  const noLookalikes = owned.filter(c => !c.lookalikeGroup);
+  return noLookalikes.length >= 6 ? noLookalikes : owned;
+}
+function hsPotForRound(n){
+  const base = hsIncludePacks ? HS_BASE_POT_PACKS : HS_BASE_POT;
+  return Math.round(base * Math.pow(HS_POT_MULT, n - 1));
+}
+function hsTimeForRound(n){
+  return Math.max(HS_TIME_FLOOR, HS_TIME_START - (n - 1) * HS_TIME_STEP);
+}
+function hsZoomForRound(n){
+  return Math.min(HS_ZOOM_MAX, HS_ZOOM_BASE + (n - 1) * HS_ZOOM_STEP);
+}
+function renderHighStakesIntro(){
+  const box = document.getElementById("highStakesBox");
+  const pool = highStakesPool();
+  const bestKey = hsIncludePacks ? 'packs' : 'standard';
+  const best = hsBestPot[bestKey];
+  box.innerHTML = `
+    <div class="modal-icon">💰</div>
+    <div class="modal-title">High Stakes</div>
+    <div class="modal-desc">A cropped flag, a shrinking timer, one shot per round. Every correct answer grows the pot - cash out any time, or push on and risk losing all of it. No hints, no retries, no skipping.</div>
+    <div class="quiz-lock-toggle">
+      <button class="${!hsIncludePacks ? 'active' : ''}" onclick="setHsPoolMode(false)">Standard Only</button>
+      <button class="${hsIncludePacks ? 'active' : ''}" onclick="setHsPoolMode(true)">+ Pack Flags (bigger pot)</button>
+    </div>
+    <div class="conn-intro-line">Round 1 pays ${hsPotForRound(1)} FP if you cash out immediately - the pot roughly ${HS_POT_MULT}x's every round after that. Round 5 alone is worth ${hsPotForRound(5).toLocaleString()} FP, round 8 is ${hsPotForRound(8).toLocaleString()}. One miss or timeout and it's all gone.</div>
+    ${best ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best pot cashed: ${best.toLocaleString()} FP</div>` : ''}
+    ${pool.length < 6 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 6 flags first - roll a few more before playing this mode.</div>
+      <button class="modal-close" onclick="closeHighStakes()">Close</button>
+    ` : `
+      <div class="conn-action-row">
+        <button class="quiz-submit-btn" onclick="startHighStakes()">Start</button>
+        <button class="modal-close" onclick="closeHighStakes()">Close</button>
+      </div>
+    `}
+  `;
+}
+function stopHighStakesTimer(){
+  if(hsTimerId){ clearInterval(hsTimerId); hsTimerId = null; }
+}
+function clearHighStakesDecoyTimer(){
+  if(hsDecoyTimeoutId){ clearTimeout(hsDecoyTimeoutId); hsDecoyTimeoutId = null; }
+}
+function startHighStakesTimer(){
+  stopHighStakesTimer();
+  hsRoundTime = hsTimeForRound(hsRound);
+  hsTimeLeft = hsRoundTime;
+  updateHsTimerDisplay();
+  hsTimerId = setInterval(() => {
+    hsTimeLeft = Math.max(0, hsTimeLeft - 0.1);
+    updateHsTimerDisplay();
+    if(hsTimeLeft <= 0){
+      stopHighStakesTimer();
+      resolveHighStakesRound(false);
+    }
+  }, 100);
+}
+function updateHsTimerDisplay(){
+  const el = document.getElementById("hsTimerDisplay");
+  if(!el) return;
+  el.textContent = hsTimeLeft.toFixed(1);
+  el.classList.toggle("cs-timer-low", hsTimeLeft <= Math.min(2, hsRoundTime * 0.35));
+  const bar = document.getElementById("hsTimerBar");
+  if(bar) bar.style.width = `${Math.max(0, (hsTimeLeft / hsRoundTime) * 100)}%`;
+}
+function buildHighStakesRound(){
+  const pool = highStakesPool();
+  const flag = pool[Math.floor(Math.random() * pool.length)];
+  let decoy = null;
+  if(hsRound >= HS_DECOY_ROUND){
+    // Prefer a decoy that shares a color count with the real flag - not a
+    // true lookalike-group match, but enough of a visual echo to make the
+    // brief flash genuinely distracting instead of an obvious non-answer.
+    const sameColorCount = pool.filter(c => c.name !== flag.name && c.colors && flag.colors && c.colors.length === flag.colors.length);
+    const decoyPool = sameColorCount.length ? sameColorCount : pool.filter(c => c.name !== flag.name);
+    decoy = decoyPool[Math.floor(Math.random() * decoyPool.length)] || null;
+  }
+  return {flag, decoy};
+}
+function startHighStakes(){
+  hsRound = 0;
+  hsPot = 0;
+  hsLocked = false;
+  hsLastTyped = "";
+  hsLastResult = null;
+  beginHighStakesRound();
+}
+function beginHighStakesRound(){
+  clearHighStakesDecoyTimer();
+  disarmHsPushOnKeyListener();
+  disarmHsRestartKeyListener();
+  hsRound += 1;
+  const round = buildHighStakesRound();
+  hsCurrent = round.flag;
+  hsDecoy = round.decoy;
+  hsDecoyOnLeft = Math.random() < 0.5;
+  hsShowingDecoy = !!round.decoy;
+  hsLocked = false;
+  hsOffsetX = 20 + Math.random() * 60;
+  hsOffsetY = 20 + Math.random() * 60;
+  renderHighStakes(null);
+  startHighStakesTimer();
+  if(hsShowingDecoy){
+    hsDecoyTimeoutId = setTimeout(() => {
+      hsShowingDecoy = false;
+      hsDecoyTimeoutId = null;
+      if(!hsLocked){
+        const prevInput = document.getElementById("hsGuessInput");
+        const prevValue = prevInput ? prevInput.value : "";
+        const prevSelStart = prevInput ? prevInput.selectionStart : null;
+        const prevSelEnd = prevInput ? prevInput.selectionEnd : null;
+        renderHighStakes(null);
+        const nextInput = document.getElementById("hsGuessInput");
+        if(nextInput && prevValue){
+          nextInput.value = prevValue;
+          if(prevSelStart !== null) nextInput.setSelectionRange(prevSelStart, prevSelEnd);
+        }
+      }
+    }, HS_DECOY_MS);
+  }
+}
+async function resolveHighStakesRound(isCorrect){
+  stopHighStakesTimer();
+  clearHighStakesDecoyTimer();
+  hsShowingDecoy = false;
+  hsLocked = true;
+  if(isCorrect){
+    hsPot = hsPotForRound(hsRound);
+    hsLastResult = null; // still live - player chooses cash out or push on
+  } else {
+    hsLastResult = "busted";
+    hsPot = 0;
+  }
+  renderHighStakes({correct:isCorrect});
+  if(isCorrect) setTimeout(armHsPushOnKeyListener, 0);
+  else setTimeout(armHsRestartKeyListener, 0);
+}
+// After a correct guess, the guess input is gone (round is over), so a plain
+// Enter press wouldn't do anything without this - it lets a second Enter
+// (the one after submitting the answer) chain straight into the next round
+// instead of forcing a reach for the mouse.
+function armHsPushOnKeyListener(){
+  disarmHsPushOnKeyListener();
+  hsPushOnKeyHandler = (e) => {
+    if(e.key === "Enter"){
+      e.preventDefault();
+      disarmHsPushOnKeyListener();
+      pushOnHighStakes();
+    }
+  };
+  document.addEventListener("keydown", hsPushOnKeyHandler);
+}
+function disarmHsPushOnKeyListener(){
+  if(hsPushOnKeyHandler){
+    document.removeEventListener("keydown", hsPushOnKeyHandler);
+    hsPushOnKeyHandler = null;
+  }
+}
+// Same idea as the push-on listener, but for the bust screen - a second Enter
+// after the one that submitted the fatal wrong guess jumps straight into a
+// fresh run instead of forcing a reach for the "Play Again" button.
+function armHsRestartKeyListener(){
+  disarmHsRestartKeyListener();
+  hsRestartKeyHandler = (e) => {
+    if(e.key === "Enter"){
+      e.preventDefault();
+      disarmHsRestartKeyListener();
+      startHighStakes();
+    }
+  };
+  document.addEventListener("keydown", hsRestartKeyHandler);
+}
+function disarmHsRestartKeyListener(){
+  if(hsRestartKeyHandler){
+    document.removeEventListener("keydown", hsRestartKeyHandler);
+    hsRestartKeyHandler = null;
+  }
+}
+async function submitHighStakesGuess(){
+  if(hsLocked || !hsCurrent) return;
+  const input = document.getElementById("hsGuessInput");
+  const typed = input ? input.value.trim() : "";
+  if(!typed) return;
+  hsLastTyped = typed;
+  await resolveHighStakesRound(isTypedAnswerCorrect(typed, hsCurrent.name));
+}
+async function cashOutHighStakes(){
+  if(hsPot <= 0) return;
+  stopHighStakesTimer();
+  clearHighStakesDecoyTimer();
+  disarmHsPushOnKeyListener();
+  const bestKey = hsIncludePacks ? 'packs' : 'standard';
+  if(!hsBestPot[bestKey] || hsPot > hsBestPot[bestKey]) hsBestPot[bestKey] = hsPot;
+  totalFP += hsPot;
+  hsLastResult = "cashed";
+  const cashedAmount = hsPot;
+  hsPot = 0;
+  renderStats();
+  await saveProgress();
+  renderHighStakes({cashed:cashedAmount});
+}
+function pushOnHighStakes(){
+  if(hsLocked === false) return;
+  beginHighStakesRound();
+}
+function renderHighStakes(resultState){
+  const box = document.getElementById("highStakesBox");
+  if(!hsCurrent){ box.innerHTML = ""; return; }
+  const locked = !!resultState;
+  const zoomPct = hsZoomForRound(hsRound);
+  const frameStyle = `background-image:url('${hsCurrent.imageUrl}'); background-size:${zoomPct}% auto; background-position:${hsOffsetX}% ${hsOffsetY}%;`;
+  const decoyFrameStyle = hsDecoy ? `background-image:url('${hsDecoy.imageUrl}'); background-size:${zoomPct}% auto; background-position:${hsOffsetX}% ${hsOffsetY}%;` : '';
+
+  if(resultState && resultState.cashed !== undefined){
+    box.innerHTML = `
+      <div class="quiz-flash-counter">💰 High Stakes${hsIncludePacks ? ' · +Packs' : ''}</div>
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:#3ecf6a;">💸 Cashed out!</div>
+        <div class="hl-gameover-score">+${resultState.cashed.toLocaleString()} FP banked</div>
+        <div class="conn-action-row">
+          <button class="ghost-btn" onclick="startHighStakes()">🔁 Play Again</button>
+          <button class="modal-close" onclick="closeHighStakes()">Close</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const frameHTML = hsShowingDecoy ? `
+    <div style="display:flex; gap:10px; justify-content:center;">
+      ${hsDecoyOnLeft
+        ? `<div class="fz-frame" style="${decoyFrameStyle} max-width:160px;"></div><div class="fz-frame" style="${frameStyle} max-width:160px;"></div>`
+        : `<div class="fz-frame" style="${frameStyle} max-width:160px;"></div><div class="fz-frame" style="${decoyFrameStyle} max-width:160px;"></div>`}
+    </div>
+    <div class="conn-intro-line" style="color:var(--accent);">Which one is it? ...</div>
+  ` : `<div class="fz-frame" style="${frameStyle}"></div>`;
+
+  box.innerHTML = `
+    <div class="quiz-flash-counter">💰 High Stakes${hsIncludePacks ? ' · +Packs' : ''} · Round ${hsRound} · Pot: ${hsPotForRound(hsRound).toLocaleString()} FP</div>
+    ${!locked ? `
+      <div class="quiz-flash-counter" id="hsTimerDisplay">${hsTimeLeft.toFixed(1)}</div>
+      <div style="height:6px; border-radius:4px; background:rgba(255,255,255,0.12); overflow:hidden; margin-bottom:6px;">
+        <div id="hsTimerBar" style="height:100%; width:100%; background:var(--accent, #3ecf6a); transition:width 0.1s linear;"></div>
+      </div>
+    ` : ''}
+    <div class="conn-intro-line">Type the country before the timer runs out. One miss and the pot is gone.</div>
+    ${frameHTML}
+    ${!locked ? `
+      <div class="cs-input-row">
+        <input type="text" class="flag-search" id="hsGuessInput" placeholder="Type the country's name..." autocomplete="off"
+               onkeydown="if(event.key==='Enter'){ event.preventDefault(); event.stopPropagation(); submitHighStakesGuess(); }">
+        <button class="quiz-submit-btn" style="width:auto; padding:0 18px;" onclick="submitHighStakesGuess()">Guess</button>
+      </div>
+      <div class="conn-action-row"><button class="modal-close" onclick="closeHighStakes()">Walk Away (forfeit pot)</button></div>
+    ` : `
+      <div class="hl-gameover">
+        ${resultState.correct
+          ? `<div class="hl-gameover-title" style="color:#3ecf6a;">✅ Correct! It's ${hsCurrent.name}</div><div class="hl-gameover-score">Pot is now ${hsPot.toLocaleString()} FP</div>`
+          : `<div class="hl-gameover-title" style="color:#e05555;">❌ Busted on round ${hsRound} - it was ${hsCurrent.name} (you typed "${hsLastTyped}")</div><div class="hl-gameover-score">Pot lost. Nothing banked.</div>`}
+        <div class="conn-action-row">
+          ${resultState.correct
+            ? `<button class="quiz-submit-btn" onclick="cashOutHighStakes()">💸 Cash Out (${hsPot.toLocaleString()} FP)</button><button class="ghost-btn" onclick="pushOnHighStakes()">Push On →</button>`
+            : `<button class="ghost-btn" onclick="startHighStakes()">🔁 Play Again</button><button class="modal-close" onclick="closeHighStakes()">Close</button>`}
+        </div>
+      </div>
+    `}
+  `;
+  const inputEl = document.getElementById("hsGuessInput");
+  if(inputEl) inputEl.focus();
+}
+
+// ---------- Flag Showdown ----------
+// A Top-Trumps-style card game. You're dealt a hand of 5 random flags for the
+// whole game - that hand doesn't change round to round. Each round reveals a
+// category (Most Colors, Newest Flag, etc.) before you commit a card, so the
+// choice of which flag to play is the actual game: save your strongest card
+// for a category it wins, or spend a weak one now before a worse category
+// shows up. Once a card is played it's gone for the rest of the game. Win the
+// round, bank the FP; lose or draw, bank nothing. Five rounds, five cards,
+// then a fresh hand for the next game.
+const FS_HAND_SIZE = 5;
+const FS_ROUND_FP = 60;
+const FS_PACKS_MULT = 1.8;
+
+let fsIncludePacks = false;
+let fsPool = [];
+let fsHand = [];             // flags still unplayed this game
+let fsRound = 0;             // rounds completed so far (0-4)
+let fsCategoryKey = null;
+let fsOpponentFlag = null;
+let fsLastCategoryKey = null; // avoid the same category showing twice in a row
+let fsLocked = false;
+let fsLastFpEarned = 0;
+let fsRoundsWon = 0;
+let fsTotalEarned = 0;
+let fsBestGameFP = { standard: 0, packs: 0 };
+
+function openFlagShowdown(){
+  document.getElementById("flagShowdownOverlay").classList.add("open");
+  fsHand = [];
+  renderFsIntro();
+}
+function closeFlagShowdown(){
+  document.getElementById("flagShowdownOverlay").classList.remove("open");
+}
+function setFsPoolMode(includePacks){
+  fsIncludePacks = includePacks;
+  renderFsIntro();
+}
+function flagShowdownPool(){
+  if(!fsIncludePacks){
+    return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+  }
+  // Pack flags are tracked per-pack by id, not in collectedFlagNames - same
+  // pack-aware ownership lookup the other +Packs modes use.
+  return flattenPool(buildQuizPool("unlocked")).map(e => e.flag);
+}
+function fsRoundFp(){
+  return fsIncludePacks ? Math.round(FS_ROUND_FP * FS_PACKS_MULT) : FS_ROUND_FP;
+}
+function renderFsIntro(){
+  const box = document.getElementById("flagShowdownBox");
+  const pool = flagShowdownPool();
+  const bestKey = fsIncludePacks ? 'packs' : 'standard';
+  const best = fsBestGameFP[bestKey];
+  box.innerHTML = `
+    <div class="modal-icon">🃏</div>
+    <div class="modal-title">Flag Showdown</div>
+    <div class="modal-desc">You're dealt a hand of 5 flags for the whole game. Each round shows a category before you pick a card - choose wisely, once a card's played it's gone. Win the round for FP, lose or draw for nothing.</div>
+    <div class="quiz-lock-toggle">
+      <button class="${!fsIncludePacks ? 'active' : ''}" onclick="setFsPoolMode(false)">Standard Only</button>
+      <button class="${fsIncludePacks ? 'active' : ''}" onclick="setFsPoolMode(true)">+ Pack Flags (bigger wins)</button>
+    </div>
+    <div class="conn-intro-line">${fsRoundFp()} FP per round won - up to ${(fsRoundFp() * FS_HAND_SIZE).toLocaleString()} FP for a perfect 5/5 game.</div>
+    ${best ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best game: ${best.toLocaleString()} FP</div>` : ''}
+    ${pool.length < FS_HAND_SIZE + 1 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least ${FS_HAND_SIZE + 1} flags first - roll a few more before playing this mode.</div>
+      <button class="modal-close" onclick="closeFlagShowdown()">Close</button>
+    ` : `
+      <div class="conn-action-row">
+        <button class="quiz-submit-btn" onclick="startFlagShowdown()">Deal Hand</button>
+        <button class="modal-close" onclick="closeFlagShowdown()">Close</button>
+      </div>
+    `}
+  `;
+}
+function startFlagShowdown(){
+  fsPool = flagShowdownPool();
+  fsHand = shuffleArr(fsPool).slice(0, FS_HAND_SIZE);
+  fsRound = 0;
+  fsLocked = false;
+  fsLastFpEarned = 0;
+  fsRoundsWon = 0;
+  fsTotalEarned = 0;
+  fsLastCategoryKey = null;
+  beginFsRound();
+}
+function fsPickCategory(){
+  // Needs to be a fair category no matter which hand card gets played, so it
+  // must be valid for every card still in hand - nameLength always qualifies
+  // as the guaranteed fallback.
+  const validForHand = HL_STATS.filter(s => fsHand.every(c => s.filter(c)) && s.key !== fsLastCategoryKey);
+  const pool = validForHand.length ? validForHand : HL_STATS.filter(s => fsHand.every(c => s.filter(c)));
+  const finalPool = pool.length ? pool : [HL_STATS.find(s => s.key === "nameLength")];
+  return finalPool[Math.floor(Math.random() * finalPool.length)];
+}
+function fsPickOpponent(stat){
+  const handNames = fsHand.map(c => c.name);
+  const candidates = fsPool.filter(c => !handNames.includes(c.name) && stat.filter(c));
+  const finalPool = candidates.length ? candidates : fsPool.filter(c => !handNames.includes(c.name));
+  return finalPool[Math.floor(Math.random() * finalPool.length)] || fsPool[Math.floor(Math.random() * fsPool.length)];
+}
+function beginFsRound(){
+  fsLocked = false;
+  const stat = fsPickCategory();
+  fsCategoryKey = stat.key;
+  fsLastCategoryKey = stat.key;
+  fsOpponentFlag = fsPickOpponent(stat);
+  renderFlagShowdown(null);
+}
+async function playFsCard(handIdx){
+  if(fsLocked || !fsHand[handIdx]) return;
+  fsLocked = true;
+  const card = fsHand[handIdx];
+  const stat = HL_STATS.find(s => s.key === fsCategoryKey);
+  const myVal = stat.getValue(card);
+  const oppVal = stat.getValue(fsOpponentFlag);
+
+  let outcome;
+  fsLastFpEarned = 0;
+  if(myVal === oppVal){
+    outcome = 'draw';
+  } else if(myVal > oppVal){
+    outcome = 'win';
+  } else {
+    outcome = 'loss';
+  }
+  if(outcome === 'win'){
+    fsLastFpEarned = fsRoundFp();
+    fsRoundsWon += 1;
+    fsTotalEarned += fsLastFpEarned;
+    totalFP += fsLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  fsHand.splice(handIdx, 1);
+  fsRound += 1;
+  renderFlagShowdown({card, outcome});
+}
+function advanceFlagShowdown(){
+  if(fsHand.length === 0){
+    const bestKey = fsIncludePacks ? 'packs' : 'standard';
+    if(fsTotalEarned > fsBestGameFP[bestKey]) fsBestGameFP[bestKey] = fsTotalEarned;
+    renderFlagShowdown({summary:true});
+    return;
+  }
+  beginFsRound();
+}
+function renderFlagShowdown(resultState){
+  const box = document.getElementById("flagShowdownBox");
+  if(!fsPool.length){ box.innerHTML = ""; return; }
+
+  if(resultState && resultState.summary){
+    box.innerHTML = `
+      <div class="quiz-flash-counter">🃏 Flag Showdown - Game Over</div>
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${fsRoundsWon >= 3 ? '#3ecf6a' : 'var(--text)'};">${fsRoundsWon}/${FS_HAND_SIZE} rounds won</div>
+        <div class="hl-gameover-score">+${fsTotalEarned.toLocaleString()} FP this game</div>
+        <div class="conn-action-row">
+          <button class="quiz-submit-btn" onclick="startFlagShowdown()">🔁 New Hand</button>
+          <button class="modal-close" onclick="closeFlagShowdown()">Close</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const locked = !!resultState;
+  const stat = HL_STATS.find(s => s.key === fsCategoryKey);
+
+  if(locked){
+    const outcomeColor = resultState.outcome === 'win' ? '#3ecf6a' : (resultState.outcome === 'draw' ? 'var(--accent)' : '#e05555');
+    const outcomeText = {win:'✅ Round won!', draw:'🤝 Draw', loss:'❌ Round lost'}[resultState.outcome];
+    box.innerHTML = `
+      <div class="quiz-flash-counter">🃏 Flag Showdown${fsIncludePacks ? ' · +Packs' : ''} · Round ${fsRound} of ${FS_HAND_SIZE} · ${fsRoundsWon} won</div>
+      <div class="conn-intro-line">${stat.icon} ${stat.desc}</div>
+      <div class="hl-cards">
+        <div class="hl-card ${resultState.outcome==='win' ? 'hl-correct' : resultState.outcome==='loss' ? 'hl-incorrect' : ''}">
+          ${flagVisualHTML(resultState.card, "custom-flag-conn")}
+          <div class="hl-card-name" style="margin-top:8px;">${resultState.card.name}</div>
+          <div class="hl-card-value">${stat.getDisplay(resultState.card)}</div>
+        </div>
+        <div class="hl-vs">VS</div>
+        <div class="hl-card ${resultState.outcome==='loss' ? 'hl-correct' : resultState.outcome==='win' ? 'hl-incorrect' : ''}">
+          ${flagVisualHTML(fsOpponentFlag, "custom-flag-conn")}
+          <div class="hl-card-name" style="margin-top:8px;">${fsOpponentFlag.name}</div>
+          <div class="hl-card-value">${stat.getDisplay(fsOpponentFlag)}</div>
+        </div>
+      </div>
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${outcomeColor};">${outcomeText}</div>
+        ${resultState.outcome === 'win' ? `<div class="hl-gameover-score">+${fsLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="conn-action-row">
+          <button class="quiz-submit-btn" onclick="advanceFlagShowdown()">${fsHand.length ? 'Next Round →' : 'See Results →'}</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="quiz-flash-counter">🃏 Flag Showdown${fsIncludePacks ? ' · +Packs' : ''} · Round ${fsRound + 1} of ${FS_HAND_SIZE} · ${fsRoundsWon} won</div>
+    <div class="conn-intro-line">Category: <b>${stat.icon} ${stat.label}</b> - ${stat.desc}</div>
+    <div class="hl-cards" style="justify-content:center;">
+      <div class="hl-card">
+        <div class="hl-card-value hl-hidden">?</div>
+      </div>
+      <div class="hl-vs">VS</div>
+      <div class="hl-card">
+        <div class="hl-card-back">🂠</div>
+        <div class="hl-card-name" style="margin-top:8px;">???</div>
+        <div class="hl-card-value hl-hidden">?</div>
+      </div>
+    </div>
+    <div class="conn-intro-line">Pick a card from your hand to play this round - your opponent's flag stays hidden until you commit:</div>
+    <div class="fs-hand-grid">
+      ${fsHand.map((c, i) => {
+        const n = fsHand.length;
+        const mid = (n - 1) / 2;
+        const offset = i - mid;
+        const rot = offset * 9;
+        const lift = Math.abs(offset) * 10;
+        const z = 10 + Math.round(mid - Math.abs(offset));
+        return `
+        <div class="fs-hand-card" style="--rot:${rot}deg; --lift:${lift}px; z-index:${z};" onclick="playFsCard(${i})">
+          ${flagVisualHTML(c, "custom-flag-conn")}
+          <span class="fs-hand-card-name">${c.name}</span>
+        </div>
+      `;}).join("")}
+    </div>
+    <div class="conn-action-row"><button class="modal-close" onclick="closeFlagShowdown()">Give Up</button></div>
+  `;
+}
+
+// ---------- Flag Chess ----------
+// Real chess, played on a full 8x8 board with the standard set (King,
+// Queen, 2 Rooks, 2 Bishops, 2 Knights, 8 Pawns per side) - legal move
+// generation, check, checkmate and stalemate all enforced. Castling and
+// en passant are the two rules skipped for scope; pawns auto-promote to
+// Queen. Moving is free, but every capture demands you name the flag
+// you're taking first - get it right and the capture lands, get it wrong
+// and you hand the turn back. Pick a bot difficulty before you start;
+// harder bots think further ahead and pay out more FP.
+const CHS_SIZE = 8;
+const CHS_MAX_HALFMOVES = 80;
+const CHS_PIECE_VALUE = {P:1, N:3, B:3, R:5, Q:9, K:1000};
+const CHS_PIECE_NAME = {K:"King", Q:"Queen", R:"Rook", B:"Bishop", N:"Knight", P:"Pawn"};
+const CHS_PIECE_ICON_P = {K:"♔", Q:"♕", R:"♖", B:"♗", N:"♘", P:"♙"};
+const CHS_PIECE_ICON_O = {K:"♚", Q:"♛", R:"♜", B:"♝", N:"♞", P:"♟"};
+const CHS_BACK_ROW = ['R','N','B','Q','K','B','N','R'];
+const CHS_FP_TABLE = {
+  easy:   {perCapture:8,  winBonus:40,  label:"Easy"},
+  medium: {perCapture:14, winBonus:75,  label:"Medium"},
+  hard:   {perCapture:22, winBonus:130, label:"Hard"},
+};
+
+let chsBoard = []; // 8x8 grid of null or {side:'P'|'O', type, flag, moved}
+let chsTurn = 'P';
+let chsLocked = false;
+let chsGameOver = false;
+let chsResult = "";
+let chsSelected = null;
+let chsLegalMoves = [];
+let chsPendingCapture = null;
+let chsQuizError = "";
+let chsCaptures = {P:0, O:0};
+let chsHalfmoves = 0;
+let chsLastFpEarned = 0;
+let chsDifficulty = "medium";
+let chsBestCaptures = {easy:null, medium:null, hard:null};
+
+function chsPool(){
+  return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+}
+function openFlagChess(){
+  document.getElementById("flagChessOverlay").classList.add("open");
+  chsBoard = [];
+  renderChsIntro();
+}
+function closeFlagChess(){
+  document.getElementById("flagChessOverlay").classList.remove("open");
+}
+function setChsDifficulty(d){
+  chsDifficulty = d;
+  renderChsIntro();
+}
+function renderChsIntro(){
+  const box = document.getElementById("flagChessBox");
+  const pool = chsPool();
+  const fp = CHS_FP_TABLE[chsDifficulty];
+  const best = chsBestCaptures[chsDifficulty];
+  box.innerHTML = `
+    <div class="modal-icon">♟️</div>
+    <div class="modal-title">Flag Chess</div>
+    <div class="modal-desc">Full 8x8 chess with the real piece set, played with flags from your collection. Moving is free, but capturing isn't: name the flag you're taking before the capture lands, or the turn passes straight back. Checkmate the bot's King to win. (No castling or en passant - pawns auto-promote to Queen.)</div>
+    <div class="chs-diff-row">
+      ${Object.keys(CHS_FP_TABLE).map(d => `<button class="chs-diff-btn ${chsDifficulty===d?'active':''}" onclick="setChsDifficulty('${d}')">${CHS_FP_TABLE[d].label}</button>`).join("")}
+    </div>
+    <div class="conn-intro-line">${fp.perCapture} FP per capture, plus a ${fp.winBonus} FP bonus for the win.</div>
+    ${best !== null ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best on ${fp.label}: ${best} captures in a win</div>` : ''}
+    ${pool.length < 8 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 8 flags first for enough variety to fill the board.</div>
+      <button class="modal-close" onclick="closeFlagChess()">Close</button>
+    ` : `
+      <div class="conn-action-row">
+        <button class="quiz-submit-btn" onclick="startFlagChess()">Start Game</button>
+        <button class="modal-close" onclick="closeFlagChess()">Close</button>
+      </div>
+    `}
+  `;
+}
+function chsEmptyBoard(){
+  const b = [];
+  for(let r = 0; r < CHS_SIZE; r++) b.push(new Array(CHS_SIZE).fill(null));
+  return b;
+}
+// 16 flags per side, sampled with replacement (cycling a reshuffled pool) so this
+// always works even with a small collection - repeats are fine, the quiz just
+// asks you to identify whatever flag is actually shown.
+function chsAssignFlags(pool, count){
+  const out = [];
+  let cycle = shuffleArr(pool);
+  let i = 0;
+  while(out.length < count){
+    if(i >= cycle.length){ cycle = shuffleArr(pool); i = 0; }
+    out.push(cycle[i]);
+    i++;
+  }
+  return out;
+}
+function startFlagChess(){
+  const pool = chsPool();
+  if(pool.length < 8){ renderChsIntro(); return; }
+  const playerFlags = chsAssignFlags(pool, 16);
+  const oppFlags = chsAssignFlags(pool, 16);
+  chsBoard = chsEmptyBoard();
+  let pi = 0, oi = 0;
+  for(let c = 0; c < 8; c++){
+    chsBoard[7][c] = {side:'P', type:CHS_BACK_ROW[c], flag:playerFlags[pi++]};
+    chsBoard[6][c] = {side:'P', type:'P', flag:playerFlags[pi++]};
+    chsBoard[0][c] = {side:'O', type:CHS_BACK_ROW[c], flag:oppFlags[oi++]};
+    chsBoard[1][c] = {side:'O', type:'P', flag:oppFlags[oi++]};
+  }
+  chsTurn = 'P';
+  chsLocked = false;
+  chsGameOver = false;
+  chsResult = "";
+  chsSelected = null;
+  chsLegalMoves = [];
+  chsPendingCapture = null;
+  chsQuizError = "";
+  chsCaptures = {P:0, O:0};
+  chsHalfmoves = 0;
+  chsLastFpEarned = 0;
+  renderFlagChess();
+}
+
+// ---- Core move generation (pure functions of a board, reused by AI search) ----
+function chsInBounds(r, c){ return r >= 0 && r < CHS_SIZE && c >= 0 && c < CHS_SIZE; }
+function chsOpp(side){ return side === 'P' ? 'O' : 'P'; }
+const CHS_ROOK_DIRS = [[-1,0],[1,0],[0,-1],[0,1]];
+const CHS_BISHOP_DIRS = [[-1,-1],[-1,1],[1,-1],[1,1]];
+const CHS_KNIGHT_DELTAS = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+function chsPseudoMoves(board, r, c){
+  const piece = board[r][c];
+  if(!piece) return [];
+  const moves = [];
+  const tryAdd = (tr, tc) => {
+    if(!chsInBounds(tr, tc)) return false;
+    const occ = board[tr][tc];
+    if(!occ){ moves.push({tr, tc, capture:false}); return true; }
+    if(occ.side !== piece.side) moves.push({tr, tc, capture:true});
+    return false;
+  };
+  const slide = (dirs) => {
+    dirs.forEach(([dr, dc]) => {
+      let tr = r + dr, tc = c + dc;
+      while(chsInBounds(tr, tc)){
+        if(!tryAdd(tr, tc)) break;
+        tr += dr; tc += dc;
+      }
+    });
+  };
+  if(piece.type === 'K'){
+    for(let dr = -1; dr <= 1; dr++) for(let dc = -1; dc <= 1; dc++){
+      if(dr === 0 && dc === 0) continue;
+      tryAdd(r + dr, c + dc);
+    }
+  } else if(piece.type === 'N'){
+    CHS_KNIGHT_DELTAS.forEach(([dr, dc]) => tryAdd(r + dr, c + dc));
+  } else if(piece.type === 'R'){
+    slide(CHS_ROOK_DIRS);
+  } else if(piece.type === 'B'){
+    slide(CHS_BISHOP_DIRS);
+  } else if(piece.type === 'Q'){
+    slide(CHS_ROOK_DIRS); slide(CHS_BISHOP_DIRS);
+  } else if(piece.type === 'P'){
+    const dir = piece.side === 'P' ? -1 : 1;
+    const startRow = piece.side === 'P' ? 6 : 1;
+    const fr = r + dir;
+    if(chsInBounds(fr, c) && !board[fr][c]){
+      moves.push({tr:fr, tc:c, capture:false});
+      const fr2 = r + dir * 2;
+      if(r === startRow && !board[fr2][c]) moves.push({tr:fr2, tc:c, capture:false});
+    }
+    [c - 1, c + 1].forEach(cc => {
+      if(chsInBounds(fr, cc) && board[fr][cc] && board[fr][cc].side !== piece.side){
+        moves.push({tr:fr, tc:cc, capture:true});
+      }
+    });
+  }
+  return moves;
+}
+function chsFindKing(board, side){
+  for(let r = 0; r < CHS_SIZE; r++) for(let c = 0; c < CHS_SIZE; c++){
+    const p = board[r][c];
+    if(p && p.side === side && p.type === 'K') return {r, c};
+  }
+  return null;
+}
+function chsIsAttacked(board, r, c, bySide){
+  for(let br = 0; br < CHS_SIZE; br++) for(let bc = 0; bc < CHS_SIZE; bc++){
+    const p = board[br][bc];
+    if(p && p.side === bySide){
+      const moves = chsPseudoMoves(board, br, bc);
+      if(moves.some(m => m.tr === r && m.tc === c)) return true;
+    }
+  }
+  return false;
+}
+function chsCloneBoard(board){
+  return board.map(row => row.map(cell => cell ? {...cell} : null));
+}
+function chsSimMove(board, fr, fc, tr, tc){
+  const b = chsCloneBoard(board);
+  const piece = {...b[fr][fc]};
+  b[tr][tc] = piece;
+  b[fr][fc] = null;
+  if(piece.type === 'P' && (tr === 0 || tr === CHS_SIZE - 1)) piece.type = 'Q';
+  return b;
+}
+function chsLegalMovesFor(board, side){
+  const all = [];
+  for(let r = 0; r < CHS_SIZE; r++) for(let c = 0; c < CHS_SIZE; c++){
+    const p = board[r][c];
+    if(!p || p.side !== side) continue;
+    chsPseudoMoves(board, r, c).forEach(m => {
+      const sim = chsSimMove(board, r, c, m.tr, m.tc);
+      const kp = chsFindKing(sim, side);
+      if(kp && !chsIsAttacked(sim, kp.r, kp.c, chsOpp(side))){
+        all.push({fr:r, fc:c, tr:m.tr, tc:m.tc, capture:m.capture});
+      }
+    });
+  }
+  return all;
+}
+function chsInCheck(board, side){
+  const kp = chsFindKing(board, side);
+  return kp ? chsIsAttacked(board, kp.r, kp.c, chsOpp(side)) : false;
+}
+function chsEvalMaterial(board){
+  let score = 0;
+  for(let r = 0; r < CHS_SIZE; r++) for(let c = 0; c < CHS_SIZE; c++){
+    const p = board[r][c];
+    if(!p) continue;
+    const v = CHS_PIECE_VALUE[p.type];
+    score += p.side === 'O' ? v : -v;
+  }
+  return score; // positive favors the bot ('O')
+}
+
+// ---- Player interaction ----
+function chsSelectSquare(r, c){
+  if(chsLocked || chsGameOver || chsPendingCapture || chsTurn !== 'P') return;
+  const piece = chsBoard[r][c];
+  if(chsSelected && chsSelected.r === r && chsSelected.c === c){
+    chsSelected = null; chsLegalMoves = []; renderFlagChess(); return;
+  }
+  if(chsSelected){
+    const move = chsLegalMoves.find(m => m.tr === r && m.tc === c);
+    if(move){ chsAttemptMove(move); return; }
+  }
+  if(piece && piece.side === 'P'){
+    chsSelected = {r, c};
+    chsLegalMoves = chsLegalMovesFor(chsBoard, 'P').filter(m => m.fr === r && m.fc === c);
+  } else {
+    chsSelected = null; chsLegalMoves = [];
+  }
+  renderFlagChess();
+}
+function chsAttemptMove(move){
+  if(move.capture){
+    chsPendingCapture = move;
+    chsSelected = null; chsLegalMoves = []; chsQuizError = "";
+    renderFlagChess();
+    setTimeout(() => { const el = document.getElementById("chsQuizInput"); if(el) el.focus(); }, 0);
+    return;
+  }
+  chsExecuteMove(move);
+}
+async function chsExecuteMove(move){
+  const {fr, fc, tr, tc} = move;
+  const mover = chsBoard[fr][fc];
+  const captured = chsBoard[tr][tc];
+  chsBoard[tr][tc] = mover;
+  chsBoard[fr][fc] = null;
+  if(mover.type === 'P' && (tr === 0 || tr === CHS_SIZE - 1)) mover.type = 'Q';
+  chsSelected = null; chsLegalMoves = []; chsPendingCapture = null; chsQuizError = "";
+  if(captured) chsCaptures[mover.side] += 1;
+
+  const otherSide = chsOpp(mover.side);
+  const otherMoves = chsLegalMovesFor(chsBoard, otherSide);
+  chsHalfmoves += 1;
+  if(otherMoves.length === 0){
+    const inCheck = chsInCheck(chsBoard, otherSide);
+    await chsFinish(inCheck ? mover.side : null);
+    return;
+  }
+  if(chsHalfmoves >= CHS_MAX_HALFMOVES){
+    await chsFinish(null);
+    return;
+  }
+  chsTurn = otherSide;
+  renderFlagChess();
+  if(chsTurn === 'O') await chsOpponentTurn();
+}
+function chsCancelCapture(){
+  const move = chsPendingCapture;
+  chsPendingCapture = null;
+  chsQuizError = "";
+  if(!move) { renderFlagChess(); return; }
+  chsHalfmoves += 1;
+  chsTurn = 'O';
+  renderFlagChess();
+  chsOpponentTurn();
+}
+function submitChsQuiz(){
+  if(!chsPendingCapture) return;
+  const input = document.getElementById("chsQuizInput");
+  if(!input) return;
+  const typed = input.value;
+  if(!typed.trim()) return;
+  const target = chsBoard[chsPendingCapture.tr][chsPendingCapture.tc];
+  if(isTypedAnswerCorrect(typed, target.flag.name)){
+    chsExecuteMove(chsPendingCapture);
+  } else {
+    chsQuizError = `Nope - that was ${target.flag.name}. Turn lost.`;
+    renderFlagChess();
+    setTimeout(() => { chsCancelCapture(); }, 1400);
+  }
+}
+
+// ---- Bot ----
+function chsPickEasyMove(moves){
+  return moves[Math.floor(Math.random() * moves.length)];
+}
+function chsPickMediumMove(board, moves){
+  let best = -Infinity, top = [];
+  moves.forEach(m => {
+    const sim = chsSimMove(board, m.fr, m.fc, m.tr, m.tc);
+    const score = chsEvalMaterial(sim);
+    if(score > best){ best = score; top = [m]; }
+    else if(score === best) top.push(m);
+  });
+  return top[Math.floor(Math.random() * top.length)];
+}
+function chsPickHardMove(board, moves){
+  let best = -Infinity, top = [];
+  moves.forEach(m => {
+    const sim = chsSimMove(board, m.fr, m.fc, m.tr, m.tc);
+    const replies = chsLegalMovesFor(sim, 'P');
+    let score;
+    if(replies.length === 0){
+      score = chsInCheck(sim, 'P') ? 9999 : chsEvalMaterial(sim);
+    } else {
+      score = Math.min(...replies.map(rm => chsEvalMaterial(chsSimMove(sim, rm.fr, rm.fc, rm.tr, rm.tc))));
+    }
+    if(score > best){ best = score; top = [m]; }
+    else if(score === best) top.push(m);
+  });
+  return top[Math.floor(Math.random() * top.length)];
+}
+async function chsOpponentTurn(){
+  chsLocked = true;
+  renderFlagChess();
+  await new Promise(res => setTimeout(res, 550));
+  const moves = chsLegalMovesFor(chsBoard, 'O');
+  if(moves.length === 0){ chsLocked = false; return; } // shouldn't happen, handled by caller
+  let move;
+  if(chsDifficulty === 'easy') move = chsPickEasyMove(moves);
+  else if(chsDifficulty === 'medium') move = chsPickMediumMove(chsBoard, moves);
+  else move = chsPickHardMove(chsBoard, moves);
+
+  const mover = chsBoard[move.fr][move.fc];
+  const captured = chsBoard[move.tr][move.tc];
+  chsBoard[move.tr][move.tc] = mover;
+  chsBoard[move.fr][move.fc] = null;
+  if(mover.type === 'P' && (move.tr === 0 || move.tr === CHS_SIZE - 1)) mover.type = 'Q';
+  if(captured) chsCaptures['O'] += 1;
+
+  chsHalfmoves += 1;
+  const playerMoves = chsLegalMovesFor(chsBoard, 'P');
+  chsLocked = false;
+  if(playerMoves.length === 0){
+    const inCheck = chsInCheck(chsBoard, 'P');
+    await chsFinish(inCheck ? 'O' : null);
+    return;
+  }
+  if(chsHalfmoves >= CHS_MAX_HALFMOVES){
+    await chsFinish(null);
+    return;
+  }
+  chsTurn = 'P';
+  renderFlagChess();
+}
+async function chsFinish(winnerSide){
+  chsGameOver = true;
+  chsLastFpEarned = 0;
+  const fp = CHS_FP_TABLE[chsDifficulty];
+  if(winnerSide === 'P'){
+    chsResult = "win";
+    chsLastFpEarned = chsCaptures.P * fp.perCapture + fp.winBonus;
+  } else if(winnerSide === 'O'){
+    chsResult = "loss";
+  } else {
+    chsResult = chsCaptures.P > chsCaptures.O ? "win" : chsCaptures.P < chsCaptures.O ? "loss" : "draw";
+    if(chsResult === "win") chsLastFpEarned = chsCaptures.P * fp.perCapture + fp.winBonus;
+  }
+  if(chsResult === "win" && (chsBestCaptures[chsDifficulty] === null || chsCaptures.P > chsBestCaptures[chsDifficulty])){
+    chsBestCaptures[chsDifficulty] = chsCaptures.P;
+  }
+  if(chsLastFpEarned > 0){
+    totalFP += chsLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderFlagChess();
+}
+
+// ---- Render ----
+function renderFlagChess(){
+  const box = document.getElementById("flagChessBox");
+  if(!chsBoard.length) return;
+  const fp = CHS_FP_TABLE[chsDifficulty];
+
+  if(chsGameOver){
+    const title = chsResult === "win" ? `✅ Checkmate - you win!` : chsResult === "loss" ? `❌ Checkmated. You lose.` : `🤝 Draw.`;
+    box.innerHTML = `
+      <div class="quiz-flash-counter">♟️ Flag Chess (${fp.label}) - Game Over</div>
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${chsResult === 'win' ? '#3ecf6a' : chsResult === 'loss' ? '#e05555' : 'var(--text)'};">${title}</div>
+        <div class="conn-intro-line">Captures - You: ${chsCaptures.P} · Opponent: ${chsCaptures.O}</div>
+        ${chsLastFpEarned ? `<div class="hl-gameover-score">+${chsLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="conn-action-row">
+          <button class="quiz-submit-btn" onclick="startFlagChess()">🔁 New Game</button>
+          <button class="modal-close" onclick="closeFlagChess()">Close</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if(chsPendingCapture){
+    const target = chsBoard[chsPendingCapture.tr][chsPendingCapture.tc];
+    box.innerHTML = `
+      <div class="quiz-flash-counter">♟️ Name this flag to capture it</div>
+      <img src="${target.flag.imageUrl}" class="chs-quiz-flag">
+      <div class="conn-intro-line" style="text-align:center;">Taking the ${CHS_PIECE_NAME[target.type]} - whose flag is this?</div>
+      <input type="text" class="flag-search" id="chsQuizInput" placeholder="Type the country..." autocomplete="off"
+             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitChsQuiz(); }">
+      ${chsQuizError ? `<div class="conn-intro-line" style="color:#e05555; margin-top:4px;">${chsQuizError}</div>` : ""}
+      <button class="quiz-submit-btn" onclick="submitChsQuiz()" style="margin-top:10px;" ${chsQuizError ? 'disabled' : ''}>Capture</button>
+      <div class="conn-action-row"><button class="ghost-btn" onclick="chsCancelCapture()" ${chsQuizError ? 'disabled' : ''}>Retreat</button></div>
+    `;
+    const input = document.getElementById("chsQuizInput");
+    if(input) input.focus();
+    return;
+  }
+
+  const inCheck = chsTurn === 'P' && chsInCheck(chsBoard, 'P');
+  const validSet = new Set(chsLegalMoves.map(m => `${m.tr},${m.tc}`));
+  box.innerHTML = `
+    <div class="quiz-flash-counter">♟️ Flag Chess (${fp.label})</div>
+    <div class="chs-scorerow">
+      <div style="color:var(--accent);">You: ${chsCaptures.P} captured</div>
+      <div style="color:#d65b5b;">Opponent: ${chsCaptures.O} captured</div>
+    </div>
+    <div class="chs-status ${inCheck ? 'check' : ''}">${chsLocked ? "Opponent is thinking..." : inCheck ? "Check! Your move." : chsTurn === 'P' ? "Your move - tap a piece" : "Waiting..."}</div>
+    <div class="chs-board">
+      ${chsBoard.map((row, r) => row.map((cell, c) => {
+        const isLight = (r + c) % 2 === 0;
+        const isSel = chsSelected && chsSelected.r === r && chsSelected.c === c;
+        const isLegal = !chsLocked && validSet.has(`${r},${c}`);
+        const isCapture = isLegal && cell;
+        return `<div class="chs-cell ${isLight ? 'light' : 'dark'} ${isSel ? 'selected' : ''} ${isLegal ? 'legal' : ''} ${isCapture ? 'capture' : ''}" onclick="chsSelectSquare(${r},${c})">
+          ${cell ? `<div class="chs-piece ${cell.side}">${cell.side === 'P' ? CHS_PIECE_ICON_P[cell.type] : CHS_PIECE_ICON_O[cell.type]}</div>` : ''}
+        </div>`;
+      }).join("")).join("")}
+    </div>
+    <div class="conn-action-row"><button class="modal-close" onclick="closeFlagChess()">Resign</button></div>
+  `;
+}
+// ---------- Flag Checkers ----------
+// Standard draughts on an 8x8 board, 12 pieces a side, diagonal moves only,
+// jump to capture, chain jumps continue automatically, reach the far row
+// and get crowned king (moves and captures both directions). Pieces are
+// shown as plain discs - like Flag Chess, the flag behind a piece only
+// shows up when you actually capture it, and you have to name it to
+// complete the jump. One simplification from real draughts: captures
+// aren't mandatory here, so you're always free to play a quiet move instead.
+const CHK_SIZE = 8;
+const CHK_FP_PER_CAPTURE = 10;
+const CHK_WIN_BONUS = 50;
+const CHK_KING_ROWS = {P: 0, O: 7};
+const CHK_DIRS_ALL = [[-1,-1],[-1,1],[1,-1],[1,1]];
+
+let chkBoard = [];
+let chkTurn = 'P';
+let chkLocked = false;
+let chkGameOver = false;
+let chkResult = "";
+let chkSelected = null;
+let chkLegalMoves = [];
+let chkPendingCapture = null;
+let chkQuizError = "";
+let chkCaptures = {P:0, O:0};
+let chkHalfmoves = 0;
+let chkLastFpEarned = 0;
+let chkBestCaptures = null;
+
+function chkPool(){
+  return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+}
+function openFlagCheckers(){
+  document.getElementById("flagCheckersOverlay").classList.add("open");
+  chkBoard = [];
+  renderChkIntro();
+}
+function closeFlagCheckers(){
+  document.getElementById("flagCheckersOverlay").classList.remove("open");
+}
+function renderChkIntro(){
+  const box = document.getElementById("flagCheckersBox");
+  const pool = chkPool();
+  box.innerHTML = `
+    <div class="modal-icon">⛀</div>
+    <div class="modal-title">Flag Checkers</div>
+    <div class="modal-desc">Classic draughts, 12 flags a side on an 8x8 board. Jump an enemy piece to capture it, chain extra jumps in the same turn, and reach the far row to crown a king that can move and capture backward too. Board pieces are unmarked - naming the flag is the price of every capture.</div>
+    <div class="conn-intro-line">${CHK_FP_PER_CAPTURE} FP per capture, plus a ${CHK_WIN_BONUS} FP bonus for the win.</div>
+    ${chkBestCaptures !== null ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best: ${chkBestCaptures} captures in a win</div>` : ''}
+    ${pool.length < 8 ? `
+      <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 8 flags first for enough variety to fill the board.</div>
+      <button class="modal-close" onclick="closeFlagCheckers()">Close</button>
+    ` : `
+      <div class="conn-action-row">
+        <button class="quiz-submit-btn" onclick="startFlagCheckers()">Start Game</button>
+        <button class="modal-close" onclick="closeFlagCheckers()">Close</button>
+      </div>
+    `}
+  `;
+}
+function chkEmptyBoard(){
+  const b = [];
+  for(let r = 0; r < CHK_SIZE; r++) b.push(new Array(CHK_SIZE).fill(null));
+  return b;
+}
+function chkAssignFlags(pool, count){
+  const out = [];
+  let cycle = shuffleArr(pool);
+  let i = 0;
+  while(out.length < count){
+    if(i >= cycle.length){ cycle = shuffleArr(pool); i = 0; }
+    out.push(cycle[i]);
+    i++;
+  }
+  return out;
+}
+function startFlagCheckers(){
+  const pool = chkPool();
+  if(pool.length < 8){ renderChkIntro(); return; }
+  const playerFlags = chkAssignFlags(pool, 12);
+  const oppFlags = chkAssignFlags(pool, 12);
+  chkBoard = chkEmptyBoard();
+  let pi = 0, oi = 0;
+  for(let r = 0; r < 3; r++){
+    for(let c = 0; c < CHK_SIZE; c++){
+      if((r + c) % 2 === 1) chkBoard[r][c] = {side:'O', king:false, flag:oppFlags[oi++]};
+    }
+  }
+  for(let r = 5; r < 8; r++){
+    for(let c = 0; c < CHK_SIZE; c++){
+      if((r + c) % 2 === 1) chkBoard[r][c] = {side:'P', king:false, flag:playerFlags[pi++]};
+    }
+  }
+  chkTurn = 'P';
+  chkLocked = false;
+  chkGameOver = false;
+  chkResult = "";
+  chkSelected = null;
+  chkLegalMoves = [];
+  chkPendingCapture = null;
+  chkQuizError = "";
+  chkCaptures = {P:0, O:0};
+  chkHalfmoves = 0;
+  chkLastFpEarned = 0;
+  renderFlagCheckers();
+}
+
+// ---- Core move generation ----
+function chkInBounds(r, c){ return r >= 0 && r < CHK_SIZE && c >= 0 && c < CHK_SIZE; }
+function chkOpp(side){ return side === 'P' ? 'O' : 'P'; }
+function chkDirsFor(piece){
+  if(piece.king) return CHK_DIRS_ALL;
+  return piece.side === 'P' ? [[-1,-1],[-1,1]] : [[1,-1],[1,1]];
+}
+function chkMovesFor(board, r, c){
+  const piece = board[r][c];
+  if(!piece) return [];
+  const moves = [];
+  chkDirsFor(piece).forEach(([dr, dc]) => {
+    const mr = r + dr, mc = c + dc;
+    if(!chkInBounds(mr, mc)) return;
+    const mid = board[mr][mc];
+    if(!mid){
+      moves.push({tr:mr, tc:mc, capture:false});
+    } else if(mid.side !== piece.side){
+      const jr = r + dr * 2, jc = c + dc * 2;
+      if(chkInBounds(jr, jc) && !board[jr][jc]){
+        moves.push({tr:jr, tc:jc, capture:true, capR:mr, capC:mc});
+      }
+    }
+  });
+  return moves;
+}
+function chkAllMoves(board, side){
+  const all = [];
+  for(let r = 0; r < CHK_SIZE; r++) for(let c = 0; c < CHK_SIZE; c++){
+    const p = board[r][c];
+    if(p && p.side === side) chkMovesFor(board, r, c).forEach(m => all.push({fr:r, fc:c, ...m}));
+  }
+  return all;
+}
+function chkApplyMove(board, move){
+  const piece = board[move.fr][move.fc];
+  board[move.tr][move.tc] = piece;
+  board[move.fr][move.fc] = null;
+  if(move.capture) board[move.capR][move.capC] = null;
+  if(move.tr === CHK_KING_ROWS[piece.side]) piece.king = true;
+}
+function chkPieceCount(board, side){
+  let n = 0;
+  for(let r = 0; r < CHK_SIZE; r++) for(let c = 0; c < CHK_SIZE; c++){
+    if(board[r][c] && board[r][c].side === side) n++;
+  }
+  return n;
+}
+
+// ---- Player interaction ----
+function chkSelectSquare(r, c){
+  if(chkLocked || chkGameOver || chkPendingCapture || chkTurn !== 'P') return;
+  const piece = chkBoard[r][c];
+  if(chkSelected && chkSelected.r === r && chkSelected.c === c){
+    chkSelected = null; chkLegalMoves = []; renderFlagCheckers(); return;
+  }
+  if(chkSelected){
+    const move = chkLegalMoves.find(m => m.tr === r && m.tc === c);
+    if(move){ chkAttemptMove(move); return; }
+  }
+  if(piece && piece.side === 'P'){
+    chkSelected = {r, c};
+    chkLegalMoves = chkMovesFor(chkBoard, r, c).map(m => ({fr:r, fc:c, ...m}));
+  } else {
+    chkSelected = null; chkLegalMoves = [];
+  }
+  renderFlagCheckers();
+}
+function chkAttemptMove(move){
+  if(move.capture){
+    chkPendingCapture = move;
+    chkSelected = null; chkLegalMoves = []; chkQuizError = "";
+    renderFlagCheckers();
+    setTimeout(() => { const el = document.getElementById("chkQuizInput"); if(el) el.focus(); }, 0);
+    return;
+  }
+  chkFinishMove(move, false);
+}
+async function chkFinishMove(move, wasCapture){
+  chkApplyMove(chkBoard, move);
+  chkSelected = null; chkLegalMoves = []; chkPendingCapture = null; chkQuizError = "";
+  const mover = chkBoard[move.tr][move.tc];
+  if(wasCapture) chkCaptures[mover.side] += 1;
+
+  // Chain jump: same piece, same player's turn, only if another capture exists from the new square.
+  if(wasCapture){
+    const chain = chkMovesFor(chkBoard, move.tr, move.tc).filter(m => m.capture);
+    if(chain.length){
+      if(mover.side === 'P'){
+        chkSelected = {r: move.tr, c: move.tc};
+        chkLegalMoves = chain.map(m => ({fr: move.tr, fc: move.tc, ...m}));
+        renderFlagCheckers();
+        return;
+      } else {
+        await chkOpponentChain(move.tr, move.tc);
+        return;
+      }
+    }
+  }
+  await chkEndTurn(mover.side);
+}
+async function chkEndTurn(justMovedSide){
+  chkHalfmoves += 1;
+  const otherSide = chkOpp(justMovedSide);
+  const otherHasPieces = chkPieceCount(chkBoard, otherSide) > 0;
+  const otherMoves = otherHasPieces ? chkAllMoves(chkBoard, otherSide) : [];
+  if(!otherHasPieces || otherMoves.length === 0){
+    await chkFinish(justMovedSide);
+    return;
+  }
+  if(chkHalfmoves >= 120){
+    await chkFinish(null);
+    return;
+  }
+  chkTurn = otherSide;
+  renderFlagCheckers();
+  if(chkTurn === 'O') await chkOpponentTurn();
+}
+function chkCancelCapture(){
+  const move = chkPendingCapture;
+  chkPendingCapture = null;
+  chkQuizError = "";
+  if(!move){ renderFlagCheckers(); return; }
+  chkEndTurn('P');
+}
+function submitChkQuiz(){
+  if(!chkPendingCapture) return;
+  const input = document.getElementById("chkQuizInput");
+  if(!input) return;
+  const typed = input.value;
+  if(!typed.trim()) return;
+  const target = chkBoard[chkPendingCapture.capR][chkPendingCapture.capC];
+  if(isTypedAnswerCorrect(typed, target.flag.name)){
+    chkFinishMove(chkPendingCapture, true);
+  } else {
+    chkQuizError = `Nope - that was ${target.flag.name}. Turn lost.`;
+    renderFlagCheckers();
+    setTimeout(() => { chkCancelCapture(); }, 1400);
+  }
+}
+
+// ---- Bot (single difficulty: greedy, always follows its own chain jumps) ----
+async function chkOpponentTurn(){
+  chkLocked = true;
+  renderFlagCheckers();
+  await new Promise(res => setTimeout(res, 500));
+  const moves = chkAllMoves(chkBoard, 'O');
+  if(!moves.length){ chkLocked = false; return; }
+  const captures = moves.filter(m => m.capture);
+  const pool = captures.length ? captures : moves;
+  const move = pool[Math.floor(Math.random() * pool.length)];
+  chkApplyMove(chkBoard, move);
+  if(move.capture){
+    chkCaptures['O'] += 1;
+    await chkOpponentChain(move.tr, move.tc);
+    return;
+  }
+  chkLocked = false;
+  await chkEndTurn('O');
+}
+async function chkOpponentChain(r, c){
+  const chain = chkMovesFor(chkBoard, r, c).filter(m => m.capture);
+  if(!chain.length){
+    chkLocked = false;
+    await chkEndTurn('O');
+    return;
+  }
+  await new Promise(res => setTimeout(res, 450));
+  const move = {fr:r, fc:c, ...chain[Math.floor(Math.random() * chain.length)]};
+  chkApplyMove(chkBoard, move);
+  chkCaptures['O'] += 1;
+  await chkOpponentChain(move.tr, move.tc);
+}
+async function chkFinish(winnerSide){
+  chkGameOver = true;
+  chkLastFpEarned = 0;
+  if(winnerSide === 'P'){
+    chkResult = "win";
+    chkLastFpEarned = chkCaptures.P * CHK_FP_PER_CAPTURE + CHK_WIN_BONUS;
+  } else if(winnerSide === 'O'){
+    chkResult = "loss";
+  } else {
+    chkResult = chkCaptures.P > chkCaptures.O ? "win" : chkCaptures.P < chkCaptures.O ? "loss" : "draw";
+    if(chkResult === "win") chkLastFpEarned = chkCaptures.P * CHK_FP_PER_CAPTURE + CHK_WIN_BONUS;
+  }
+  if(chkResult === "win" && (chkBestCaptures === null || chkCaptures.P > chkBestCaptures)){
+    chkBestCaptures = chkCaptures.P;
+  }
+  if(chkLastFpEarned > 0){
+    totalFP += chkLastFpEarned;
+    renderStats();
+    await saveProgress();
+  }
+  renderFlagCheckers();
+}
+
+// ---- Render ----
+function renderFlagCheckers(){
+  const box = document.getElementById("flagCheckersBox");
+  if(!chkBoard.length) return;
+
+  if(chkGameOver){
+    const title = chkResult === "win" ? `✅ You cleared the board!` : chkResult === "loss" ? `❌ You're out of moves.` : `🤝 Draw.`;
+    box.innerHTML = `
+      <div class="quiz-flash-counter">⛀ Flag Checkers - Game Over</div>
+      <div class="hl-gameover">
+        <div class="hl-gameover-title" style="color:${chkResult === 'win' ? '#3ecf6a' : chkResult === 'loss' ? '#e05555' : 'var(--text)'};">${title}</div>
+        <div class="conn-intro-line">Captures - You: ${chkCaptures.P} · Opponent: ${chkCaptures.O}</div>
+        ${chkLastFpEarned ? `<div class="hl-gameover-score">+${chkLastFpEarned.toLocaleString()} FP</div>` : ''}
+        <div class="conn-action-row">
+          <button class="quiz-submit-btn" onclick="startFlagCheckers()">🔁 New Game</button>
+          <button class="modal-close" onclick="closeFlagCheckers()">Close</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if(chkPendingCapture){
+    const target = chkBoard[chkPendingCapture.capR][chkPendingCapture.capC];
+    box.innerHTML = `
+      <div class="quiz-flash-counter">⛀ Name this flag to capture it</div>
+      <img src="${target.flag.imageUrl}" class="chs-quiz-flag">
+      <div class="conn-intro-line" style="text-align:center;">Whose flag is this?</div>
+      <input type="text" class="flag-search" id="chkQuizInput" placeholder="Type the country..." autocomplete="off"
+             onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitChkQuiz(); }">
+      ${chkQuizError ? `<div class="conn-intro-line" style="color:#e05555; margin-top:4px;">${chkQuizError}</div>` : ""}
+      <button class="quiz-submit-btn" onclick="submitChkQuiz()" style="margin-top:10px;" ${chkQuizError ? 'disabled' : ''}>Capture</button>
+      <div class="conn-action-row"><button class="ghost-btn" onclick="chkCancelCapture()" ${chkQuizError ? 'disabled' : ''}>Retreat</button></div>
+    `;
+    const input = document.getElementById("chkQuizInput");
+    if(input) input.focus();
+    return;
+  }
+
+  const validSet = new Set(chkLegalMoves.map(m => `${m.tr},${m.tc}`));
+  const chaining = chkSelected && chkLegalMoves.length && chkLegalMoves.every(m => m.capture) && chkLegalMoves[0].fr === chkSelected.r && chkLegalMoves[0].fc === chkSelected.c;
+  box.innerHTML = `
+    <div class="quiz-flash-counter">⛀ Flag Checkers</div>
+    <div class="chk-scorerow">
+      <div style="color:var(--accent);">You: ${chkCaptures.P} captured</div>
+      <div style="color:#d65b5b;">Opponent: ${chkCaptures.O} captured</div>
+    </div>
+    <div class="chk-status">${chkLocked ? "Opponent is thinking..." : chaining ? "Chain jump - keep going!" : chkTurn === 'P' ? "Your move - tap a piece" : "Waiting..."}</div>
+    <div class="chk-board">
+      ${chkBoard.map((row, r) => row.map((cell, c) => {
+        const isLight = (r + c) % 2 === 0;
+        const isSel = chkSelected && chkSelected.r === r && chkSelected.c === c;
+        const isLegal = !chkLocked && validSet.has(`${r},${c}`);
+        const isCapture = isLegal && chkLegalMoves.some(m => m.tr === r && m.tc === c && m.capture);
+        return `<div class="chk-cell ${isLight ? 'light' : 'dark'} ${isSel ? 'selected' : ''} ${isLegal ? 'legal' : ''} ${isCapture ? 'capture' : ''}" onclick="chkSelectSquare(${r},${c})">
+          ${cell ? `<div class="chk-piece ${cell.side}">${cell.king ? '<span class="chk-king">♛</span>' : ''}</div>` : ''}
+        </div>`;
+      }).join("")).join("")}
+    </div>
+    <div class="conn-action-row"><button class="modal-close" onclick="closeFlagCheckers()">Resign</button></div>
+  `;
+}
 const GAMEMODES = [
   {icon:"🎯", title:"Flag Quiz", desc:"Six difficulty tiers, from Easy up to No Hope.", action:"openQuizSetup"},
   {icon:"🔗", title:"Flag Connections", desc:"Group flags into four hidden badge categories.", action:"openConnections"},
@@ -6340,6 +7847,10 @@ const GAMEMODES = [
   {icon:"⚔️", title:"Elimination Ladder", desc:"Four flags enter, one survives - pick the extreme or you're out.", action:"openEliminationLadder"},
   {icon:"🌍", title:"Continent Call", desc:"A flag flashes up - name the continent before your streak snaps.", action:"openContinentCall"},
   {icon:"🕵️", title:"Flag Detective", desc:"A mystery flag from your collection. Guess and get scored on continent, colors, stripes, decade, and more.", action:"openFlagdle"},
+  {icon:"💰", title:"High Stakes", desc:"Push-your-luck gauntlet: a shrinking timer, a tightening crop, and a pot that multiplies each round. Cash out or lose it all.", action:"openHighStakes"},
+  {icon:"🃏", title:"Flag Showdown", desc:"A hand of 5 flags, a hidden category each round. Play the right card to win the FP - once a card's played, it's gone.", action:"openFlagShowdown"},
+  {icon:"♟️", title:"Flag Chess", desc:"Real 8x8 chess with the full piece set. Every capture means naming the flag first - pick Easy, Medium or Hard, harder bots pay more.", action:"openFlagChess"},
+  {icon:"⛀", title:"Flag Checkers", desc:"Classic draughts on an 8x8 board - jump to capture, chain your jumps, crown a king. Naming the flag is the price of every capture.", action:"openFlagCheckers"},
 ];
 function openGamemodeHub(){
   document.getElementById("gamemodeHubOverlay").classList.add("open");
