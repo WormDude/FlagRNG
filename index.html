@@ -2885,6 +2885,9 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something. 
 const CHANGELOG = [   
+  { version: "v1.10.1", date: "Jul 31 2026", type: ["qol"], notes: [
+    "Allowed En Passant and Castling to Flag Chess"
+  ]},
   { version: "v1.10", date: "Jul 31 2026", notes: [
     "I'm adding too many gamemodes (4 new gamemodes)"
   ]},
@@ -3995,6 +3998,30 @@ function quizLockToggleHTML(){
     </div>`;
 }
 function shuffleArr(arr){ return [...arr].sort(() => Math.random() - 0.5); }
+
+// Generic shuffle-bag picker: draws items from `pool` without repeats until every
+// item has been shown once, then reshuffles a fresh bag (avoiding an immediate
+// repeat of the last item drawn at the seam between bags). Keyed by `bagKey` so
+// multiple gamemodes can each keep their own independent bag/history state.
+// itemKey(item) should return a stable identifier (defaults to item.name).
+const _pickBags = {};
+function pickNoRepeat(bagKey, pool, itemKey){
+  itemKey = itemKey || (x => x.name);
+  let state = _pickBags[bagKey];
+  if(!state){ state = {bag: [], lastKey: null}; _pickBags[bagKey] = state; }
+  const poolKeys = new Set(pool.map(itemKey));
+  state.bag = state.bag.filter(k => poolKeys.has(k));
+  if(state.bag.length === 0){
+    state.bag = shuffleArr(pool.map(itemKey));
+    if(state.bag.length > 1 && state.bag[0] === state.lastKey){
+      const swapIdx = 1 + Math.floor(Math.random() * (state.bag.length - 1));
+      [state.bag[0], state.bag[swapIdx]] = [state.bag[swapIdx], state.bag[0]];
+    }
+  }
+  const key = state.bag.shift();
+  state.lastKey = key;
+  return pool.find(item => itemKey(item) === key);
+}
 // Unique key for a quiz-pool entry across packs - standard countries key off name
 // (no stable id field), pack flags key off their own id.
 function entryKey(entry){ return entry.packId + '::' + (entry.flag.id || entry.flag.name); }
@@ -5702,8 +5729,7 @@ function pickCategorySprintBadge(){
     return {badge:b, count};
   }).filter(x => x.count >= 6);
   if(candidates.length === 0) return null;
-  const picked = candidates[Math.floor(Math.random() * candidates.length)];
-  return picked;
+  return pickNoRepeat('categorySprintBadge', candidates, x => x.badge.id);
 }
 
 function openCategorySprint(){
@@ -6018,7 +6044,7 @@ function silhouettePool(){
 
 function buildSilhouetteRound(){
   const pool = silhouettePool();
-  const flag = pool[Math.floor(Math.random() * pool.length)];
+  const flag = pickNoRepeat('silhouette_' + sgAnswerMode + (sgIncludePacks ? '_packs' : ''), pool);
   if(sgAnswerMode !== "select") return {flag, options:null, correctIndex:-1};
 
   const distractorPool = pool.filter(c => c.name !== flag.name);
@@ -6214,7 +6240,7 @@ function renderHintHunterIntro(){
 
 function hhPickEntry(){
   const pool = hhPool(hhIncludePacks);
-  return pool[Math.floor(Math.random() * pool.length)];
+  return pickNoRepeat('hintHunter_' + (hhIncludePacks ? 'packs' : 'standard'), pool, e => e.flag.name);
 }
 
 function startHintHunter(){
@@ -6565,7 +6591,7 @@ function updateHsTimerDisplay(){
 }
 function buildHighStakesRound(){
   const pool = highStakesPool();
-  const flag = pool[Math.floor(Math.random() * pool.length)];
+  const flag = pickNoRepeat('highStakes', pool);
   let decoy = null;
   if(hsRound >= HS_DECOY_ROUND){
     // Prefer a decoy that shares a color count with the real flag - not a
@@ -6868,7 +6894,7 @@ function fsPickOpponent(stat){
   const handNames = fsHand.map(c => c.name);
   const candidates = fsPool.filter(c => !handNames.includes(c.name) && stat.filter(c));
   const finalPool = candidates.length ? candidates : fsPool.filter(c => !handNames.includes(c.name));
-  return finalPool[Math.floor(Math.random() * finalPool.length)] || fsPool[Math.floor(Math.random() * fsPool.length)];
+  return (finalPool.length ? pickNoRepeat('flagShowdownOpponent', finalPool) : pickNoRepeat('flagShowdownOpponent', fsPool));
 }
 function beginFsRound(){
   fsLocked = false;
@@ -7005,9 +7031,9 @@ function renderFlagShowdown(resultState){
 // ---------- Flag Chess ----------
 // Real chess, played on a full 8x8 board with the standard set (King,
 // Queen, 2 Rooks, 2 Bishops, 2 Knights, 8 Pawns per side) - legal move
-// generation, check, checkmate and stalemate all enforced. Castling and
-// en passant are the two rules skipped for scope; pawns auto-promote to
-// Queen. Moving is free, but every capture demands you name the flag
+// generation, check, checkmate and stalemate all enforced, including
+// castling (both sides) and en passant. Pawns auto-promote to Queen.
+// Moving is free, but every capture demands you name the flag
 // you're taking first - get it right and the capture lands, get it wrong
 // and you hand the turn back. Pick a bot difficulty before you start;
 // harder bots think further ahead and pay out more FP.
@@ -7023,12 +7049,19 @@ const CHS_FP_TABLE = {
   medium: {perCapture:14, winBonus:75,  label:"Medium"},
   hard:   {perCapture:22, winBonus:130, label:"Hard"},
 };
+const CHS_PACK_MULT = 1.6; // +Packs mode pays this much more FP, in exchange for a wider (unlocked-or-not) flag pool
+function chsFpTable(difficulty, includePacks){
+  const base = CHS_FP_TABLE[difficulty];
+  if(!includePacks) return base;
+  return {perCapture: Math.round(base.perCapture * CHS_PACK_MULT), winBonus: Math.round(base.winBonus * CHS_PACK_MULT), label: base.label};
+}
 
 let chsBoard = []; // 8x8 grid of null or {side:'P'|'O', type, flag, moved}
 let chsTurn = 'P';
 let chsLocked = false;
 let chsGameOver = false;
 let chsResult = "";
+let chsIsStalemate = false;
 let chsSelected = null;
 let chsLegalMoves = [];
 let chsPendingCapture = null;
@@ -7037,10 +7070,16 @@ let chsCaptures = {P:0, O:0};
 let chsHalfmoves = 0;
 let chsLastFpEarned = 0;
 let chsDifficulty = "medium";
-let chsBestCaptures = {easy:null, medium:null, hard:null};
+let chsIncludePacks = false;
+let chsBestCaptures = {
+  easy:   {standard:null, packs:null},
+  medium: {standard:null, packs:null},
+  hard:   {standard:null, packs:null},
+};
+let chsEnPassantTarget = null; // {r,c} square a pawn can capture onto this turn only, from an enemy pawn's just-made double-step
 
-function chsPool(){
-  return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+function chsPool(includePacks){
+  return includePacks ? ALL_FLAGS : COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
 }
 function openFlagChess(){
   document.getElementById("flagChessOverlay").classList.add("open");
@@ -7054,20 +7093,28 @@ function setChsDifficulty(d){
   chsDifficulty = d;
   renderChsIntro();
 }
+function setChsPoolMode(includePacks){
+  chsIncludePacks = includePacks;
+  renderChsIntro();
+}
 function renderChsIntro(){
   const box = document.getElementById("flagChessBox");
-  const pool = chsPool();
-  const fp = CHS_FP_TABLE[chsDifficulty];
-  const best = chsBestCaptures[chsDifficulty];
+  const pool = chsPool(chsIncludePacks);
+  const fp = chsFpTable(chsDifficulty, chsIncludePacks);
+  const best = chsBestCaptures[chsDifficulty][chsIncludePacks ? 'packs' : 'standard'];
   box.innerHTML = `
     <div class="modal-icon">♟️</div>
     <div class="modal-title">Flag Chess</div>
-    <div class="modal-desc">Full 8x8 chess with the real piece set, played with flags from your collection. Moving is free, but capturing isn't: name the flag you're taking before the capture lands, or the turn passes straight back. Checkmate the bot's King to win. (No castling or en passant - pawns auto-promote to Queen.)</div>
+    <div class="modal-desc">Full 8x8 chess with the real piece set, played with flags from your collection. Moving is free, but capturing isn't: name the flag you're taking before the capture lands, or the turn passes straight back. Checkmate the bot's King to win. (Castling and en passant are both supported; pawns auto-promote to Queen.)</div>
     <div class="chs-diff-row">
       ${Object.keys(CHS_FP_TABLE).map(d => `<button class="chs-diff-btn ${chsDifficulty===d?'active':''}" onclick="setChsDifficulty('${d}')">${CHS_FP_TABLE[d].label}</button>`).join("")}
     </div>
-    <div class="conn-intro-line">${fp.perCapture} FP per capture, plus a ${fp.winBonus} FP bonus for the win.</div>
-    ${best !== null ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best on ${fp.label}: ${best} captures in a win</div>` : ''}
+    <div class="quiz-lock-toggle">
+      <button class="${!chsIncludePacks ? 'active' : ''}" onclick="setChsPoolMode(false)">Standard Only</button>
+      <button class="${chsIncludePacks ? 'active' : ''}" onclick="setChsPoolMode(true)">+ Pack Flags (more FP)</button>
+    </div>
+    <div class="conn-intro-line">${fp.perCapture} FP per capture, plus a ${fp.winBonus} FP bonus for the win${chsIncludePacks ? ', pack flags mixed in' : ''}.</div>
+    ${best !== null ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best on ${fp.label}${chsIncludePacks ? ' +Packs' : ''}: ${best} captures in a win</div>` : ''}
     ${pool.length < 8 ? `
       <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 8 flags first for enough variety to fill the board.</div>
       <button class="modal-close" onclick="closeFlagChess()">Close</button>
@@ -7099,7 +7146,7 @@ function chsAssignFlags(pool, count){
   return out;
 }
 function startFlagChess(){
-  const pool = chsPool();
+  const pool = chsPool(chsIncludePacks);
   if(pool.length < 8){ renderChsIntro(); return; }
   const playerFlags = chsAssignFlags(pool, 16);
   const oppFlags = chsAssignFlags(pool, 16);
@@ -7115,6 +7162,7 @@ function startFlagChess(){
   chsLocked = false;
   chsGameOver = false;
   chsResult = "";
+  chsIsStalemate = false;
   chsSelected = null;
   chsLegalMoves = [];
   chsPendingCapture = null;
@@ -7122,6 +7170,7 @@ function startFlagChess(){
   chsCaptures = {P:0, O:0};
   chsHalfmoves = 0;
   chsLastFpEarned = 0;
+  chsEnPassantTarget = null;
   renderFlagChess();
 }
 
@@ -7181,6 +7230,40 @@ function chsPseudoMoves(board, r, c){
   }
   return moves;
 }
+// Castling and en passant live outside chsPseudoMoves on purpose: chsIsAttacked
+// calls chsPseudoMoves on every enemy piece to test for attacks, and castling's
+// legality check itself calls chsIsAttacked - folding castling into chsPseudoMoves
+// would make the two functions call each other forever. Keeping them separate
+// means chsIsAttacked never needs to know about castling/en passant at all.
+function chsExtraMoves(board, r, c, epTarget){
+  const piece = board[r][c];
+  const moves = [];
+  if(!piece) return moves;
+  if(piece.type === 'K' && !piece.moved){
+    const oppSide = chsOpp(piece.side);
+    if(!chsIsAttacked(board, r, c, oppSide)){
+      const rookK = board[r][7];
+      if(rookK && rookK.type === 'R' && rookK.side === piece.side && !rookK.moved &&
+         !board[r][5] && !board[r][6] &&
+         !chsIsAttacked(board, r, 5, oppSide) && !chsIsAttacked(board, r, 6, oppSide)){
+        moves.push({tr:r, tc:6, capture:false, castle:'K'});
+      }
+      const rookQ = board[r][0];
+      if(rookQ && rookQ.type === 'R' && rookQ.side === piece.side && !rookQ.moved &&
+         !board[r][1] && !board[r][2] && !board[r][3] &&
+         !chsIsAttacked(board, r, 3, oppSide) && !chsIsAttacked(board, r, 2, oppSide)){
+        moves.push({tr:r, tc:2, capture:false, castle:'Q'});
+      }
+    }
+  }
+  if(piece.type === 'P' && epTarget){
+    const dir = piece.side === 'P' ? -1 : 1;
+    if(r + dir === epTarget.r && Math.abs(c - epTarget.c) === 1){
+      moves.push({tr:epTarget.r, tc:epTarget.c, capture:true, enPassant:true});
+    }
+  }
+  return moves;
+}
 function chsFindKing(board, side){
   for(let r = 0; r < CHS_SIZE; r++) for(let c = 0; c < CHS_SIZE; c++){
     const p = board[r][c];
@@ -7201,24 +7284,35 @@ function chsIsAttacked(board, r, c, bySide){
 function chsCloneBoard(board){
   return board.map(row => row.map(cell => cell ? {...cell} : null));
 }
-function chsSimMove(board, fr, fc, tr, tc){
+function chsSimMove(board, fr, fc, tr, tc, move){
   const b = chsCloneBoard(board);
-  const piece = {...b[fr][fc]};
+  const piece = {...b[fr][fc], moved:true};
   b[tr][tc] = piece;
   b[fr][fc] = null;
+  if(move && move.castle === 'K'){
+    b[tr][5] = b[tr][7] ? {...b[tr][7], moved:true} : null;
+    b[tr][7] = null;
+  } else if(move && move.castle === 'Q'){
+    b[tr][3] = b[tr][0] ? {...b[tr][0], moved:true} : null;
+    b[tr][0] = null;
+  }
+  if(move && move.enPassant){
+    b[fr][tc] = null;
+  }
   if(piece.type === 'P' && (tr === 0 || tr === CHS_SIZE - 1)) piece.type = 'Q';
   return b;
 }
-function chsLegalMovesFor(board, side){
+function chsLegalMovesFor(board, side, epTarget){
   const all = [];
   for(let r = 0; r < CHS_SIZE; r++) for(let c = 0; c < CHS_SIZE; c++){
     const p = board[r][c];
     if(!p || p.side !== side) continue;
-    chsPseudoMoves(board, r, c).forEach(m => {
-      const sim = chsSimMove(board, r, c, m.tr, m.tc);
+    const candidates = [...chsPseudoMoves(board, r, c), ...chsExtraMoves(board, r, c, epTarget)];
+    candidates.forEach(m => {
+      const sim = chsSimMove(board, r, c, m.tr, m.tc, m);
       const kp = chsFindKing(sim, side);
       if(kp && !chsIsAttacked(sim, kp.r, kp.c, chsOpp(side))){
-        all.push({fr:r, fc:c, tr:m.tr, tc:m.tc, capture:m.capture});
+        all.push({fr:r, fc:c, tr:m.tr, tc:m.tc, capture:m.capture, castle:m.castle || null, enPassant:!!m.enPassant});
       }
     });
   }
@@ -7252,11 +7346,15 @@ function chsSelectSquare(r, c){
   }
   if(piece && piece.side === 'P'){
     chsSelected = {r, c};
-    chsLegalMoves = chsLegalMovesFor(chsBoard, 'P').filter(m => m.fr === r && m.fc === c);
+    chsLegalMoves = chsLegalMovesFor(chsBoard, 'P', chsEnPassantTarget).filter(m => m.fr === r && m.fc === c);
   } else {
     chsSelected = null; chsLegalMoves = [];
   }
   renderFlagChess();
+}
+function chsCaptureTargetCell(move){
+  if(move.enPassant) return chsBoard[move.fr][move.tc];
+  return chsBoard[move.tr][move.tc];
 }
 function chsAttemptMove(move){
   if(move.capture){
@@ -7271,23 +7369,38 @@ function chsAttemptMove(move){
 async function chsExecuteMove(move){
   const {fr, fc, tr, tc} = move;
   const mover = chsBoard[fr][fc];
-  const captured = chsBoard[tr][tc];
+  let captured = move.enPassant ? chsBoard[fr][tc] : chsBoard[tr][tc];
+  const wasPawnDouble = mover.type === 'P' && Math.abs(tr - fr) === 2;
   chsBoard[tr][tc] = mover;
   chsBoard[fr][fc] = null;
+  mover.moved = true;
+  if(move.castle === 'K'){
+    const rook = chsBoard[tr][7];
+    chsBoard[tr][5] = rook; chsBoard[tr][7] = null;
+    if(rook) rook.moved = true;
+  } else if(move.castle === 'Q'){
+    const rook = chsBoard[tr][0];
+    chsBoard[tr][3] = rook; chsBoard[tr][0] = null;
+    if(rook) rook.moved = true;
+  }
+  if(move.enPassant){
+    chsBoard[fr][tc] = null;
+  }
   if(mover.type === 'P' && (tr === 0 || tr === CHS_SIZE - 1)) mover.type = 'Q';
   chsSelected = null; chsLegalMoves = []; chsPendingCapture = null; chsQuizError = "";
   if(captured) chsCaptures[mover.side] += 1;
+  chsEnPassantTarget = wasPawnDouble ? {r:(tr + fr) / 2, c:tc} : null;
 
   const otherSide = chsOpp(mover.side);
-  const otherMoves = chsLegalMovesFor(chsBoard, otherSide);
+  const otherMoves = chsLegalMovesFor(chsBoard, otherSide, chsEnPassantTarget);
   chsHalfmoves += 1;
   if(otherMoves.length === 0){
     const inCheck = chsInCheck(chsBoard, otherSide);
-    await chsFinish(inCheck ? mover.side : null);
+    await chsFinish(inCheck ? mover.side : null, inCheck ? null : "stalemate");
     return;
   }
   if(chsHalfmoves >= CHS_MAX_HALFMOVES){
-    await chsFinish(null);
+    await chsFinish(null, "move-limit");
     return;
   }
   chsTurn = otherSide;
@@ -7310,7 +7423,7 @@ function submitChsQuiz(){
   if(!input) return;
   const typed = input.value;
   if(!typed.trim()) return;
-  const target = chsBoard[chsPendingCapture.tr][chsPendingCapture.tc];
+  const target = chsCaptureTargetCell(chsPendingCapture);
   if(isTypedAnswerCorrect(typed, target.flag.name)){
     chsExecuteMove(chsPendingCapture);
   } else {
@@ -7327,7 +7440,7 @@ function chsPickEasyMove(moves){
 function chsPickMediumMove(board, moves){
   let best = -Infinity, top = [];
   moves.forEach(m => {
-    const sim = chsSimMove(board, m.fr, m.fc, m.tr, m.tc);
+    const sim = chsSimMove(board, m.fr, m.fc, m.tr, m.tc, m);
     const score = chsEvalMaterial(sim);
     if(score > best){ best = score; top = [m]; }
     else if(score === best) top.push(m);
@@ -7337,13 +7450,13 @@ function chsPickMediumMove(board, moves){
 function chsPickHardMove(board, moves){
   let best = -Infinity, top = [];
   moves.forEach(m => {
-    const sim = chsSimMove(board, m.fr, m.fc, m.tr, m.tc);
+    const sim = chsSimMove(board, m.fr, m.fc, m.tr, m.tc, m);
     const replies = chsLegalMovesFor(sim, 'P');
     let score;
     if(replies.length === 0){
       score = chsInCheck(sim, 'P') ? 9999 : chsEvalMaterial(sim);
     } else {
-      score = Math.min(...replies.map(rm => chsEvalMaterial(chsSimMove(sim, rm.fr, rm.fc, rm.tr, rm.tc))));
+      score = Math.min(...replies.map(rm => chsEvalMaterial(chsSimMove(sim, rm.fr, rm.fc, rm.tr, rm.tc, rm))));
     }
     if(score > best){ best = score; top = [m]; }
     else if(score === best) top.push(m);
@@ -7354,7 +7467,7 @@ async function chsOpponentTurn(){
   chsLocked = true;
   renderFlagChess();
   await new Promise(res => setTimeout(res, 550));
-  const moves = chsLegalMovesFor(chsBoard, 'O');
+  const moves = chsLegalMovesFor(chsBoard, 'O', chsEnPassantTarget);
   if(moves.length === 0){ chsLocked = false; return; } // shouldn't happen, handled by caller
   let move;
   if(chsDifficulty === 'easy') move = chsPickEasyMove(moves);
@@ -7362,31 +7475,46 @@ async function chsOpponentTurn(){
   else move = chsPickHardMove(chsBoard, moves);
 
   const mover = chsBoard[move.fr][move.fc];
-  const captured = chsBoard[move.tr][move.tc];
+  let captured = move.enPassant ? chsBoard[move.fr][move.tc] : chsBoard[move.tr][move.tc];
+  const wasPawnDouble = mover.type === 'P' && Math.abs(move.tr - move.fr) === 2;
   chsBoard[move.tr][move.tc] = mover;
   chsBoard[move.fr][move.fc] = null;
+  mover.moved = true;
+  if(move.castle === 'K'){
+    const rook = chsBoard[move.tr][7];
+    chsBoard[move.tr][5] = rook; chsBoard[move.tr][7] = null;
+    if(rook) rook.moved = true;
+  } else if(move.castle === 'Q'){
+    const rook = chsBoard[move.tr][0];
+    chsBoard[move.tr][3] = rook; chsBoard[move.tr][0] = null;
+    if(rook) rook.moved = true;
+  }
+  if(move.enPassant){
+    chsBoard[move.fr][move.tc] = null;
+  }
   if(mover.type === 'P' && (move.tr === 0 || move.tr === CHS_SIZE - 1)) mover.type = 'Q';
   if(captured) chsCaptures['O'] += 1;
+  chsEnPassantTarget = wasPawnDouble ? {r:(move.tr + move.fr) / 2, c:move.tc} : null;
 
   chsHalfmoves += 1;
-  const playerMoves = chsLegalMovesFor(chsBoard, 'P');
+  const playerMoves = chsLegalMovesFor(chsBoard, 'P', chsEnPassantTarget);
   chsLocked = false;
   if(playerMoves.length === 0){
     const inCheck = chsInCheck(chsBoard, 'P');
-    await chsFinish(inCheck ? 'O' : null);
+    await chsFinish(inCheck ? 'O' : null, inCheck ? null : "stalemate");
     return;
   }
   if(chsHalfmoves >= CHS_MAX_HALFMOVES){
-    await chsFinish(null);
+    await chsFinish(null, "move-limit");
     return;
   }
   chsTurn = 'P';
   renderFlagChess();
 }
-async function chsFinish(winnerSide){
+async function chsFinish(winnerSide, reason){
   chsGameOver = true;
   chsLastFpEarned = 0;
-  const fp = CHS_FP_TABLE[chsDifficulty];
+  const fp = chsFpTable(chsDifficulty, chsIncludePacks);
   if(winnerSide === 'P'){
     chsResult = "win";
     chsLastFpEarned = chsCaptures.P * fp.perCapture + fp.winBonus;
@@ -7396,8 +7524,11 @@ async function chsFinish(winnerSide){
     chsResult = chsCaptures.P > chsCaptures.O ? "win" : chsCaptures.P < chsCaptures.O ? "loss" : "draw";
     if(chsResult === "win") chsLastFpEarned = chsCaptures.P * fp.perCapture + fp.winBonus;
   }
-  if(chsResult === "win" && (chsBestCaptures[chsDifficulty] === null || chsCaptures.P > chsBestCaptures[chsDifficulty])){
-    chsBestCaptures[chsDifficulty] = chsCaptures.P;
+  chsIsStalemate = reason === "stalemate";
+  if(chsIsStalemate) chsLastFpEarned = Math.round(chsLastFpEarned / 2);
+  const bestKey = chsIncludePacks ? 'packs' : 'standard';
+  if(chsResult === "win" && !chsIsStalemate && (chsBestCaptures[chsDifficulty][bestKey] === null || chsCaptures.P > chsBestCaptures[chsDifficulty][bestKey])){
+    chsBestCaptures[chsDifficulty][bestKey] = chsCaptures.P;
   }
   if(chsLastFpEarned > 0){
     totalFP += chsLastFpEarned;
@@ -7411,16 +7542,18 @@ async function chsFinish(winnerSide){
 function renderFlagChess(){
   const box = document.getElementById("flagChessBox");
   if(!chsBoard.length) return;
-  const fp = CHS_FP_TABLE[chsDifficulty];
+  const fp = chsFpTable(chsDifficulty, chsIncludePacks);
 
   if(chsGameOver){
-    const title = chsResult === "win" ? `✅ Checkmate - you win!` : chsResult === "loss" ? `❌ Checkmated. You lose.` : `🤝 Draw.`;
+    const title = chsIsStalemate
+      ? (chsResult === "win" ? `🤝 Stalemate - you had more material!` : chsResult === "loss" ? `🤝 Stalemate - opponent had more material.` : `🤝 Stalemate. Draw.`)
+      : (chsResult === "win" ? `✅ Checkmate - you win!` : chsResult === "loss" ? `❌ Checkmated. You lose.` : `🤝 Draw.`);
     box.innerHTML = `
-      <div class="quiz-flash-counter">♟️ Flag Chess (${fp.label}) - Game Over</div>
+      <div class="quiz-flash-counter">♟️ Flag Chess (${fp.label}${chsIncludePacks ? " +Packs" : ""}) - Game Over</div>
       <div class="hl-gameover">
         <div class="hl-gameover-title" style="color:${chsResult === 'win' ? '#3ecf6a' : chsResult === 'loss' ? '#e05555' : 'var(--text)'};">${title}</div>
         <div class="conn-intro-line">Captures - You: ${chsCaptures.P} · Opponent: ${chsCaptures.O}</div>
-        ${chsLastFpEarned ? `<div class="hl-gameover-score">+${chsLastFpEarned.toLocaleString()} FP</div>` : ''}
+        ${chsLastFpEarned ? `<div class="hl-gameover-score">+${chsLastFpEarned.toLocaleString()} FP${chsIsStalemate ? ' (half payout - stalemate)' : ''}</div>` : ''}
         <div class="conn-action-row">
           <button class="quiz-submit-btn" onclick="startFlagChess()">🔁 New Game</button>
           <button class="modal-close" onclick="closeFlagChess()">Close</button>
@@ -7431,7 +7564,7 @@ function renderFlagChess(){
   }
 
   if(chsPendingCapture){
-    const target = chsBoard[chsPendingCapture.tr][chsPendingCapture.tc];
+    const target = chsCaptureTargetCell(chsPendingCapture);
     box.innerHTML = `
       <div class="quiz-flash-counter">♟️ Name this flag to capture it</div>
       <img src="${target.flag.imageUrl}" class="chs-quiz-flag">
@@ -7450,7 +7583,7 @@ function renderFlagChess(){
   const inCheck = chsTurn === 'P' && chsInCheck(chsBoard, 'P');
   const validSet = new Set(chsLegalMoves.map(m => `${m.tr},${m.tc}`));
   box.innerHTML = `
-    <div class="quiz-flash-counter">♟️ Flag Chess (${fp.label})</div>
+    <div class="quiz-flash-counter">♟️ Flag Chess (${fp.label}${chsIncludePacks ? " +Packs" : ""})</div>
     <div class="chs-scorerow">
       <div style="color:var(--accent);">You: ${chsCaptures.P} captured</div>
       <div style="color:#d65b5b;">Opponent: ${chsCaptures.O} captured</div>
@@ -7481,6 +7614,11 @@ function renderFlagChess(){
 const CHK_SIZE = 8;
 const CHK_FP_PER_CAPTURE = 10;
 const CHK_WIN_BONUS = 50;
+const CHK_PACK_MULT = 1.6; // +Packs mode pays this much more FP, in exchange for a wider (unlocked-or-not) flag pool
+function chkFpRates(includePacks){
+  if(!includePacks) return {perCapture: CHK_FP_PER_CAPTURE, winBonus: CHK_WIN_BONUS};
+  return {perCapture: Math.round(CHK_FP_PER_CAPTURE * CHK_PACK_MULT), winBonus: Math.round(CHK_WIN_BONUS * CHK_PACK_MULT)};
+}
 const CHK_KING_ROWS = {P: 0, O: 7};
 const CHK_DIRS_ALL = [[-1,-1],[-1,1],[1,-1],[1,1]];
 
@@ -7496,10 +7634,11 @@ let chkQuizError = "";
 let chkCaptures = {P:0, O:0};
 let chkHalfmoves = 0;
 let chkLastFpEarned = 0;
-let chkBestCaptures = null;
+let chkIncludePacks = false;
+let chkBestCaptures = {standard:null, packs:null};
 
-function chkPool(){
-  return COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
+function chkPool(includePacks){
+  return includePacks ? ALL_FLAGS : COUNTRIES.filter(c => collectedFlagNames.includes(c.name));
 }
 function openFlagCheckers(){
   document.getElementById("flagCheckersOverlay").classList.add("open");
@@ -7509,15 +7648,25 @@ function openFlagCheckers(){
 function closeFlagCheckers(){
   document.getElementById("flagCheckersOverlay").classList.remove("open");
 }
+function setChkPoolMode(includePacks){
+  chkIncludePacks = includePacks;
+  renderChkIntro();
+}
 function renderChkIntro(){
   const box = document.getElementById("flagCheckersBox");
-  const pool = chkPool();
+  const pool = chkPool(chkIncludePacks);
+  const fp = chkFpRates(chkIncludePacks);
+  const best = chkBestCaptures[chkIncludePacks ? 'packs' : 'standard'];
   box.innerHTML = `
     <div class="modal-icon">⛀</div>
     <div class="modal-title">Flag Checkers</div>
     <div class="modal-desc">Classic draughts, 12 flags a side on an 8x8 board. Jump an enemy piece to capture it, chain extra jumps in the same turn, and reach the far row to crown a king that can move and capture backward too. Board pieces are unmarked - naming the flag is the price of every capture.</div>
-    <div class="conn-intro-line">${CHK_FP_PER_CAPTURE} FP per capture, plus a ${CHK_WIN_BONUS} FP bonus for the win.</div>
-    ${chkBestCaptures !== null ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best: ${chkBestCaptures} captures in a win</div>` : ''}
+    <div class="quiz-lock-toggle">
+      <button class="${!chkIncludePacks ? 'active' : ''}" onclick="setChkPoolMode(false)">Standard Only</button>
+      <button class="${chkIncludePacks ? 'active' : ''}" onclick="setChkPoolMode(true)">+ Pack Flags (more FP)</button>
+    </div>
+    <div class="conn-intro-line">${fp.perCapture} FP per capture, plus a ${fp.winBonus} FP bonus for the win${chkIncludePacks ? ', pack flags mixed in' : ''}.</div>
+    ${best !== null ? `<div class="conn-intro-line" style="color:var(--accent);">🏆 Best${chkIncludePacks ? ' +Packs' : ''}: ${best} captures in a win</div>` : ''}
     ${pool.length < 8 ? `
       <div class="conn-intro-line" style="color:var(--muted);">Unlock at least 8 flags first for enough variety to fill the board.</div>
       <button class="modal-close" onclick="closeFlagCheckers()">Close</button>
@@ -7546,7 +7695,7 @@ function chkAssignFlags(pool, count){
   return out;
 }
 function startFlagCheckers(){
-  const pool = chkPool();
+  const pool = chkPool(chkIncludePacks);
   if(pool.length < 8){ renderChkIntro(); return; }
   const playerFlags = chkAssignFlags(pool, 12);
   const oppFlags = chkAssignFlags(pool, 12);
@@ -7752,17 +7901,19 @@ async function chkOpponentChain(r, c){
 async function chkFinish(winnerSide){
   chkGameOver = true;
   chkLastFpEarned = 0;
+  const fp = chkFpRates(chkIncludePacks);
   if(winnerSide === 'P'){
     chkResult = "win";
-    chkLastFpEarned = chkCaptures.P * CHK_FP_PER_CAPTURE + CHK_WIN_BONUS;
+    chkLastFpEarned = chkCaptures.P * fp.perCapture + fp.winBonus;
   } else if(winnerSide === 'O'){
     chkResult = "loss";
   } else {
     chkResult = chkCaptures.P > chkCaptures.O ? "win" : chkCaptures.P < chkCaptures.O ? "loss" : "draw";
-    if(chkResult === "win") chkLastFpEarned = chkCaptures.P * CHK_FP_PER_CAPTURE + CHK_WIN_BONUS;
+    if(chkResult === "win") chkLastFpEarned = chkCaptures.P * fp.perCapture + fp.winBonus;
   }
-  if(chkResult === "win" && (chkBestCaptures === null || chkCaptures.P > chkBestCaptures)){
-    chkBestCaptures = chkCaptures.P;
+  const chkBestKey = chkIncludePacks ? 'packs' : 'standard';
+  if(chkResult === "win" && (chkBestCaptures[chkBestKey] === null || chkCaptures.P > chkBestCaptures[chkBestKey])){
+    chkBestCaptures[chkBestKey] = chkCaptures.P;
   }
   if(chkLastFpEarned > 0){
     totalFP += chkLastFpEarned;
@@ -7780,7 +7931,7 @@ function renderFlagCheckers(){
   if(chkGameOver){
     const title = chkResult === "win" ? `✅ You cleared the board!` : chkResult === "loss" ? `❌ You're out of moves.` : `🤝 Draw.`;
     box.innerHTML = `
-      <div class="quiz-flash-counter">⛀ Flag Checkers - Game Over</div>
+      <div class="quiz-flash-counter">⛀ Flag Checkers${chkIncludePacks ? " +Packs" : ""} - Game Over</div>
       <div class="hl-gameover">
         <div class="hl-gameover-title" style="color:${chkResult === 'win' ? '#3ecf6a' : chkResult === 'loss' ? '#e05555' : 'var(--text)'};">${title}</div>
         <div class="conn-intro-line">Captures - You: ${chkCaptures.P} · Opponent: ${chkCaptures.O}</div>
@@ -7814,7 +7965,7 @@ function renderFlagCheckers(){
   const validSet = new Set(chkLegalMoves.map(m => `${m.tr},${m.tc}`));
   const chaining = chkSelected && chkLegalMoves.length && chkLegalMoves.every(m => m.capture) && chkLegalMoves[0].fr === chkSelected.r && chkLegalMoves[0].fc === chkSelected.c;
   box.innerHTML = `
-    <div class="quiz-flash-counter">⛀ Flag Checkers</div>
+    <div class="quiz-flash-counter">⛀ Flag Checkers${chkIncludePacks ? " +Packs" : ""}</div>
     <div class="chk-scorerow">
       <div style="color:var(--accent);">You: ${chkCaptures.P} captured</div>
       <div style="color:#d65b5b;">Opponent: ${chkCaptures.O} captured</div>
