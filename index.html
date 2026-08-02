@@ -1238,7 +1238,7 @@ const COUNTRIES = [
   {name:"Kingman Reef",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Flag_of_Kingman_Reef_%28unofficial%29.svg/960px-Flag_of_Kingman_Reef_%28unofficial%29.svg.png?_=20251219054759", colors:["white","light blue","gray","black"], bands:2, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, animal:true},
   {name:"Palmyra Atoll",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Flag_of_Palmyra_Atoll_%28local%29.svg/1920px-Flag_of_Palmyra_Atoll_%28local%29.svg.png", colors:["yellow","red","blue"], bands:3, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, sun:true},
   {name:"Howland, Baker, and Jarvis Islands",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg/960px-Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg.png?_=20200906195744", colors:["white","red","blue"], bands:5, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, stars:true},
-  {name:"Howland, Baker, and Jarvis Islands",  imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg/960px-Unofficial_Flag_of_Howland%2C_Baker%2C_and_Jarvis_Islands.svg.png?_=20200906195744", colors:["white","red","blue"], bands:5, languages:[], continent:"Oceania", landlocked:false, island:true, pop:"tiny", area:"tiny", founded:null, stars:true},
+
 
   // Unrecognized / de facto territories - no official flag emoji exists, rendered via a real flag image
   {name:"Transnistria", noEmoji:true, imageUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Transnistria_(state).svg", colors:["green","red","yellow"], languages:["Slavic"], bands:3, continent:"Europe", landlocked:true, island:false, pop:"tiny", area:"tiny", founded:2000, stars:true, breakAway:true},
@@ -1293,8 +1293,8 @@ const BADGE_DEFS = [
   {id:"sword", name:"Swords 'n' Guns", icon:"⚔️", rarity:"MYSTERY", ep:850, how:"Roll a flag that depicts a weapon.", check:c=>!!c.swordFlag},
   {id:"boat", name:"Floatin' Around", icon:"⛵", rarity:"EXOTIC", ep:400, how:"Roll a flag that contains a ship.", check:c=>!!c.ship},
   {id:"brit", name:"British Isles", icon:"🇬🇧", rarity:"EXOTIC", ep:420, how:"Roll a flag that belongs to a region in the British Isles.", check:c=>!!c.britIsle},
-  {id:"panafrican", name:"Pan-African Palette", icon:"✊", rarity:"EXOTIC", ep:190, how:"Roll a flag combining red, black, and green - the Pan-African colors.", check:c=>c.colors.includes("red")&&c.colors.includes("black")&&c.colors.includes("green")&&continentsOf(c).includes("Africa")},
-  {id:"panarab", name:"Pan-Arab Palette", icon:"🕌", rarity:"MYSTERY", ep:190, how:"Roll an Asian-region flag combining red, white, green, and black - the Pan-Arab colors.", check:c=>(c.colors.includes("red")&&c.colors.includes("white")&&c.colors.includes("green")&&c.colors.includes("black"))&&continentsOf(c).includes("Asia")},
+  {id:"panafrican", name:"Pan-African Palette", icon:"✊", rarity:"EXOTIC", ep:190, how:"Roll a flag combining red, green, and black or yellow (the Pan-African colors).", check:c=>c.colors.includes("red")&&c.colors.includes("black"||"yellow")&&c.colors.includes("green")&&continentsOf(c).includes("Africa")},
+  {id:"panarab", name:"Pan-Arab Palette", icon:"🕌", rarity:"MYSTERY", ep:190, how:"Roll an Asian-region flag combining red, white, green, and black (the Pan-Arab colors).", check:c=>(c.colors.includes("red")&&c.colors.includes("white")&&c.colors.includes("green")&&c.colors.includes("black"))&&continentsOf(c).includes("Asia")},
   {id:"pacific", name:"Hawaiian Roll", icon:"🌺", rarity:"LEGENDARY", ep:100, how:"Roll a flag from Oceania.", check:c=>continentsOf(c).includes("Oceania")},
   {id:"asian", name:"Spring Roll", icon:"🥢", rarity:"LEGENDARY", ep:100, how:"Roll a flag from Asia.", check:c=>continentsOf(c).includes("Asia")},
   {id:"african", name:"Cinnamon Roll", icon:"🍂", rarity:"LEGENDARY", ep:100, how:"Roll a flag from Africa.", check:c=>continentsOf(c).includes("Africa")},
@@ -1794,9 +1794,33 @@ const SETS = [
       {name:"São Paulo", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bandeira_do_estado_de_S%C3%A3o_Paulo.svg/1920px-Bandeira_do_estado_de_S%C3%A3o_Paulo.svg.png", noEmoji:true, country:"Brazil", colors:["black","white","red","yellow","blue"], bands:13, continent:"South America", founded:1946, stars:true, mapShape:true},
       {name:"Sergipe", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Bandeira_de_Sergipe.svg/1920px-Bandeira_de_Sergipe.svg.png", noEmoji:true, country:"Brazil", colors:["white","green","yellow","blue"], bands:4, continent:"South America", founded:1952, stars:true},
       {name:"Tocantins", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bandeira_do_Tocantins.svg/1920px-Bandeira_do_Tocantins.svg.png", noEmoji:true, country:"Brazil", colors:["white","yellow","blue"], bands:3, continent:"South America", founded:1989, sun:true},
+      {name:"Buenos Aires", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Bandera_de_la_Provincia_de_Buenos_Aires.svg/1920px-Bandera_de_la_Provincia_de_Buenos_Aires.svg.png", noEmoji:true, country:"Argentina", colors:["red","yellow","light blue","green"], bands:3, continent:"South America", founded:1997, sun:true, leaf:true},
+      {name:"Catamarca", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Bandera_de_la_Provincia_de_Catamarca.svg/1920px-Bandera_de_la_Provincia_de_Catamarca.svg.png", noEmoji:true, country:"Argentina", colors:["red","yellow","light blue","green","brown","white"], bands:2, continent:"South America", founded:2011, sun:true, leaf:true},
+      {name:"Chaco", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Bandera_de_la_Provincia_del_Chaco.svg/1280px-Bandera_de_la_Provincia_del_Chaco.svg.png", noEmoji:true, country:"Argentina", colors:["white","yellow","light blue","green","brown"], bands:3, continent:"South America", founded:2007, sun:true, stars:true},
+      {name:"Chubut", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Bandera_de_la_Provincia_del_Chubut.svg/1920px-Bandera_de_la_Provincia_del_Chubut.svg.png", noEmoji:true, country:"Argentina", colors:["white","yellow","light blue","blue"], bands:7, continent:"South America", founded:2005, sun:true, leaf:true},
+      {name:"Córdoba", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Bandera_de_la_Provincia_de_C%C3%B3rdoba_2014.svg/1280px-Bandera_de_la_Provincia_de_C%C3%B3rdoba_2014.svg.png", noEmoji:true, country:"Argentina", colors:["red","white","brown","light blue"], bands:3, continent:"South America", founded:2014, sun:true},
+      {name:"Corrientes", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bandera_de_la_Provincia_de_Corrientes.svg/1280px-Bandera_de_la_Provincia_de_Corrientes.svg.png", noEmoji:true, country:"Argentina", colors:["white","light blue","red","green","brown","black","yellow","orange"], bands:3, continent:"South America", founded:1986, crest:true, triangle:true, sun:true, human:true, leaf:true, cross:true, script:true},
+      {name:"Entre Ríos", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Bandera_de_la_Provincia_de_Entre_R%C3%ADos.svg/1920px-Bandera_de_la_Provincia_de_Entre_R%C3%ADos.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","red","white"], bands:4, continent:"South America", founded:1987},
+      {name:"Formosa", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Bandera_de_la_Provincia_de_Formosa.svg/1920px-Bandera_de_la_Provincia_de_Formosa.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","yellow","white","green"], bands:0, continent:"South America", founded:1991, stars:true, leaf:true, triangle:true},
+      {name:"Jujuy", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Bandera_de_la_Provincia_de_Jujuy.svg/960px-Bandera_de_la_Provincia_de_Jujuy.svg.png", noEmoji:true, country:"Argentina", colors:["white","black","green","yellow","red","black"], bands:0, continent:"South America", founded:1994, sun:true, leaf:true, human:true},
+      {name:"La Pampa", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Bandera_de_la_Provincia_de_La_Pampa.svg/1920px-Bandera_de_la_Provincia_de_La_Pampa.svg.png", noEmoji:true, country:"Argentina", colors:["white","light blue","yellow","green","gray","black","brown"], bands:3, continent:"South America", founded:1994, sun:true, leaf:true, human:true, animal:true, swordFlag:true},
+      {name:"La Rioja", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Bandera_de_la_Provincia_de_La_Rioja.svg/1920px-Bandera_de_la_Provincia_de_La_Rioja.svg.png", noEmoji:true, country:"Argentina", colors:["white","light blue","red","black","green"], bands:3, continent:"South America", founded:1986, leaf:true},
+      {name:"Mendoza", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Bandera_de_la_Provincia_de_Mendoza.svg/960px-Bandera_de_la_Provincia_de_Mendoza.svg.png", noEmoji:true, country:"Argentina", colors:["white","light blue","green","brown","yellow"], bands:2, continent:"South America", founded:1992, crest:true, sun:true, leaf:true, human:true},
+      {name:"Misiones", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Bandera_de_la_Provincia_de_Misiones.svg/1920px-Bandera_de_la_Provincia_de_Misiones.svg.png", noEmoji:true, country:"Argentina", colors:["white","blue","red"], bands:3, continent:"South America", founded:1992},
+      {name:"Neuquén", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Bandera_de_la_Provincia_del_Neuquen.svg/1920px-Bandera_de_la_Provincia_del_Neuquen.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white","yellow","green","red"], bands:3, continent:"South America", founded:1989, stars:true, leaf:true},
+      {name:"Río Negro", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Bandera_de_la_Provincia_del_R%C3%ADo_Negro.svg/1280px-Bandera_de_la_Provincia_del_R%C3%ADo_Negro.svg.png", noEmoji:true, country:"Argentina", colors:["black","white","blue","green"], bands:3, continent:"South America", founded:2009, stars:true},
+      {name:"Salta", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Bandera_de_la_Provincia_de_Salta.svg/1280px-Bandera_de_la_Provincia_de_Salta.svg.png", noEmoji:true, country:"Argentina", colors:["red","black","yellow","light blue","white","brown"], bands:5, continent:"South America", founded:1997, stars:true, sun:true},
+      {name:"San Juan", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Flag_of_the_San_Juan_Province.svg/1920px-Flag_of_the_San_Juan_Province.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white","brown","green","red","black"], bands:3, continent:"South America", founded:2018, leaf:true, sun:true, human:true, script:true, twoSided:true},
+      {name:"San Luis", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Bandera_de_la_Provincia_de_San_Luis.svg/1280px-Bandera_de_la_Provincia_de_San_Luis.svg.png", noEmoji:true, country:"Argentina", colors:["white","green","blue","brown","yellow"], bands:0, continent:"South America", founded:1988, crest:true, sun:true, animal:true, leaf:true},
+      {name:"Santa Cruz", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Bandera_de_la_Provincia_de_Santa_Cruz.svg/1280px-Bandera_de_la_Provincia_de_Santa_Cruz.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white","blue","brown","yellow"], bands:5, continent:"South America", founded:2000, sun:true, stars:true},
+      {name:"Santa Fe", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Bandera_de_la_Provincia_de_Santa_Fe.svg/1920px-Bandera_de_la_Provincia_de_Santa_Fe.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white","red","yellow","brown","black","gray"], bands:3, continent:"South America", founded:1986, sun:true, script:true, swordFlag:true},
+      {name:"Santiago del Estero", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Bandera_de_la_Provincia_de_Santiago_del_Estero.svg/1920px-Bandera_de_la_Provincia_de_Santiago_del_Estero.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white","red","yellow"], bands:5, continent:"South America", founded:1985, sun:true, swordFlag:true, cross:true},
+      {name:"Tierra del Fuego", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Bandera_de_la_Provincia_de_Tierra_del_Fuego.svg/1280px-Bandera_de_la_Provincia_de_Tierra_del_Fuego.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white","orange"], bands:3, continent:"South America", founded:1999, stars:true, animal:true},
+      {name:"Tucumán", imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Bandera_de_la_Provincia_de_Tucum%C3%A1n.svg/1280px-Bandera_de_la_Provincia_de_Tucum%C3%A1n.svg.png", noEmoji:true, country:"Argentina", colors:["light blue","white"], bands:3, continent:"South America", founded:2010},
     ],
     packBadges:[
       {id:"brState", name:"Twenty-Seven Stars", icon:"🇧🇷", how:"Roll a Brazilian state.", check:c=>c.country==="Brazil"},
+      {id:"arState", name:"Sun of May", icon:"🇦🇷", how:"Roll an Argentinian province.", check:c=>c.country==="Argentina"},
     ]
   },
   {
@@ -2351,16 +2375,37 @@ const FLAG_FACTS = [
   "Each ring on the Olympic flag symbolizes a continent; Americas, Asia, Europe, Africa, and Oceania/Australia.",
   "The flag of Hawaii contains the Union Jack, despite never being colonized by the British.",
   "The flag of Mozambique has an AK-47.",
-  "The Dominican Republic is the only nation with a Bible on their flag."
+  "The Dominican Republic is the only nation with a Bible on their flag.",
+  "Paraguay is the only country whose flag has two different sides.",
+  "The Philippines flip their flag durring war so the red band is on top and the blue band is on the bottom.",
+  "The widest national flag in the world belongs to Qatar with a ration os 11:28.",
+  "The flag of Cabo Verde between 1975 and 1992 looked very similar to Guinea-Bissau's flag.",
+  "Graham Bartram redesigned the flag of Antarctica in 2024 to simbolize the trash in the oceans.",
+  "Earth and Mars are the only planets that have a Wikipedia page for their flags.",
+  "Taiwan and Samoa have nearly identical flags. Taiwan has a sun in the corner, while Samoa has the Southern Cross.",
+  "Between 1795 and 1818, the United States flag had 15 stripes and 15 stars for the 15 states at the time. It was then lowered to 13 stripes.",
+  "The flag of the Republic of Molossia is the flag of Sierra Leone upside down."
 ];
 
 function getFlagFactOfTheDay(){
   const today = getTodayStr();
+  const STORAGE_KEY = 'flagFactOfDay';
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){ saved = null; }
+
+  if(saved && saved.date === today && typeof saved.fact === 'string' && FLAG_FACTS.includes(saved.fact)){
+    return saved.fact;
+  }
+
   let hash = 0;
   for(let i=0;i<today.length;i++){
     hash = (hash*31 + today.charCodeAt(i)) >>> 0;
   }
-  return FLAG_FACTS[hash % FLAG_FACTS.length];
+  const fact = FLAG_FACTS[hash % FLAG_FACTS.length];
+
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, fact })); }catch(e){}
+
+  return fact;
 }
 
 function renderFlagFact(){
@@ -2885,6 +2930,9 @@ function hasSpunSetToday(setId){
 // ---------- Changelog ----------
 // Newest entry first. Add a new object to the top whenever you ship something. 
 const CHANGELOG = [   
+  { version: "v1.11", date: "Jul 31 2026", notes: [
+    "Added Argentina to the South American Subdivisions pack"
+  ]},
   { version: "v1.10.1", date: "Jul 31 2026", type: ["qol"], notes: [
     "Allowed En Passant and Castling to Flag Chess"
   ]},
@@ -2998,7 +3046,8 @@ const COUNTRY_ABBREVIATIONS = {
   "United Provinces of the Río de la Plata": ["Rio de la Plata"],
   "Soviet Union": ["USSR"],
   "Prince Edward Island": ["PEI"],
-  "Howland, Baker, and Jarvis Islands": ["Howland Island","Baker Island","Jarvis Island","Baker, Howland, and Jarvis Islands","Jarvis, Howland, and Baker Islands","Howland, Jarvis, and Baker Islands","Baker, Jarvis, and Howland Islands","Jarvis, Baker, and Howland Islands"]
+  "Howland, Baker, and Jarvis Islands": ["Howland Island","Baker Island","Jarvis Island","Baker, Howland, and Jarvis Islands","Jarvis, Howland, and Baker Islands","Howland, Jarvis, and Baker Islands","Baker, Jarvis, and Howland Islands","Jarvis, Baker, and Howland Islands"],
+  "International Olympic Committee": ["IOC","Olyimpics","The Olympics"],
 };
 
 function isDailyFlagGuessCorrect(typed, target){
