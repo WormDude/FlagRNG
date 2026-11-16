@@ -5050,7 +5050,7 @@ function openXpInfo() {
 }
 
 const CHANGELOG = [
-    {v: "2.00.01", date: "Nov 16 2026", tags: ["bug"], items: ["Answers are now typo-proof: small typos like \"libson\" for Lisbon or \"quto\" for Quito are accepted", "Store-exclusive flags are now 4x more expensive"]},
+    {v: "2.00.01", date: "Nov 16 2026", tags: ["bug"], items: ["Answers are now typo-proof: small typos like \"libson\" for Lisbon or \"quto\" for Quito are accepted", "Store-exclusive flags are now 4x more expensive", "Quiz games (Capitals, Flags, Facts, Map, Borders) are more random"]},
     {v: "2.0", date: "Nov 11 2026", tags: ["update"], items: ["Remade FlagRNG"]}
 ];
 const CL_TAGS = {update: ["✨", "Update"], qol: ["🧰", "QoL"], bug: ["🐛", "Bug fixes"]};
@@ -5610,8 +5610,8 @@ function startMapRound() {
     if (mapCurrent && !mapAnswered) breakStreak(save.mapQuiz);   // skipping breaks the streak
     const pool = getMapPool().filter(mapClueOK);
     if (!pool.length) { mapCurrent = null; mapShowPrompt(); const all = getMapPool().length; document.getElementById("mapLabel").textContent = ""; document.getElementById("mapTarget").textContent = all ? "No places on this map have that clue — try another clue" : "Unlock more packs"; document.getElementById("mapFlag").style.display = "none"; return; }
-    let cand = pool.filter(f => !mapRecent.includes(f.id));
-    if (!cand.length) cand = pool;
+    let cand = pool;   // purely random; only the place just shown is skipped
+    if (mapCurrent && cand.length > 1) cand = cand.filter(f => f.id !== mapCurrent.id);
     mapCurrent = cand[Math.floor(Math.random() * cand.length)];
     mapRecent.push(mapCurrent.id); if (mapRecent.length > Math.min(20, pool.length - 1)) mapRecent.shift();
     mapAnswered = false;
@@ -6259,17 +6259,9 @@ function pickQuizFlag() {
     const pool = getQuizPool();
     if (!pool.length) return null;
 
-    // Prefer flags not shown recently
-    let candidates = pool.filter(f => !quizRecentIds.includes(f.id));
+    // Purely random; the only rule is no instant repeat of the flag on screen
+    let candidates = pool;
 
-    // If we've exhausted the pool, only avoid the last ~8
-    if (!candidates.length) {
-        const hardAvoid = quizRecentIds.slice(-8);
-        candidates = pool.filter(f => !hardAvoid.includes(f.id));
-    }
-    if (!candidates.length) candidates = pool;
-
-    // Also avoid showing the exact same flag as the current one
     if (quizCurrent && candidates.length > 1) {
         candidates = candidates.filter(f => f.id !== quizCurrent.id);
     }
@@ -6743,12 +6735,7 @@ function pickFlagQuizFlag() {
         else { wk.checked = false; setTimeout(() => { const fb = document.getElementById("flagQuizFeedback"); if (fb) fb.textContent = "No weak flags yet — answer more questions first (a weak flag is under 75% with 2+ answers)."; }, 0); }
     }
 
-    let candidates = pool.filter(f => !flagQuizRecentIds.includes(f.id));
-    if (!candidates.length) {
-        const hardAvoid = flagQuizRecentIds.slice(-8);
-        candidates = pool.filter(f => !hardAvoid.includes(f.id));
-    }
-    if (!candidates.length) candidates = pool;
+    let candidates = pool;   // purely random; only the flag on screen is skipped
     if (flagQuizCurrent && candidates.length > 1) {
         candidates = candidates.filter(f => f.id !== flagQuizCurrent.id);
     }
@@ -7091,12 +7078,7 @@ function pickFactQuizFlag() {
     const pool = getFactQuizPool();
     if (!pool.length) return null;
 
-    let candidates = pool.filter(f => !factQuizRecentIds.includes(f.id));
-    if (!candidates.length) {
-        const hardAvoid = factQuizRecentIds.slice(-8);
-        candidates = pool.filter(f => !hardAvoid.includes(f.id));
-    }
-    if (!candidates.length) candidates = pool;
+    let candidates = pool;   // purely random; only the flag on screen is skipped
     if (factQuizCurrent && candidates.length > 1) {
         candidates = candidates.filter(f => f.id !== factQuizCurrent.id);
     }
@@ -9196,8 +9178,8 @@ function getBordersPool() {
 function pickBordersFlag() {
     const pool = getBordersPool();
     if (!pool.length) return null;
-    let c = pool.filter(f => !bdRecent.includes(f.id));
-    if (!c.length) c = pool;
+    let c = pool;   // purely random; only the flag just shown is skipped
+    if (bdCurrent && bdCurrent.flag && c.length > 1) c = c.filter(f => f.id !== bdCurrent.flag.id);
     const bigger = c.filter(f => bordersRequired(f.id).length >= 3);
     if (bigger.length && Math.random() < 0.7) c = bigger;
     const pick = c[Math.floor(Math.random() * c.length)];
