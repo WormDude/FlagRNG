@@ -5050,6 +5050,7 @@ function openXpInfo() {
 }
 
 const CHANGELOG = [
+    {v: "2.00.01", date: "Nov 16 2026", tags: ["bug"], items: ["Answers are now typo-proof: small typos like \"libson\" for Lisbon or \"quto\" for Quito are accepted", "Store-exclusive flags are now 4x more expensive"]},
     {v: "2.0", date: "Nov 11 2026", tags: ["update"], items: ["Remade FlagRNG"]}
 ];
 const CL_TAGS = {update: ["✨", "Update"], qol: ["🧰", "QoL"], bug: ["🐛", "Bug fixes"]};
@@ -5293,6 +5294,7 @@ function renderConsumables() {
 /* ---------- flag store (rotates every 2 days, same for everyone) ---------- */
 const STORE_PERIOD_MS = 2 * 86400000;
 const STORE_FLAG_PRICE = { Common: 30, Uncommon: 45, Rare: 60, Epic: 120, Legendary: 250, Mythical: 450, Secret: 900 };
+const STORE_ONLY_MULT = 4;   // store-exclusive flags cost this many times the base rarity price
 const STORE_VARIANT_PRICE = { shiny: 250, golden: 600, holographic: 1400, prismatic: 3500, rainbow: 9000 };
 const STORE_VARIANT_WEIGHTS = [["shiny", 50], ["golden", 28], ["holographic", 14], ["prismatic", 6], ["rainbow", 2]];
 function storeNow() { return window.__storeNow || Date.now(); }
@@ -5307,7 +5309,7 @@ function storeItems(period) {
     const rng = mulberry32(cycle * 2654435761 + 12345);
     const order = ids.slice();
     for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
-    const items = order.slice(pos * 3, pos * 3 + 3).map(id => ({ id, variant: null, price: storeDisc(STORE_FLAG_PRICE[FLAG_BY_ID[id].rarity] || 100) }));
+    const items = order.slice(pos * 3, pos * 3 + 3).map(id => ({ id, variant: null, price: storeDisc((STORE_FLAG_PRICE[FLAG_BY_ID[id].rarity] || 100) * STORE_ONLY_MULT) }));
     const r2 = mulberry32(period * 40503 + 777);
     const pool = FLAGS.filter(f => f.id && f.name && f.code && f.fact && !STORE_ONLY.has(f.id) && ["Rare", "Epic", "Legendary", "Mythical"].includes(f.rarity));
     const pf = pool[Math.floor(r2() * pool.length)];
@@ -6165,6 +6167,36 @@ const CAPITAL_ALIASES = {
     "colombo": ["colombo", "sri jayawardenepura kotte", "kotte"],
 };
 
+/* ---------- typo tolerance ---------- */
+function editDist(a, b, max) {   // Damerau-Levenshtein (adjacent swaps count as 1); returns max+1 when over the limit
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    let p2 = null, p1 = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+        const cur = [i]; let rowMin = i;
+        for (let j = 1; j <= b.length; j++) {
+            let v = Math.min(p1[j] + 1, cur[j - 1] + 1, p1[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+            if (p2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, p2[j - 2] + 1);
+            cur[j] = v; if (v < rowMin) rowMin = v;
+        }
+        if (rowMin > max) return max + 1;
+        p2 = p1; p1 = cur;
+    }
+    return p1[b.length];
+}
+// Accept a near-miss of `target` unless it equals, or is just as close to, some other real answer in `pool`.
+function typoClose(guessC, targetC, pool) {
+    if (targetC.length < 5 || guessC.length < 4) return false;
+    const d = targetC.length >= 9 ? 2 : 1;
+    const dt = editDist(guessC, targetC, d);
+    if (dt > d) return false;
+    if (pool.has(guessC)) return false;
+    for (const o of pool) { if (o !== targetC && editDist(guessC, o, dt) <= dt) return false; }   // another answer is just as close: ambiguous
+    return true;
+}
+let _fullNamesC = null, _capsC = null;
+function fullNamesCompact() { if (!_fullNamesC) { _fullNamesC = new Set(); fullNameSet().forEach(n => _fullNamesC.add(n.replace(/\s/g, ""))); } return _fullNamesC; }
+function capitalsCompact() { if (!_capsC) { _capsC = new Set(); FLAGS.forEach(f => { if (f.capital && f.capital !== "—") String(f.capital).split(/\s*[\/,;]\s*/).forEach(c => { const n = normalizeCapital(c).replace(/\s+/g, ""); if (n) _capsC.add(n); }); }); } return _capsC; }
+
 function capitalsMatch(guess, answer) {
     const g = normalizeCapital(guess);
     const a = normalizeCapital(answer);
@@ -6192,6 +6224,9 @@ function capitalsMatch(guess, answer) {
     // First word match for multi-word capitals (e.g. "Buenos" for "Buenos Aires") — only if unique-ish length
     const aFirst = a.split(" ")[0];
     if (aFirst.length >= 5 && g === aFirst) return true;
+
+    // Small typos ("libson" for Lisbon, "quto" for Quito)
+    if (typoClose(gCompact, aCompact, capitalsCompact())) return true;
 
     return false;
 }
@@ -6683,6 +6718,9 @@ function namesMatchCore(guess, official) {
     if (fullNameSet().has(g)) return false;
     if (g.length >= 5 && (a.includes(g) || ac.includes(gc))) return true;
     if (a.length >= 5 && (g.includes(a) || gc.includes(ac))) return true;
+
+    // Small typos ("Ecuadro", "Swtzerland")
+    if (typoClose(gc, ac, fullNamesCompact())) return true;
 
     return false;
 }
